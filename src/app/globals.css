@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222 70% 4%;
+    --foreground: 210 40% 98%;
+    --card: 224 54% 8%;
+    --card-foreground: 210 40% 98%;
+    --primary: 198 94% 60%;
+    --primary-foreground: 222 47% 5%;
+    --secondary: 226 35% 14%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 223 35% 14%;
+    --muted-foreground: 215 20% 68%;
+    --accent: 262 83% 64%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 32% 17%;
+    --input: 217 32% 17%;
+    --ring: 198 94% 60%;
+    --radius: 1rem;
+  }
+
+  * { @apply border-border; }
+  body { @apply bg-background text-foreground antialiased; }
+}
+
+body {
+  background:
+    radial-gradient(circle at 20% 0%, rgba(14, 165, 233, 0.22), transparent 28rem),
+    radial-gradient(circle at 80% 8%, rgba(168, 85, 247, 0.18), transparent 24rem),
+    linear-gradient(135deg, #020617 0%, #06101f 50%, #050816 100%);
+}
+
+.grid-glow {
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
+
+.noise::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.16;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+}

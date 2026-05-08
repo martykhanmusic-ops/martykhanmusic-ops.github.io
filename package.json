@@ -1,0 +1,37 @@
+{
+  "name": "stackfast",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.10.5",
+    "lucide-react": "^0.468.0",
+    "next": "^14.2.28",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwind-merge": "^2.6.0",
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.46",
+    "@types/react": "^18.3.21",
+    "@types/react-dom": "^18.3.7",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.28",
+    "jsdom": "^26.1.0",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.3"
+  }
+}
