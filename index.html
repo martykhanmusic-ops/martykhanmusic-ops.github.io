@@ -143,6 +143,80 @@
       background: #111;
       color: #fff;
     }
+
+    .router-section {
+      background: #111;
+      color: #fff;
+      max-width: none;
+      padding: 5rem 1rem;
+    }
+    .router-panel {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+      gap: 2rem;
+      align-items: stretch;
+    }
+    .router-copy h2 {
+      color: var(--accent-color);
+      font-size: 2.5rem;
+      margin: 0 0 1rem;
+    }
+    .router-copy p {
+      font-size: 1.125rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+    .mode-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+    .mode-tags li {
+      border: 1px solid rgba(255, 255, 255, .35);
+      border-radius: 999px;
+      padding: .45rem .8rem;
+      font-size: .9rem;
+      letter-spacing: .05em;
+    }
+    .router-card {
+      background: #fff;
+      color: #111;
+      border: 3px solid var(--primary-color);
+      border-radius: 1.25rem;
+      box-shadow: 12px 12px 0 var(--primary-color);
+      padding: 1.5rem;
+    }
+    .router-card label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: .75rem;
+    }
+    .router-card textarea {
+      width: 100%;
+      min-height: 130px;
+      box-sizing: border-box;
+      border: 2px solid #111;
+      border-radius: .75rem;
+      padding: .85rem;
+      font: inherit;
+      resize: vertical;
+    }
+    .mode-result {
+      margin-top: 1rem;
+      border-radius: .9rem;
+      background: #111;
+      color: var(--accent-color);
+      padding: 1rem;
+      font-size: 2rem;
+      font-weight: bold;
+      letter-spacing: .08em;
+      text-align: center;
+    }
     @media (max-width: 700px) {
       .goals-section {
         flex-direction: column;
@@ -152,6 +226,12 @@
       }
       .loverboy-section h2 {
         font-size: 3rem;
+      }
+      .router-panel {
+        grid-template-columns: 1fr;
+      }
+      .router-copy h2 {
+        font-size: 2rem;
       }
     }
   </style>
@@ -193,8 +273,69 @@
     <div class="icon">👦️</div>
     <h2>LOVERBOY</h2>
   </section>
+
+  <section class="router-section" id="mode-router">
+    <div class="router-panel">
+      <div class="router-copy">
+        <h2>Creative Ops Mode Router</h2>
+        <p>Type a request and instantly route it to the right Marty Khan creative system, from lyrics and visuals to merch, video, music, and archive work.</p>
+        <ul class="mode-tags" aria-label="Available creative modes">
+          <li>LYRA</li>
+          <li>SEAM</li>
+          <li>VIRAL</li>
+          <li>MONO</li>
+          <li>FRAME</li>
+          <li>STACK</li>
+          <li>SONIC</li>
+          <li>CUT</li>
+          <li>ARCHIVE</li>
+        </ul>
+      </div>
+      <div class="router-card">
+        <label for="router-input">What are you building?</label>
+        <textarea id="router-input" placeholder="Example: write a viral TikTok caption for a new hook"></textarea>
+        <div class="mode-result" aria-live="polite">CAMPAIGN</div>
+      </div>
+    </div>
+  </section>
   <footer>
     &copy; 2025 Marty Khan Music. All rights reserved.
   </footer>
+
+  <script>
+    const routerInput = document.querySelector('#router-input');
+    const modeResult = document.querySelector('.mode-result');
+
+    function detectMode(userInput) {
+      const input = (userInput || '').toLowerCase();
+      let mode = 'CAMPAIGN';
+
+      if (input.includes('lyric') || input.includes('hook') || input.includes('verse') || input.includes('rhyme')) {
+        mode = 'LYRA';
+      } else if (input.includes('clothing') || input.includes('shirt') || input.includes('hoodie') || input.includes('garment') || input.includes('ultra')) {
+        mode = 'SEAM';
+      } else if (input.includes('tiktok') || input.includes('caption') || input.includes('content') || input.includes('viral')) {
+        mode = 'VIRAL';
+      } else if (input.includes('brand') || input.includes('logo') || input.includes('slogan') || input.includes('identity')) {
+        mode = 'MONO';
+      } else if (input.includes('image') || input.includes('prompt') || input.includes('sora') || input.includes('photo')) {
+        mode = 'FRAME';
+      } else if (input.includes('fb') || input.includes('bb') || input.includes('faceblend') || input.includes('bodyblend') || input.includes('pose')) {
+        mode = 'STACK';
+      } else if (input.includes('midi') || input.includes('chord') || input.includes('beat') || input.includes('bpm') || input.includes('key')) {
+        mode = 'SONIC';
+      } else if (input.includes('video') || input.includes('film') || input.includes('shot') || input.includes('storyboard')) {
+        mode = 'CUT';
+      } else if (input.includes('organize') || input.includes('archive') || input.includes('table') || input.includes('system')) {
+        mode = 'ARCHIVE';
+      }
+
+      return mode;
+    }
+
+    routerInput.addEventListener('input', () => {
+      modeResult.textContent = detectMode(routerInput.value);
+    });
+  </script>
 </body>
 </html>
