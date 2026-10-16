@@ -20,6 +20,12 @@ Jarvis is deterministic local tooling: add_task, complete_task, append_note, sum
 
 ## Pending work boundary
 
+The first M3 companion increment is now additive: `companion/server.mjs` owns
+only loopback pairing/session state and live Windows device reads, while
+`halo/companion.js` is a browser adapter/status surface. It does not create a
+second workspace store or bypass Jarvis. Filesystem, application, process and
+audio adapters are intentionally still absent pending their scoped contracts.
+
 Uncommitted UI preview modifies README, app/index/styles/package and foundation/browser selectors; adds halo/ui, tokens.css, universe.css, halo/world.css, scenic asset, docs/previews, UI-DESIGN-REVIEW.md and UI tests. Preserve all of it. It is a design preview, not an approved milestone. halo/world.css is distinct from committed halo/world/world-mode.css. Independent committed-tree checks are necessary so preview files cannot conceal missing dependencies.
 
 No filesystem index, companion, actual music/audio import, streaming, VST3, DAW control, game, dose or writing application was found. No API endpoints or external AI connection exist.

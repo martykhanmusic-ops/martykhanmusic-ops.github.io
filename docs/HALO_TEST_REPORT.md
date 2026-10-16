@@ -45,3 +45,19 @@ Ordinary branch pushes succeeded and `git ls-remote origin refs/heads/feature/ha
 M3 inspection only: `uname -srm` identifies the cloud Linux host; source search for companion/local-OS/audio/device bridge found only test-runner child processes. No target-computer execution channel was found. Proposed bridge contract is documentation, not implemented or tested functionality. M3 is BLOCKED pending target OS and local execution/testing arrangement. No later milestone started. Final receipt/blocker documentation requires whitespace and scoped-diff review; no runtime code changes justify repeating the entire test suite.
 
 User clarified Windows as first target and confirmed Codex can run locally. No Windows execution has occurred in this cloud session. M3 remains BLOCKED on opening that local session, not on OS selection. Windows handoff supplies the exact resume task; no skipped milestone or hardware validation claim.
+
+## Master M3 first increment — Windows pairing/device/revocation
+
+Executed October 16, 2026 in the local Windows checkout. `npm test` passed 32
+tests, including the Windows-gated companion integration test. `npm run check`,
+`node scripts/check-world.mjs`, and `git diff --check` passed. The combined
+Chromium regression runner passed against installed Google Chrome at desktop
+and mobile sizes, covering core, Jarvis, integration and World workflows. The
+companion test started the actual Windows Node process, read its generated
+pairing code, rejected a foreign origin and bad token, verified live `win32`
+hostname/release/architecture data, revoked the token, and confirmed
+post-revocation denial.
+
+This is an incremental M3 delivery, not completion. Filesystem grants,
+allowlisted application discovery/launch, process status, audio-device
+discovery, and full disconnected/recovery browser coverage remain outstanding.

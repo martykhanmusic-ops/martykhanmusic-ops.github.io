@@ -1,6 +1,6 @@
 # Local computer bridge — proposed M3 boundary
 
-Status: BLOCKED, no implementation. This proposal is reversible and targets Windows and awaits an actual local execution session; it does not authorize unrestricted computer control or claim verified integration.
+Status: IN_PROGRESS. The first vertical slice is implemented and pushed in 3753bfe372bc0701db54e31e66e0fd2af92ff729: loopback pairing, live Windows device verification, and revocation. Filesystem/app/process/audio capabilities remain unimplemented; this document does not authorize unrestricted computer control or claim completion.
 
 ## Inspect and plan
 
@@ -22,4 +22,4 @@ Pair local companion → display timestamped verified device status in Halo → 
 4. Original baseline and integration suites remain green; no secrets in staged files; document local installation/run/stop/uninstall and grant removal.
 5. Review, commit, ordinary development-branch push and exact remote SHA verification. If actual target validation is unavailable remain BLOCKED, not COMPLETE_AND_PUSHED.
 
-No local companion, adapter, pairing UI, device metadata or application-launch capability is delivered by this document. M4 cannot start until M3 meets its gate.
+The pairing adapter and device status UI are delivered; filesystem grants, application discovery/launch, process/audio status, and the full M3 acceptance gate remain outstanding. M4 cannot start until M3 meets its gate.
