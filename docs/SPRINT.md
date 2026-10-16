@@ -84,3 +84,13 @@ Recommended next milestone: add IndexedDB-backed file metadata and audio storage
 for Music Shelf, with import/preview/tag/project/reopen tests. For cloud-connected
 Jarvis, first agree on the backend and authentication architecture. Avoid putting
 provider credentials into this static site.
+
+## Halo World M0 · verified audit
+
+World work starts from `0ba8bcf` on `feature/halo-jarvis-foundation`, preserving
+the existing uncommitted Desktop preview. Verified 27 passing current tests,
+syntax/whitespace checks, and all six current Chromium workflow scenarios
+(foundation, desktop/mobile integration, desktop/tablet/mobile Universe).
+See `HALO-WORLD.md` for the actual feature inventory, session ownership plan,
+rendering decision, feature gate, risk register and unresolved blind spots.
+No production code was changed before this baseline gate passed.
