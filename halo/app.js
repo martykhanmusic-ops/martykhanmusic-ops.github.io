@@ -1,10 +1,14 @@
 import { createStore, STORAGE_KEY } from './store.js';
 import { createJarvis, adapters } from './jarvis.js';
 import { projectJobs } from './project-state.js';
+import { createApplicationRegistry, coreApplications } from './framework.js';
 const $ = selector => document.querySelector(selector);
 const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const date = value => new Date(value).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
 let store, jarvis, search = '', dirty = false, jobFilter = 'all', jobScope = 'all', editorBase = null;
+const applications = createApplicationRegistry();
+for (const application of coreApplications) applications.register(application);
+window.haloApplications = applications;
 function notify(message, error = false) { $('#status').textContent = message; $('#status').classList.toggle('error', error); }
 function run(fn) { try { return fn(); } catch (error) { notify(error.message, true); return false; } }
 function download(raw, filename) { const url = URL.createObjectURL(new Blob([raw], { type: 'application/json' })); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); }
