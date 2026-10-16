@@ -29,3 +29,9 @@ No filesystem index, companion, actual music/audio import, streaming, VST3, DAW 
 Export a JSON backup before clearing browser data or restoring. Keep same origin/profile for continuity; clearing storage loses local data. For corruption use recovery download; repair a copy rather than overwrite evidence. For quota failures export existing data and free storage, then retry explicitly. For stale-tab conflicts reload after preserving drafts manually. Never promise unsaved draft recovery after reload.
 
 World can be disabled by removing world=1 and halo.world.enabled.v1; Desktop needs no successful WebGL initialization. Roll back isolated World commits with ordinary revert commits after review, not reset/history rewrite. Workspace schema stays version 1. Preserve user preview patches and never stage them implicitly. No deployment or remote-main change is authorized.
+
+## Local run and validation
+
+From repository root: `npm ci`, `npx playwright install chromium` (for browser tests), then `npm start`. Open `http://localhost:4173/halo/`; World is optional at `http://localhost:4173/halo/?world=1`. Keep the origin stable to retain local data. Browser tests use isolated profiles, not your saved workspace.
+
+Run `npm test`, `npm run check`, `node scripts/check-world.mjs`, and `node scripts/test-world.cjs tests/master-core-browser.cjs tests/browser.cjs tests/integration-browser.cjs tests/world-browser.cjs tests/world-session-browser.cjs tests/world-lifecycle-browser.cjs tests/world-workstation-browser.cjs`. The self-contained runner needs no separately started server; HALO_CHROMIUM_PATH can select a local Chromium executable. Uncommitted preview additionally has its own UI suite; it is not a prerequisite for the committed application.

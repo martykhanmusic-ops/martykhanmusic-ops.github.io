@@ -4,8 +4,8 @@ Updated October 16, 2026. Branch feature/halo-jarvis-foundation. Baseline remote
 
 | Milestone | Status | Completed / remaining | Test evidence | Delivery SHA / push |
 |---|---|---|---|---|
-| 0 Audit/protection | READY_FOR_VALIDATION | All six documents and three validation passes complete; commit/push/remote gate pending | 32 tests, syntax/whitespace and ten Chromium scenarios pass | Not committed |
-| 1 Core stability | NOT_STARTED | Existing foundation requires fresh isolated acceptance before adoption | Pending master gate | None |
+| 0 Audit/protection | COMPLETE_AND_PUSHED | All six documents, inventory, risks and protection strategy delivered | 32 tests, syntax/whitespace and ten Chromium scenarios pass | 3838b0fb0a3c75c9ac5711f5bc82014272fd7e95; exact remote match observed |
+| 1 Core stability | READY_FOR_VALIDATION | Existing core retained; new desktop/mobile backup/draft/identity regression; isolated runner URL repaired | 28 isolated tests, syntax, nine isolated browser scenarios; two new working-tree scenarios pass | Commit/push/remote gate pending |
 | 2 Jarvis engine | NOT_STARTED | Existing engine requires fresh master cancellation/recovery gate before adoption | Pending master gate | None |
 | 3 Local computer bridge | NOT_STARTED | No companion; needs actual target OS/local execution access | None | None |
 | 4 Application framework | NOT_STARTED | Registration/lifecycle/shared contracts | None | None |
@@ -18,4 +18,4 @@ Updated October 16, 2026. Branch feature/halo-jarvis-foundation. Baseline remote
 | 11 Automation | NOT_STARTED | Scheduler/integrations absent | None | None |
 | 12 Hardening | NOT_STARTED | Full ecosystem not available | None | None |
 
-Next action: finish M0 browser baseline, review only six new documents, commit/push and verify remote exact SHA. After observed verification record receipt, then begin M1. Never skip a failed/incomplete milestone.
+Next action: review and commit M1 test/configuration/documentation changes, push and verify exact SHA before beginning M2.

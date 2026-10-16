@@ -158,3 +158,17 @@ excluding the uncommitted Desktop preview, passed 28 committed core tests,
 app/World syntax and all four World browser suites. The working tree has four
 additional preview UI tests (32 total). Both versions passed; the World commits
 do not require that preview to function.
+
+
+## Master roadmap adoption · October 16, 2026
+
+Historical milestones above keep their original numbering and then-current push
+statements. Current master sequence and exact remote receipts live in
+HALO_MASTER_ROADMAP.md and HALO_MILESTONE_STATUS.md. World through 5607979 and
+master audit 3838b0f were pushed with authorization; no production deployment.
+
+Master M1 retains the existing core and adds independent desktop/mobile tests for
+backup export/restore, saved-data identity, dirty-navigation rejection, search and
+resume. Isolated committed code passed 28 tests, syntax and nine Chromium scenario
+groups after correcting legacy tests to use HALO_TEST_URL. The pending visual
+preview remains uncommitted. See HALO_TEST_REPORT.md for failure and rerun evidence.

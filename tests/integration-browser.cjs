@@ -18,7 +18,7 @@ async function scenario(browser, viewport) {
     await page.waitForFunction(({key,id})=>JSON.parse(localStorage.getItem(key)).jobs.find(j=>j.id===id)?.status==='completed',{key:KEY,id});
   }
   try {
-    await page.goto('http://127.0.0.1:4173/halo/');
+    await page.goto((process.env.HALO_TEST_URL || 'http://127.0.0.1:4173') + '/halo/');
     await create('Project A');
     await page.getByLabel('New task',{exact:true}).fill('Record A'); await click('Add');
     let snapshot=await state(); const a=snapshot.activeProjectId, task=snapshot.projects[0].tasks[0].id;
