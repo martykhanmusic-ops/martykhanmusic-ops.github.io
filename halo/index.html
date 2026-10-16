@@ -7,6 +7,7 @@
   <title>Halo · Creative workspace</title>
   <link rel="stylesheet" href="styles.css">
   <script type="module" src="app.js"></script>
+  <script type="module" src="app-host.js"></script>
   <script type="module" src="companion.js"></script>
   <script type="module" src="shell/WorldGate.js"></script>
 </head>
@@ -17,12 +18,14 @@
       <a class="brand" href="./" aria-label="Halo home"><span class="brand-orb"></span>HALO<span class="brand-os">OS</span></a>
       <p class="eyebrow">YOUR CREATIVE ORBIT</p>
       <nav aria-label="Workspace"><button data-view="dashboard">◉ <span>Overview</span></button><button data-view="jarvis">✧ <span>Jarvis</span></button></nav>
+      <section id="application-directory" aria-label="Applications"></section>
       <section class="companion-panel" aria-label="Windows companion"><h2>Windows companion</h2><p id="companion-state" role="status">Disconnected</p><p id="companion-device"></p><button id="companion-refresh" type="button">Refresh status</button><form id="companion-pair"><label>Code from companion window<input name="code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="off" required></label><button type="submit">Pair</button></form><div class="companion-actions" hidden><button id="companion-processes" type="button" hidden>Process status</button><button id="companion-audio" type="button" hidden>Audio devices</button><div id="companion-file-controls" hidden><label>Path under approved folder<input id="companion-relative" value="." autocomplete="off"></label><button id="companion-files" type="button">List files</button><button id="companion-read" type="button">Read text</button></div><div id="companion-app-controls" hidden><button id="companion-apps" type="button">Discover applications</button><label>Approved application<select id="companion-app-list"></select></label><button id="companion-approve" type="button">Request launch approval</button><label>Code from companion window<input id="companion-launch-code" inputmode="numeric" maxlength="6" autocomplete="off"></label><button id="companion-launch" type="button">Launch approved app</button></div><details><summary>Permissions and audit</summary><div id="companion-grants"></div><button id="companion-audit" type="button">View recent activity</button></details><button id="companion-revoke" type="button">Revoke pairing</button><div id="companion-result" aria-live="polite"></div></div></section>
       <div class="sidebar-bottom"><span class="local-dot"></span> Local workspace<p>Saved on this device · Private by default</p><a href="../">Marty Khan Music ↗</a></div>
     </aside>
     <div class="content">
       <header class="topbar"><span id="breadcrumb">Workspace / Overview</span><div><button id="theme" class="quiet" aria-label="Switch color theme">◐ Theme</button><button id="backup" class="quiet">Export backup</button><button id="restore" class="quiet">Restore</button><input type="file" id="backup-file" accept="application/json,.json" hidden></div></header>
       <div id="status" role="status" aria-live="polite"></div>
+      <section id="application-panel" tabindex="-1" aria-label="Open application" hidden></section>
       <main id="main" tabindex="-1"></main>
       <footer>HALO OS <span>A little space for your next big idea.</span><span>LOCAL / V1</span></footer>
     </div>

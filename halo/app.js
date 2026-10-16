@@ -6,8 +6,15 @@ const $ = selector => document.querySelector(selector);
 const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const date = value => new Date(value).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
 let store, jarvis, search = '', dirty = false, jobFilter = 'all', jobScope = 'all', editorBase = null;
-const applications = createApplicationRegistry();
-for (const application of coreApplications) applications.register(application);
+let applications, applicationWarning = '';
+try {
+  applications = createApplicationRegistry({ storage: localStorage, platform: matchMedia('(max-width: 699px)').matches ? 'mobile' : 'desktop' });
+  for (const application of coreApplications) applications.register(application);
+} catch (error) {
+  applications = createApplicationRegistry();
+  for (const application of coreApplications) applications.register(application);
+  applicationWarning = error.message;
+}
 window.haloApplications = applications;
 function notify(message, error = false) { $('#status').textContent = message; $('#status').classList.toggle('error', error); }
 function run(fn) { try { return fn(); } catch (error) { notify(error.message, true); return false; } }
@@ -169,6 +176,7 @@ if (store) {
   window.addEventListener('beforeunload', event => { if(dirty) { event.preventDefault(); event.returnValue = ''; } });
   window.addEventListener('storage', event => { if(event.key === STORAGE_KEY) notify('Workspace changed in another tab. Reload before saving.',true); });
   render();
+  if (applicationWarning) notify(`${applicationWarning} Application settings will not be saved until the metadata is repaired.`, true);
 }
 
 // Optional presentation layers use the existing session, never another store.

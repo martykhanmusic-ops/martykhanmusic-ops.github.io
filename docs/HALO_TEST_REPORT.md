@@ -105,3 +105,7 @@ post-revocation denial.
 This is an incremental M3 delivery, not completion. Filesystem grants,
 allowlisted application discovery/launch, process status, audio-device
 discovery, and full disconnected/recovery browser coverage remain outstanding.
+
+## Master M4 application framework — local verification
+
+October 16, 2026: `npm test` passed 43/43 Node tests, including lifecycle, grants, persistence, state isolation, compatibility, stale tabs and storage failure. `npm run check` and `node scripts/check-world.mjs` passed. `npm run test:framework:browser` passed at 1440px and 390px using installed Google Chrome: discovery, denied open, grant/open, theme and state persistence, suspend/resume, reload, revocation and return to the same saved project and Jarvis. The exact eight-suite foundation/Jarvis/integration/World browser command passed. The first companion browser run timed out waiting for a Windows process result under concurrent browser load; a standalone rerun passed desktop/mobile and live grants/process/audio/files/app discovery. No OS capability was added by M4.

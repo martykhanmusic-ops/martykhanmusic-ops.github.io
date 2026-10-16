@@ -98,6 +98,12 @@ defaults and invalidates pending deletion approvals. Completed-task deletion is
 permanent unless you have an earlier backup. Avoid simultaneous edits in multiple
 tabs: stale saves are rejected, but localStorage is not a multi-user database.
 
+The Applications section hosts trusted local modules. Workspace Status asks for
+an explicit read grant and shows counts from the existing Halo workspace. Its
+settings and grant live in separate application metadata. Revoke the grant in
+the directory to close the app. New trusted apps use a manifest and mount
+function listed in `halo/apps/catalog.js`.
+
 See [the sprint audit and delivery report](docs/SPRINT.md) for validation,
 architectural limitations and next milestones. No production deployment or push
 is part of this local implementation.
