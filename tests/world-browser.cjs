@@ -6,7 +6,7 @@ const origin=process.env.HALO_TEST_URL||'http://127.0.0.1:4173';
   const browser=await chromium.launch({executablePath:process.env.HALO_CHROMIUM_PATH||(existsSync('/usr/bin/chromium')?'/usr/bin/chromium':undefined),headless:true,args:['--no-sandbox','--enable-unsafe-swiftshader','--use-gl=angle','--use-angle=swiftshader']});
   try{
     const context=await browser.newContext({viewport:{width:1280,height:900}}),page=await context.newPage(),errors=[],requests=[];
-    page.on('pageerror',error=>errors.push(error.message));page.on('request',request=>requests.push(request.url()));
+    page.on('pageerror',error=>errors.push(error.message));page.on('console',message=>{if(message.type()==='error')errors.push(message.text());});page.on('request',request=>requests.push(request.url()));
     await page.goto(`${origin}/halo/`);assert.equal(await page.locator('#enter-world').count(),0);
     assert.equal(requests.some(url=>url.includes('three.module')||url.includes('HaloWorld.js')),false);
     await page.goto(`${origin}/halo/?world=1`);await page.getByRole('button',{name:'Enter Halo World',exact:true}).click();

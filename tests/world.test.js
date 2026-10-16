@@ -18,6 +18,8 @@ test('movement is normalized, bounded, collision-safe and frame-gap clamped',()=
   assert.ok(p.z>=-.65);assert.equal(p.x,0);
   for(let i=0;i<500;i++)p=moveAvatar(p,new Set(['KeyD']),.05,[]);
   assert.ok(p.x<=12.5);assert.equal(moveAvatar(SPAWN,new Set(['KeyW']),100).z,a.z);
+  for(let i=0;i<500;i++)p=moveAvatar(p,new Set(['KeyD','KeyS']),.05,[]);
+  assert.ok(Math.hypot(p.x,p.z)<=12.5);
 });
 test('typed registry validates routes and discovery respects interaction distance',()=>{
   assert.equal(validateDestinations(destinations),destinations);

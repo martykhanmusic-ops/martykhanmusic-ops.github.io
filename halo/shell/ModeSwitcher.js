@@ -1,26 +1,34 @@
 import {connectApplicationSession} from '../shared/ApplicationSessionBridge.js';
 import {destinations,destinationRoute} from '../world/DestinationRegistry.js';
+import {createWorkstation} from '../world/WorldWorkstation.js';
 export function installModeSwitcher(){
   if(document.querySelector('#enter-world')||!document.querySelector('.shell'))return;
   const shell=document.querySelector('.shell'),dock=document.querySelector('.floating-dock');
   const button=document.createElement('button');button.id='enter-world';button.className='world-mode-entry';button.textContent='Enter Halo World';
   document.querySelector('.topbar').append(button);
   let instance=null,root=null,generation=0,position,previousFocus,session;
+  const workstation=createWorkstation(shell);
   document.addEventListener('focusin',event=>{
     if(event.target!==button&&(shell.contains(event.target)||dock?.contains(event.target)))previousFocus=event.target;
   });
   function interaction(destination){
-    if(!root||destination.availability!=='available')return;
+    if(!root||workstation.isOpen()||destination.availability!=='available')return;
     instance.pause();root.querySelector('.world-actions')?.remove();
     const panel=document.createElement('section');panel.className='world-actions';panel.setAttribute('aria-label',`${destination.label} interaction`);
     const title=document.createElement('h2');title.textContent=destination.label;panel.append(title);
     const open=document.createElement('button');open.textContent='Open App';panel.append(open);
     open.onclick=()=>{const route=destinationRoute(destination,session.getState());desktop();session.openRoute(route);};
+    const state=session.getState();
+    if(destination.workstationAdapter && state.activeProjectId){
+      const use=document.createElement('button');use.textContent='Use in World';panel.append(use);
+      use.onclick=()=>{if(workstation.open(root,destination,session,()=>{root.focus();instance.resume();})){panel.remove();}else{const status=panel.querySelector('p')||document.createElement('p');status.textContent='Select a saved project on Desktop before using a workstation.';panel.append(status);}};
+    }else{const hint=document.createElement('p');hint.textContent='Open App to create or select a project before using the workstation.';panel.append(hint);}
     const cancel=document.createElement('button');cancel.textContent='Back to plaza';panel.append(cancel);
     cancel.onclick=()=>{panel.remove();root.focus();instance.resume();};
     root.append(panel);open.focus();
   }
   function desktop(message=''){
+    workstation.park();
     generation++;if(instance){position=instance.getPosition();instance.dispose();instance=null;}
     root?.remove();root=null;shell.hidden=false;shell.inert=false;if(dock){dock.hidden=false;dock.inert=false;}
     button.disabled=false;document.body.dataset.mode='desktop';

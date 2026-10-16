@@ -4,7 +4,7 @@ export function moveAvatar(position,keys,elapsed,obstacles=[],limit=12.5) {
   let z=Number(keys.has('KeyS')||keys.has('ArrowDown'))-Number(keys.has('KeyW')||keys.has('ArrowUp'));
   const length=Math.hypot(x,z),speed=keys.has('ShiftLeft')||keys.has('ShiftRight')?5.5:3;
   if(length) {x=x/length*speed*Math.min(Math.max(elapsed,0),.05);z=z/length*speed*Math.min(Math.max(elapsed,0),.05);}
-  const allowed=(a,b)=>Math.abs(a)<=limit&&Math.abs(b)<=limit&&!obstacles.some(o=>Math.hypot(a-o.x,b-o.z)<o.radius+.35);
+  const allowed=(a,b)=>Math.hypot(a,b)<=limit&&!obstacles.some(o=>Math.hypot(a-o.x,b-o.z)<o.radius+.35);
   const next={...position};
   if(allowed(next.x+x,next.z)) next.x+=x;
   if(allowed(next.x,next.z+z)) next.z+=z;

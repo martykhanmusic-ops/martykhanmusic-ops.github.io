@@ -134,3 +134,27 @@ editor/focus retention, real context-loss extension, reload behavior, cancelled
 lazy-import race, unsupported WebGL and simulated sustained-slow-frame fallback.
 No page errors. Slow timestamps are injected for fallback verification; this is
 not a real-device GPU benchmark. Reload restores only saved data, as before.
+
+## Halo World M4 · real in-world workstation
+
+Projects now offers Use in World for an existing active project. It reparents the
+one original Desktop shell into an overlay and pauses exploration; no cloned UI,
+iframe, secondary store or privileged World API exists. Closing/graphics failure
+parks that shell before disposing the scene. Existing project, Jarvis and backup
+controls remain the only write paths. Theme background is read on scene mount.
+Final collision coverage also checks the circular plaza boundary.
+
+Gate: all 32 current working-tree core tests, app/World syntax and whitespace
+checks passed. The combined runner passed all original foundation/desktop/mobile/
+tablet suites and all four World suites. Final World rerun additionally asserted
+no console errors and verified backup export/restore from the workstation.
+M4 verified original unsaved editor identity, notes/tasks, disabled-deletion
+denial, explicit approval, verified result/audit, safe close/return, graphics-loss
+rescue with an open draft, and reload of saved data. No push/deploy/merge. M5 is
+not implemented and requires explicit visual/destination approval.
+
+Independent check: a `git archive` export of the committed implementation,
+excluding the uncommitted Desktop preview, passed 28 committed core tests,
+app/World syntax and all four World browser suites. The working tree has four
+additional preview UI tests (32 total). Both versions passed; the World commits
+do not require that preview to function.

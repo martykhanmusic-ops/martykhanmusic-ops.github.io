@@ -6,7 +6,7 @@ const origin=process.env.HALO_TEST_URL||'http://127.0.0.1:4173';
   const browser=await chromium.launch({executablePath:process.env.HALO_CHROMIUM_PATH||(existsSync('/usr/bin/chromium')?'/usr/bin/chromium':undefined),headless:true,args:['--no-sandbox','--enable-unsafe-swiftshader','--use-gl=angle','--use-angle=swiftshader']});
   try{
     const context=await browser.newContext({viewport:{width:1280,height:900}}),page=await context.newPage(),errors=[];
-    page.on('pageerror',error=>errors.push(error.message));
+    page.on('pageerror',error=>errors.push(error.message));page.on('console',message=>{if(message.type()==='error')errors.push(message.text());});
     const click=name=>page.getByRole('button',{name,exact:true}).click();
     await page.goto(`${origin}/halo/?world=1`);
     await click('＋ New project');await page.locator('#project-form input[name="name"]').fill('World session');await click('Create project ↗');

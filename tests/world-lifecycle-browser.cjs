@@ -5,7 +5,7 @@ const origin=process.env.HALO_TEST_URL||'http://127.0.0.1:4173';
 (async()=>{
   const browser=await chromium.launch({executablePath:process.env.HALO_CHROMIUM_PATH||(existsSync('/usr/bin/chromium')?'/usr/bin/chromium':undefined),headless:true,args:['--no-sandbox','--enable-unsafe-swiftshader','--use-gl=angle','--use-angle=swiftshader']});
   const errors=[];
-  async function context(script){const c=await browser.newContext({viewport:{width:1280,height:900},reducedMotion:'reduce'});if(script)await c.addInitScript(script);const p=await c.newPage();p.on('pageerror',e=>errors.push(e.message));return {c,p};}
+  async function context(script){const c=await browser.newContext({viewport:{width:1280,height:900},reducedMotion:'reduce'});if(script)await c.addInitScript(script);const p=await c.newPage();p.on('pageerror',e=>errors.push(e.message));p.on('console',message=>{if(message.type()==='error')errors.push(message.text());});return {c,p};}
   async function enter(p){await p.getByRole('button',{name:'Enter Halo World',exact:true}).click();await p.waitForFunction(()=>document.body.dataset.mode==='world');}
   try{
     // The same editor node, draft, selection and focus survive repeated sessions.

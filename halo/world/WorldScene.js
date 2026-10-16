@@ -2,9 +2,10 @@ import * as THREE from './vendor/three.module.js';
 import { followCamera } from './FollowCamera.js';
 export function createScene(container,entries){
   const renderer=new THREE.WebGLRenderer({antialias:false,powerPreference:'low-power',failIfMajorPerformanceCaveat:false});
-  renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setClearColor(0x181c2c);
+  const tokens=getComputedStyle(document.documentElement),background=tokens.getPropertyValue('--bg').trim()||'#181c2c';
+  renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setClearColor(background);
   renderer.domElement.setAttribute('aria-label','Halo World third-person plaza');
-  const scene=new THREE.Scene();scene.fog=new THREE.Fog(0x181c2c,18,48);
+  const scene=new THREE.Scene();scene.fog=new THREE.Fog(background,18,48);
   const camera=new THREE.PerspectiveCamera(50,1,.1,70);
   scene.add(new THREE.HemisphereLight(0xf4d4aa,0x293848,2.5));
   const sun=new THREE.DirectionalLight(0xffdbad,2.5);sun.position.set(-5,9,3);scene.add(sun);
