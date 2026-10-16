@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>Halo · Creative workspace</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to workspace</a>
+  <div class="shell">
+    <aside>
+      <a class="brand" href="./" aria-label="Halo home"><span class="brand-orb"></span>HALO<span class="brand-os">OS</span></a>
+      <p class="eyebrow">YOUR CREATIVE ORBIT</p>
+      <nav aria-label="Workspace"><button data-view="dashboard">◉ <span>Overview</span></button><button data-view="jarvis">✧ <span>Jarvis</span></button></nav>
+      <div class="sidebar-bottom"><span class="local-dot"></span> Local workspace<p>Saved on this device · Private by default</p><a href="../">Marty Khan Music ↗</a></div>
+    </aside>
+    <div class="content">
+      <header class="topbar"><span id="breadcrumb">Workspace / Overview</span><div><button id="theme" class="quiet" aria-label="Switch color theme">◐ Theme</button><button id="backup" class="quiet">Export backup</button><button id="restore" class="quiet">Restore</button><input type="file" id="backup-file" accept="application/json,.json" hidden></div></header>
+      <div id="status" role="status" aria-live="polite"></div>
+      <main id="main" tabindex="-1"></main>
+      <footer>HALO OS <span>A little space for your next big idea.</span><span>LOCAL / V1</span></footer>
+    </div>
+  </div>
+  <dialog id="project-dialog" aria-labelledby="dialog-title"><form id="project-form"><div class="section-heading"><p class="eyebrow">START SOMETHING</p><button type="button" id="close-dialog" class="quiet" aria-label="Close">✕</button></div><h2 id="dialog-title">A new project.</h2><label>Project name<input name="name" required maxlength="120" placeholder="What are you making?" autocomplete="off"></label><label>Description<textarea name="description" rows="3" maxlength="2000" placeholder="Give your idea a little context."></textarea></label><p id="form-error" role="alert"></p><button class="primary">Create project ↗</button></form></dialog>
+</body>
+</html>

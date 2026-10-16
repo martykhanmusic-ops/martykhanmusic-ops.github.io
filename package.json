@@ -1,0 +1,10 @@
+{
+  "name": "halo-workspace",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test --test-isolation=none tests/*.test.js",
+    "check": "node --check halo/app.js && node --check halo/store.js",
+    "start": "python3 -m http.server 4173"
+  }
+}
