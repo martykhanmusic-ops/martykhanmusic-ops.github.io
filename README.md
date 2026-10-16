@@ -41,6 +41,14 @@ dependencies remain zero; Playwright is a pinned development-only dependency.
   requires approval of each plan. Plans never execute automatically.
 - Pending/running/completed/failed/cancelled history and explicit retries.
   Interrupted jobs recover as failed for manual review.
+- Plan completion directly from an open Halo task, or select an existing task in
+  Jarvis. The completion tool is disabled until you grant its separate permission.
+- Project-specific execution panels, project filters and links from results back
+  to the original task. Task changes and execution status update in the open
+  project without reloading; projects remain in one authoritative workspace store.
+- Project renames update current job labels without rewriting historical plans.
+  A draft opened before a Jarvis note update cannot overwrite those newer notes;
+  copy the draft, then use **Reload saved project** and merge your changes.
 
 ## Data and scope
 

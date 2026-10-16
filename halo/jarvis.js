@@ -1,7 +1,9 @@
+import { addProjectTask, appendProjectNotes, deleteCompletedTasks, getTask, setTaskDone } from './project-state.js';
 // The adapter registry is deliberately local-only. No arbitrary code, shell,
 // network requests, filesystem access, or natural-language execution is allowed.
 export const adapters = Object.freeze({
   add_task: { label: 'Create a task', permission: 'Create project tasks', impact: 'local write' },
+  complete_task: { label: 'Complete an existing task', permission: 'Complete project tasks', impact: 'local write' },
   append_note: { label: 'Append working notes', permission: 'Append project notes', impact: 'local write' },
   summarize: { label: 'Summarize project status', permission: 'Read project status', impact: 'read only' },
   delete_completed: { label: 'Delete completed tasks', permission: 'Delete completed tasks', impact: 'approval required' }
@@ -15,17 +17,18 @@ export function createJarvis(store) {
     if (job.action === 'delete_completed' && !job.approved) throw new Error('Deletion requires approval for this plan.');
   }
   return {
-    plan(action, projectId, input = '') {
+    plan(action, projectId, input = '', options = {}) {
       if (!Object.hasOwn(adapters, action)) throw new Error('Unsupported tool.');
       if (['add_task','append_note'].includes(action) && !input.trim()) throw new Error('Describe the task or note to add.');
       if (input.length > (action === 'add_task' ? 300 : 10000)) throw new Error('Input is too long for this tool.');
       const id = crypto.randomUUID();
       store.transact(s => {
         const p = store.project(s, projectId);
-        const targetIds = action === 'delete_completed' ? p.tasks.filter(t => t.done).map(t => t.id) : [];
+        const targetIds = action === 'delete_completed' ? p.tasks.filter(t => t.done).map(t => t.id) : action === 'complete_task' ? [getTask(p, options.taskId).id] : [];
+        if (action === 'complete_task' && getTask(p, options.taskId).done) throw new Error('This task is already complete.');
         if(action === 'delete_completed' && !targetIds.length) throw new Error('This project has no completed tasks to delete.');
-        const effect = action === 'add_task' ? `Create task: ${input.trim()}` : action === 'append_note' ? `Append note: ${input.trim()}` : action === 'summarize' ? 'Count tasks and report recorded project status (no AI inference).' : `Delete exactly ${targetIds.length} currently completed task(s). New tasks are excluded.`;
-        const job = { id, action, projectId, projectName: p.name, input: input.trim(), status: action === 'delete_completed' ? 'awaiting_approval' : 'pending', approved: false, targetIds, createdAt: now(), updatedAt: now(), result: '', error: '', plan: [`Open project: ${p.name}`, effect, ...targetIds.map(id=>`Delete task: ${p.tasks.find(t=>t.id===id).title}`), 'Verify the local result and persist execution history.'], logs: [] };
+        const effect = action === 'complete_task' ? `Mark task complete: ${getTask(p, options.taskId).title}` : action === 'add_task' ? `Create task: ${input.trim()}` : action === 'append_note' ? `Append note: ${input.trim()}` : action === 'summarize' ? 'Count tasks and report recorded project status (no AI inference).' : `Delete exactly ${targetIds.length} currently completed task(s). New tasks are excluded.`;
+        const job = { id, action, projectId, projectName: p.name, input: input.trim(), status: action === 'delete_completed' ? 'awaiting_approval' : 'pending', approved: false, targetIds, resultTaskIds: [], createdAt: now(), updatedAt: now(), result: '', error: '', plan: [`Open project: ${p.name}`, effect, ...(action === 'delete_completed' ? targetIds.map(id=>`Delete task: ${p.tasks.find(t=>t.id===id).title}`) : []), 'Verify the local result and persist execution history.'], logs: [] };
         log(job,'planned',`Plan generated using ${adapters[action].label}. No action has run.`);
         s.jobs.unshift(job); store.activity(s, `Jarvis planned: ${adapters[action].label}`);
       });
@@ -68,24 +71,30 @@ export function createJarvis(store) {
           allowed(s,j); const p = store.project(s,j.projectId);
           if(j.action === 'add_task') {
             if(!j.input.trim() || j.input.length > 300) throw new Error('Invalid task input.');
-            const taskId = crypto.randomUUID(); p.tasks.push({id:taskId,title:j.input,done:false});
+            const taskId = addProjectTask(p,j.input).id;
             if(!p.tasks.some(t=>t.id===taskId && t.title===j.input)) throw new Error('Task verification failed.');
             j.result = `Verified task created in ${p.name}: ${j.input}`;
+            j.resultTaskIds = [taskId];
+          } else if(j.action === 'complete_task') {
+            const task = getTask(p,j.targetIds[0]);
+            if(task.done) throw new Error('Task is already complete. Cancel this plan; no change is needed.');
+            setTaskDone(p,task.id,true);
+            if(!getTask(p,task.id).done) throw new Error('Task completion verification failed.');
+            j.resultTaskIds = [task.id];
+            j.result = `Verified task completed in ${p.name}: ${task.title}`;
           } else if(j.action === 'append_note') {
             if(!j.input.trim() || j.input.length > 10000) throw new Error('Invalid note input.');
-            p.notes += (p.notes ? '\n\n' : '') + j.input;
+            appendProjectNotes(p,j.input);
             if(!p.notes.endsWith(j.input)) throw new Error('Note verification failed.');
             j.result = `Verified note appended to ${p.name} (${j.input.length} characters).`;
           } else if(j.action === 'summarize') {
             const done = p.tasks.filter(t=>t.done).length;
             j.result = `${p.name}: ${p.tasks.length} recorded task(s), ${done} completed, ${p.tasks.length-done} open. Working notes: ${p.notes.length} characters. Last saved: ${p.updatedAt}.`;
           } else if(j.action === 'delete_completed') {
-            if(!j.targetIds.length || j.targetIds.some(id=>!p.tasks.some(t=>t.id===id && t.done))) throw new Error('Planned tasks changed. Cancel this job and generate a fresh plan.');
-            p.tasks = p.tasks.filter(t=>!j.targetIds.includes(t.id));
+            deleteCompletedTasks(p,j.targetIds);
             if(p.tasks.some(t=>j.targetIds.includes(t.id))) throw new Error('Deletion verification failed.');
             j.result = `Verified deletion of ${j.targetIds.length} approved completed task(s) from ${p.name}.`;
           }
-          if(j.action !== 'summarize') p.updatedAt = now();
           j.status = 'completed'; j.error = ''; log(j,'verified',j.result); store.activity(s, `Jarvis completed: ${adapters[j.action].label}`);
         });
       } catch(error) {
