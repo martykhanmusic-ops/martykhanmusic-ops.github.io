@@ -16,3 +16,8 @@ export function validateDestinations(entries) {
   return entries;
 }
 validateDestinations(destinations);
+export function destinationRoute(destination,state){
+  if(destination.availability!=='available')throw new Error('This destination is not available.');
+  if(destination.route.view==='project')return state.activeProjectId?{view:'project',projectId:state.activeProjectId}:{view:'dashboard'};
+  return {...destination.route};
+}

@@ -166,3 +166,17 @@ if (store) {
   window.addEventListener('storage', event => { if(event.key === STORAGE_KEY) notify('Workspace changed in another tab. Reload before saving.',true); });
   render();
 }
+
+// Optional presentation layers use the existing session, never another store.
+if (store) window.addEventListener('halo:session-request', event => {
+  event.detail.accept(Object.freeze({
+    getState: () => store.get(),
+    openRoute: ({view, projectId}) => {
+      const before = store.get();
+      if (before.view === view && (!projectId || before.activeProjectId === projectId)) return true;
+      navigate(view, projectId);
+      const after = store.get();
+      return after.view === view && (!projectId || after.activeProjectId === projectId);
+    }
+  }));
+});

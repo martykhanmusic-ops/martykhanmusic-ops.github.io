@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {worldEnabled} from '../halo/world/flags.js';
 import {moveAvatar,SPAWN} from '../halo/world/AvatarController.js';
 import {nearestDestination} from '../halo/world/InteractionManager.js';
-import {destinations,validateDestinations} from '../halo/world/DestinationRegistry.js';
+import {destinations,validateDestinations,destinationRoute} from '../halo/world/DestinationRegistry.js';
 import {WorldPerformanceManager} from '../halo/world/WorldPerformanceManager.js';
 test('World flag is default off, opt-in only, safe when storage is blocked',()=>{
   assert.equal(worldEnabled({search:''},{getItem:()=>null}),false);
@@ -28,4 +28,9 @@ test('typed registry validates routes and discovery respects interaction distanc
 test('performance fallback requires a sustained measured slow window',()=>{
   const p=new WorldPerformanceManager({samples:3});assert.equal(p.sample(100),false);assert.equal(p.sample(100),false);assert.equal(p.sample(100),true);
   p.reset();assert.equal(p.sample(16),false);assert.equal(p.sample(16),false);assert.equal(p.sample(16),false);
+});
+test('World resolves existing project routes by ID without inventing state',()=>{
+  assert.deepEqual(destinationRoute(destinations[0],{activeProjectId:'real-id'}),{view:'project',projectId:'real-id'});
+  assert.deepEqual(destinationRoute(destinations[0],{activeProjectId:null}),{view:'dashboard'});
+  assert.throws(()=>destinationRoute({...destinations[0],availability:'planned'},{}));
 });

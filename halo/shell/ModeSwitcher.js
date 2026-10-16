@@ -1,9 +1,22 @@
+import {connectApplicationSession} from '../shared/ApplicationSessionBridge.js';
+import {destinations,destinationRoute} from '../world/DestinationRegistry.js';
 export function installModeSwitcher(){
   if(document.querySelector('#enter-world')||!document.querySelector('.shell'))return;
   const shell=document.querySelector('.shell'),dock=document.querySelector('.floating-dock');
   const button=document.createElement('button');button.id='enter-world';button.className='world-mode-entry';button.textContent='Enter Halo World';
   document.querySelector('.topbar').append(button);
-  let instance=null,root=null,generation=0,position,previousFocus;
+  let instance=null,root=null,generation=0,position,previousFocus,session;
+  function interaction(destination){
+    if(!root||destination.availability!=='available')return;
+    instance.pause();root.querySelector('.world-actions')?.remove();
+    const panel=document.createElement('section');panel.className='world-actions';panel.setAttribute('aria-label',`${destination.label} interaction`);
+    const title=document.createElement('h2');title.textContent=destination.label;panel.append(title);
+    const open=document.createElement('button');open.textContent='Open App';panel.append(open);
+    open.onclick=()=>{const route=destinationRoute(destination,session.getState());desktop();session.openRoute(route);};
+    const cancel=document.createElement('button');cancel.textContent='Back to plaza';panel.append(cancel);
+    cancel.onclick=()=>{panel.remove();root.focus();instance.resume();};
+    root.append(panel);open.focus();
+  }
   function desktop(message=''){
     generation++;if(instance){position=instance.getPosition();instance.dispose();instance=null;}
     root?.remove();root=null;shell.hidden=false;shell.inert=false;if(dock){dock.hidden=false;dock.inert=false;}
@@ -20,7 +33,9 @@ export function installModeSwitcher(){
     document.body.append(root);root.querySelector('#exit-world').onclick=()=>desktop();
     try{
       const {mountWorld}=await import('../world/HaloWorld.js');if(ticket!==generation)return;
-      instance=mountWorld(root,{position,onFailure:desktop});
+      session=connectApplicationSession();
+      const accessible=document.createElement('button');accessible.textContent='Projects destination';accessible.onclick=()=>interaction(destinations[0]);root.querySelector('.world-info').append(accessible);
+      instance=mountWorld(root,{position,onFailure:desktop,onInteract:interaction});
       if(ticket!==generation){instance.dispose();instance=null;return;}
       shell.hidden=true;shell.inert=true;if(dock){dock.hidden=true;dock.inert=true;}
       document.body.dataset.mode='world';button.disabled=false;root.focus();instance.resume();

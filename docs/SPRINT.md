@@ -107,3 +107,15 @@ passed. `HALO_TEST_URL=http://127.0.0.1:4175 node tests/world-browser.cjs` passe
 actual Chromium WebGL rendering, movement, default-off lazy loading, disposal,
 Desktop return and mobile fallback with no page errors. Route integration and
 workstation actions are intentionally not enabled in this milestone.
+
+## Halo World M2 · existing-route integration
+
+Added a read/navigation-only ApplicationSessionBridge and one narrow session hook
+in app.js. The verified Projects registry entry resolves the actual active project
+ID or existing dashboard when empty. Walk/proximity/E and keyboard destination
+selection offer Open App; it restores the original Desktop and uses its routing
+and dirty guards. No direct store write or Jarvis execution API is exposed.
+Gate: 32 core tests, app/World syntax and whitespace passed. The M2 Chromium test
+walked to Projects, opened the original route, edited/saved real notes, returned
+through World/Desktop and verified the same single persisted project, with no
+page errors. Existing uncommitted app changes remain excluded from this commit.
