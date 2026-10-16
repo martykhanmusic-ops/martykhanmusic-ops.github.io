@@ -1,10 +1,10 @@
 # Local computer bridge — proposed M3 boundary
 
-Status: BLOCKED, no implementation. This proposal is reversible and awaits target OS/local execution details; it does not authorize unrestricted computer control or claim verified integration.
+Status: BLOCKED, no implementation. This proposal is reversible and targets Windows and awaits an actual local execution session; it does not authorize unrestricted computer control or claim verified integration.
 
 ## Inspect and plan
 
-Current Halo is a static browser application. The cloud workspace cannot supply verified telemetry from the user's computer. Target OS determines reliable application inventory, launch APIs and audio-device discovery; those are not interchangeable with cloud process output. Need the first target OS and local Codex session or user-assisted test loop before selecting dependencies/packaging.
+Current Halo is a static browser application. The cloud workspace cannot supply verified telemetry from the user's computer. Target OS determines reliable application inventory, launch APIs and audio-device discovery; those are not interchangeable with cloud process output. Windows is selected and the user confirmed local Codex availability. Need the actual local session before verifying OS adapters, dependencies and packaging.
 
 Proposed architecture: optional local companion, additive browser adapter and a Halo status/settings surface. Keep workspace/project/task/note/job ownership in the existing store; companion owns only local pairing/grants and operation audit. No new project database. Desktop, mobile and World remain functional when companion is absent. Mobile reports unavailable rather than fabricated hardware. World accesses the existing app surface and cannot call privileged endpoints directly.
 
