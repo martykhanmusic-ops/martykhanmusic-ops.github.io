@@ -172,3 +172,11 @@ backup export/restore, saved-data identity, dirty-navigation rejection, search a
 resume. Isolated committed code passed 28 tests, syntax and nine Chromium scenario
 groups after correcting legacy tests to use HALO_TEST_URL. The pending visual
 preview remains uncommitted. See HALO_TEST_REPORT.md for failure and rerun evidence.
+
+
+Master M2 adopts the existing Jarvis engine with three new automated cancellation/
+concurrency assertions and desktop/mobile interrupted-execution/retry tests.
+Working tree: 35 tests; isolated committed scope: 31 tests, syntax and eight
+Chromium scenarios passed. Cancellation remains pre-execution; atomic effects
+cannot be rolled back by a late cancellation. Existing permissions, deletion
+approval, logs and recovery are unchanged. No external AI/provider connected.
