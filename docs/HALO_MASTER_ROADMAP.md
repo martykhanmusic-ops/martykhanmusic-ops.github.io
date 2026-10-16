@@ -32,3 +32,5 @@ Stage only scoped files on feature/halo-jarvis-foundation. Review cached diff, w
 Use HALO_MILESTONE_STATUS.md to resume. Keep pending visual preview out of milestone commits until approved. No external AI or privileged integration is currently connected.
 
 Master M4 application framework delivered on October 16, 2026. The trusted catalog, app lifecycle, scoped grants, per-app state/settings/themes and compatibility checks were validated with 43 Node tests, focused desktop/mobile browser tests and the eight-suite regression. Payload f5a93fbcc39511ca002c33493544e155caad6ccc matched `git ls-remote` for the feature branch. M5 remains pending visual approval.
+
+Master M5 has begun by direct user request to fit the UI to Halo's visual language. The first CSS-only increment keeps the existing shell and data model, unifies dark/light orbital styling and passes desktop/mobile visual inspection and regression. Package preview/rollback and full accessibility review remain before M5 completion; M6 has not begun.

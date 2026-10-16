@@ -1,0 +1,122 @@
+/* Halo visual language: orbital light, quiet surfaces, and clear controls. */
+:root {
+  --bg: #0b1114;
+  --panel: #151e20;
+  --panel-hover: #1e2b2b;
+  --text: #eff5ec;
+  --muted: #a8bab4;
+  --line: #30433f;
+  --accent: #d4f4ae;
+  --ink: #142016;
+  --danger: #ffc5be;
+  --surface-raised: #1c2828;
+  --surface-glow: #c7efaa1a;
+  --elevation: 0 24px 70px #020c0c70;
+  --radius: 22px;
+}
+:root[data-theme=light] {
+  --bg: #edf2e9;
+  --panel: #fbfdf8;
+  --panel-hover: #e9f1e3;
+  --text: #1b302d;
+  --muted: #566d65;
+  --line: #bfd0c4;
+  --accent: #345b39;
+  --ink: #fff;
+  --danger: #a53027;
+  --surface-raised: #f4f8f0;
+  --surface-glow: #6ba76d1b;
+  --elevation: 0 24px 70px #38574421;
+}
+body {
+  background:
+    radial-gradient(circle at 78% 5%, var(--surface-glow), transparent 31rem),
+    radial-gradient(circle at 12% 74%, #7ba9970b, transparent 32rem),
+    var(--bg);
+}
+aside {
+  background: linear-gradient(165deg, var(--panel), var(--bg) 75%);
+  border-right-color: var(--line);
+  padding-top: 29px;
+}
+.brand { margin-bottom: 37px; font-size: 23px; font-weight: 650; letter-spacing: .22em; }
+.brand-orb {
+  width: 28px; height: 28px; flex: 0 0 28px;
+  background: radial-gradient(circle at 36% 29%, #e5f6d5 0, #a3c78c 33%, #344f45 75%);
+  box-shadow: 0 0 0 5px var(--surface-glow), 0 0 28px #b8e99c69, inset -5px -5px 11px #132d2888;
+}
+.brand-os { letter-spacing: .13em; }
+.eyebrow { color: var(--accent); letter-spacing: .2em; }
+nav { gap: 7px; }
+nav button { min-height: 43px; border-radius: 12px; font-weight: 550; }
+nav button:hover, nav button[aria-current=page] { background: var(--panel-hover); border-color: var(--line); }
+nav button[aria-current=page] { box-shadow: inset 3px 0 var(--accent); }
+.sidebar-bottom { padding-top: 18px; border-top: 1px solid var(--line); }
+.content { background: linear-gradient(180deg, var(--surface-glow), transparent 280px); }
+.topbar { min-height: 78px; }
+.topbar #breadcrumb { letter-spacing: .04em; font-weight: 600; color: var(--text); }
+.quiet:hover { background: var(--panel-hover); }
+main { padding-top: 42px; }
+h1 { font-size: clamp(35px, 4vw, 55px); font-weight: 530; letter-spacing: -.055em; }
+h2 { letter-spacing: -.035em; }
+button { border-radius: 12px; font-weight: 540; }
+button:hover { border-color: var(--accent); }
+.primary { box-shadow: 0 9px 30px var(--surface-glow); }
+.hero {
+  border-color: var(--line);
+  background:
+    radial-gradient(ellipse at 78% 48%, #c9efa826, transparent 52%),
+    linear-gradient(135deg, var(--panel), var(--surface-raised));
+  box-shadow: var(--elevation);
+  min-height: 305px;
+}
+.hero h2 { font-size: clamp(26px, 3vw, 38px); line-height: 1.17; }
+.orbit { isolation: isolate; }
+.orbit::before {
+  content: ""; position: absolute; inset: -20px; border-radius: 50%;
+  border: 1px solid #c5e6b73d; box-shadow: 0 0 55px #b5ddad1b;
+}
+.planet { box-shadow: 0 0 65px #bad5a750, inset -12px -8px 25px #0b171a88; }
+.metrics, .card, .empty, dialog, .world-info, .world-actions { box-shadow: 0 12px 36px #020b0b1c; }
+.metrics { background: var(--panel); overflow: hidden; }
+.metric strong { color: var(--text); }
+.metric span { letter-spacing: .11em; }
+.card { background: linear-gradient(155deg, var(--panel), var(--surface-raised)); }
+.card:hover { border-color: var(--accent); }
+input, textarea, select { background: var(--surface-raised); border-radius: 11px; }
+input:hover, textarea:hover, select:hover { border-color: var(--muted); }
+input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+.task-row:hover, .activity:hover { background: var(--surface-glow); }
+.badge { background: var(--surface-glow); }
+.filters [aria-pressed=true] { background: var(--surface-glow); }
+footer { color: var(--muted); }
+.companion-panel, #application-directory {
+  background: var(--surface-glow); border: 1px solid var(--line);
+  border-radius: 16px; padding: 15px; margin: 20px 0 0;
+}
+.companion-panel h2, #application-directory h2 { font-size: 13px; letter-spacing: .04em; }
+.companion-panel button, .application-row button { width: 100%; }
+.companion-panel label, .application-grant { overflow-wrap: anywhere; }
+.application-row + .application-row { border-top: 1px solid var(--line); }
+.application-grant input { width: auto; margin: 0; accent-color: var(--accent); }
+#application-panel { max-width: 1000px; }
+#application-panel .card { min-height: 260px; }
+.world-workstation { box-shadow: var(--elevation); }
+@media (max-width: 950px) {
+  .companion-panel, #application-directory { padding: 12px; }
+  .topbar { align-items: flex-start; }
+}
+@media (max-width: 600px) {
+  aside { padding: 16px 18px; }
+  .brand { margin-bottom: 12px; }
+  nav button { min-height: 44px; }
+  .companion-panel, #application-directory { margin-top: 12px; }
+  .hero { min-height: 0; }
+  .metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .metric { padding: 13px 11px; }
+  .metric strong { font-size: 21px; }
+  .metric span { letter-spacing: 0; }
+  .topbar { gap: 6px; }
+  .topbar>div { gap: 2px; }
+  .quiet { min-height: 40px; }
+}

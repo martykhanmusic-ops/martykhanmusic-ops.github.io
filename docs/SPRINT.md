@@ -208,3 +208,5 @@ schema migrated or site deployed.
 The trusted module registry and sample Workspace Status app are integrated with the original shell. Per-app grants, theme, settings and state use separate metadata; project/task/note IDs stay in the canonical workspace. Desktop/mobile focused tests pass, including denial, revocation and reload. The full eight-suite regression and companion browser rerun passed. Remote verification remains the delivery gate. Master M5 has not begun.
 
 M4 payload f5a93fbcc39511ca002c33493544e155caad6ccc matched the remote feature branch. Master M5 has not begun.
+
+Master M5 visual-language increment: the user requested Halo's orbital UI treatment. The CSS layer is integrated and visually inspected at desktop/mobile/light sizes; regression passes. Full package preview/rollback and accessibility review remain. M6 has not begun.

@@ -9,7 +9,7 @@ Updated October 16, 2026. Branch feature/halo-jarvis-foundation. Starting remote
 | 2 Jarvis engine | COMPLETE_AND_PUSHED | Existing engine retained; cancellation/concurrency and UI interruption/retry regressions pass | 35 working-tree / 31 isolated tests; eight isolated Chromium scenario groups and syntax pass | 3ccf43c8fc1fd4e2285b912b5ca7b21c7ac89aed; exact remote match observed |
 | 3 Local computer bridge | COMPLETE_AND_PUSHED | Pair/device/revoke, read-only folder grants, app discovery/approved launch, process/audio status, per-scope revocation, and recovery delivered | Actual Windows OS checks, 36/36 Node tests, desktop/mobile companion tests and all eight requested regression suites using installed Chrome | 6202829284d9d089ac2c24697ea6c1139d0778e9; exact remote match observed |
 | 4 Application framework | COMPLETE_AND_PUSHED | Registry, trusted catalog, sample application, grants, settings/themes/state, compatibility and desktop/mobile shell integration implemented | 43 Node tests, focused desktop/mobile framework tests, companion browser and all eight foundation/World suites pass | f5a93fbcc39511ca002c33493544e155caad6ccc; exact remote match observed |
-| 5 Design system | NOT_STARTED | Pending preview is not approved; full package/rollback system absent | Preview tests only | None |
+| 5 Design system | IN_PROGRESS | User requested Halo visual language; orbital dark/light treatment integrated across shell, cards, navigation, forms and responsive panels. Package preview/rollback and full accessibility review remain | 43 Node tests, full core/Jarvis/World/framework browser regression and companion browser pass; 1440/390 visual review | Pending scoped push |
 | 6 Music hub | NOT_STARTED | No implemented audio library | None | None |
 | 7 Live Listen | NOT_STARTED | Plugin/transport/rooms/mobile/measurements absent | None | None |
 | 8 Creative apps | NOT_STARTED | Functional apps absent | None | None |
@@ -18,6 +18,6 @@ Updated October 16, 2026. Branch feature/halo-jarvis-foundation. Starting remote
 | 11 Automation | NOT_STARTED | Scheduler/integrations absent | None | None |
 | 12 Hardening | NOT_STARTED | Full ecosystem not available | None | None |
 
-Next action: master M5 design system requires the pending visual approval. Do not treat the preview as approved or begin M6.
+Next action: finish M5 package preview/rollback and accessibility review before declaring the milestone complete or starting M6.
 
 The M3 completion claim follows the observed `git ls-remote` match for payload 6202829284d9d089ac2c24697ea6c1139d0778e9. This tracking receipt commit necessarily has its own later SHA. The untracked preview image remains untouched and uncommitted.
