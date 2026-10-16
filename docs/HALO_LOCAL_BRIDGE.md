@@ -1,6 +1,6 @@
 # Local computer bridge — Windows implementation
 
-Status: implemented and validated on the target Windows computer. Initial pairing slice was pushed in 3753bfe372bc0701db54e31e66e0fd2af92ff729. Remaining scoped operations are implemented in `companion/windows.mjs` and exposed only through the local authenticated service. Final remote receipt is recorded in HALO_MILESTONE_STATUS.md after push verification.
+Status: COMPLETE_AND_PUSHED after target Windows validation. Initial pairing slice was pushed in 3753bfe372bc0701db54e31e66e0fd2af92ff729. Remaining scoped operations are implemented in `companion/windows.mjs` and exposed only through the local authenticated service. Final payload and exact remote receipt are recorded in HALO_MILESTONE_STATUS.md.
 
 ## Inspect and plan
 

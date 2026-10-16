@@ -84,8 +84,11 @@ Pass 3 — backward compatibility and ecosystem: final `npm test` passed 36/36
 passed the core desktop/mobile, Jarvis desktop/mobile, foundation, integration
 desktop/mobile and all four World groups using installed Chrome. It covers
 backups, tasks, permissions, deletion approval, recovery, and World Desktop
-fallback with the additive companion code present. Final remote receipt is
-recorded after push.
+fallback with the additive companion code present. Scoped payload commit
+`6202829284d9d089ac2c24697ea6c1139d0778e9` was pushed normally and
+`git ls-remote origin refs/heads/feature/halo-jarvis-foundation` returned that
+exact SHA. The unrelated untracked image was excluded. No force push, main
+merge or deployment occurred.
 
 ## Master M3 first increment — Windows pairing/device/revocation
 
