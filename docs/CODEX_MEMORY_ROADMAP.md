@@ -19,7 +19,7 @@ This is the portable access point for resuming builds from another chat or devic
 5. Resume from current project status and the user's latest request. Do not infer that a milestone remains complete solely from this index.
 6. Keep the final editable source in the canonical local project folder and report its absolute path. Update the local index and this portable copy when the access route changes.
 
-Master M4 application framework was completed and pushed on the development branch (payload f5a93fbcc39511ca002c33493544e155caad6ccc). Verify the current milestone status before starting later work. Master M5 visual approval remains pending. Do not merge into main or deploy based on this roadmap.
+Master M4 application framework was completed and pushed on the development branch (payload f5a93fbcc39511ca002c33493544e155caad6ccc). Master M5 orbital UI styling is in progress by user request; the style pass was pushed as 9b5ba1131e77c7a2f0bb1fbedea7aae3bd6c7ec4. Verify current status before later work. Do not merge into main or deploy based on this roadmap.
 
 The Windows launcher source is `launcher/HaloLauncher.cs`, the build command is `scripts/build-launcher.ps1`, and the local generated executable is `dist/Halo.exe`. The executable is ignored by Git; rebuild it from the source after checkout. Verify its presence locally before promising it in another chat.
 
