@@ -12,3 +12,4 @@
 .companion-panel p { overflow-wrap: anywhere; }
 .companion-panel input { width: 100%; box-sizing: border-box; }
 .companion-actions button { margin: .2rem 0; }
+.companion-panel #companion-result { max-height: 10rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }

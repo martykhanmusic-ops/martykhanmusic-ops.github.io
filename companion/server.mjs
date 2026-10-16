@@ -1,6 +1,8 @@
 import http from 'node:http';
 import os from 'node:os';
 import crypto from 'node:crypto';
+import path from 'node:path';
+import { processes, audioDevices, listFiles, readFile, discoverApps, launchApp } from './windows.mjs';
 
 const HOST = '127.0.0.1';
 const PORT = 4174;
@@ -11,6 +13,13 @@ let tokenExpires = 0;
 let failedPairs = 0;
 let pairLockedUntil = 0;
 const started = Date.now();
+const args = process.argv.slice(2);
+function option(name) { const index = args.indexOf(name); return index >= 0 ? args[index + 1] : null; }
+const root = option('--root');
+const allowedApps = new Set(args.flatMap((part, index) => part === '--app' ? [args[index + 1]?.toLowerCase()] : []).filter(name => name && /^[^\\/:*?"<>|]+\.lnk$/.test(name)));
+const processAllowed = args.includes('--processes');
+const audioAllowed = args.includes('--audio');
+let launchApproval = null;
 
 function reply(res, status, body) {
   res.writeHead(status, {
@@ -72,11 +81,38 @@ export function createCompanionServer() {
       if (!isAuthorized(req)) return reply(res, 401, { error: 'Disconnected or revoked' });
       if (req.url === '/device' && req.method === 'GET') return reply(res, 200, {
         verifiedAt: new Date().toISOString(),
-        device: { platform: os.platform(), release: os.release(), arch: os.arch(), hostname: os.hostname(), uptimeSeconds: Math.floor(os.uptime()), companionUptimeSeconds: Math.floor((Date.now() - started) / 1000) }
+        device: { platform: os.platform(), release: os.release(), arch: os.arch(), hostname: os.hostname(), uptimeSeconds: Math.floor(os.uptime()), companionUptimeSeconds: Math.floor((Date.now() - started) / 1000) },
+        grants: { files: Boolean(root), apps: [...allowedApps], processes: processAllowed, audio: audioAllowed }
       });
+      if (req.url === '/processes' && req.method === 'GET') return processAllowed ? reply(res, 200, await processes()) : reply(res, 403, { error: 'Process grant denied' });
+      if (req.url === '/audio' && req.method === 'GET') return audioAllowed ? reply(res, 200, await audioDevices()) : reply(res, 403, { error: 'Audio grant denied' });
+      if (req.url === '/files/list' && req.method === 'POST') return root ? reply(res, 200, await listFiles(root, (await readJson(req)).relative)) : reply(res, 403, { error: 'File grant denied' });
+      if (req.url === '/files/read' && req.method === 'POST') return root ? reply(res, 200, await readFile(root, (await readJson(req)).relative)) : reply(res, 403, { error: 'File grant denied' });
+      if (req.url === '/apps' && req.method === 'GET') {
+        const apps = await discoverApps(allowedApps);
+        return reply(res, 200, { verifiedAt: new Date().toISOString(), apps: apps.map(({ id, name }) => ({ id, name })) });
+      }
+      if (req.url === '/apps/approval' && req.method === 'POST') {
+        const { id } = await readJson(req);
+        const app = (await discoverApps(allowedApps)).find(item => item.id === id);
+        if (!app) return reply(res, 404, { error: 'Application not allowlisted or not found' });
+        launchApproval = { code: String(crypto.randomInt(100000, 1000000)), id, expires: Date.now() + 60_000 };
+        console.log(`Approve launch of ${app.name}: ${launchApproval.code} (valid 60 seconds)`);
+        return reply(res, 200, { approvalRequired: true, app: app.name });
+      }
+      if (req.url === '/apps/launch' && req.method === 'POST') {
+        const { id, code } = await readJson(req);
+        const approval = launchApproval;
+        launchApproval = null;
+        if (!approval || approval.id !== id || approval.code !== code || Date.now() > approval.expires) return reply(res, 403, { error: 'Local launch approval denied' });
+        const app = (await discoverApps(allowedApps)).find(item => item.id === id);
+        if (!app) return reply(res, 404, { error: 'Application not allowlisted or not found' });
+        return reply(res, 200, await launchApp(app));
+      }
       if (req.url === '/revoke' && req.method === 'POST') {
         token = null;
         tokenExpires = 0;
+        launchApproval = null;
         console.log(`New pairing code: ${pairCode}`);
         return reply(res, 200, { revoked: true });
       }
@@ -89,6 +125,7 @@ export function createCompanionServer() {
 
 if (process.argv[1] && import.meta.url === new URL(`file:///${process.argv[1].replaceAll('\\', '/')}`).href) {
   if (process.platform !== 'win32') throw new Error('Windows companion requires Windows.');
+  if (root && !path.isAbsolute(root)) throw new Error('--root must be an absolute path');
   createCompanionServer().listen(PORT, HOST, () => {
     console.log(`Halo companion listening on ${HOST}:${PORT}`);
     console.log(`Pairing code: ${pairCode}`);
