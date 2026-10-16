@@ -7,6 +7,7 @@
   <title>Halo · Creative workspace</title>
   <link rel="stylesheet" href="styles.css">
   <script type="module" src="app.js"></script>
+  <script type="module" src="companion.js"></script>
   <script type="module" src="shell/WorldGate.js"></script>
 </head>
 <body>
@@ -16,6 +17,7 @@
       <a class="brand" href="./" aria-label="Halo home"><span class="brand-orb"></span>HALO<span class="brand-os">OS</span></a>
       <p class="eyebrow">YOUR CREATIVE ORBIT</p>
       <nav aria-label="Workspace"><button data-view="dashboard">◉ <span>Overview</span></button><button data-view="jarvis">✧ <span>Jarvis</span></button></nav>
+      <section class="companion-panel" aria-label="Windows companion"><h2>Windows companion</h2><p id="companion-state" role="status">Disconnected</p><p id="companion-device"></p><form id="companion-pair"><label>Code from companion window<input name="code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="off" required></label><button type="submit">Pair</button></form><div class="companion-actions" hidden><button id="companion-refresh" type="button">Refresh status</button><button id="companion-revoke" type="button">Revoke pairing</button></div></section>
       <div class="sidebar-bottom"><span class="local-dot"></span> Local workspace<p>Saved on this device · Private by default</p><a href="../">Marty Khan Music ↗</a></div>
     </aside>
     <div class="content">
