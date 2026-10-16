@@ -1,5 +1,7 @@
 # Marty Khan Music · Halo OS
 
+For a future chat resuming this build, start with [the Codex recovery roadmap](docs/CODEX_MEMORY_ROADMAP.md).
+
 The original music landing page lives at `/`. Halo and Jarvis live at `/halo/`.
 The browser application is static and has no build step or runtime npm
 dependency. An optional local Windows companion is described below. Visual
