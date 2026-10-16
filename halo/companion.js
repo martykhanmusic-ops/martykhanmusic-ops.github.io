@@ -37,6 +37,15 @@ async function refresh() {
     show(`Connected · verified ${new Date(result.verifiedAt).toLocaleTimeString()}`, true);
     device.textContent = `${d.hostname} · Windows ${d.release} · ${d.arch}`;
     for (const [id, grant] of [['processes', result.grants.processes], ['audio', result.grants.audio], ['file-controls', result.grants.files], ['app-controls', result.grants.apps.length > 0]]) document.querySelector(`#companion-${id}`).hidden = !grant;
+    const grantPanel = document.querySelector('#companion-grants');
+    grantPanel.replaceChildren(...['files', 'apps', 'processes', 'audio'].map(scope => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.dataset.revokeScope = scope;
+      button.textContent = `Remove ${scope} access`;
+      button.disabled = scope === 'apps' ? !result.grants.apps.length : !Boolean(result.grants[scope]);
+      return button;
+    }));
   } catch (error) {
     if (/revoked|disconnected/i.test(error.message)) {
       token = null;
@@ -83,6 +92,13 @@ document.querySelector('#companion-launch').addEventListener('click', () => {
   if (!appList.value) return output.textContent = 'Discover an approved application first.';
   showResult('/apps/launch', 'POST', { id: appList.value, code: document.querySelector('#companion-launch-code').value });
   document.querySelector('#companion-launch-code').value = '';
+});
+document.querySelector('#companion-audit').addEventListener('click', () => showResult('/audit'));
+document.querySelector('#companion-grants').addEventListener('click', async event => {
+  const scope = event.target.dataset.revokeScope;
+  if (!scope) return;
+  try { await request('/grants/revoke', 'POST', { scope }); await refresh(); output.textContent = `${scope} access removed for this companion session.`; }
+  catch (error) { output.textContent = `Permission removal failed · ${error.message}`; }
 });
 document.querySelector('#companion-revoke').addEventListener('click', async () => {
   try { await request('/revoke', 'POST'); token = null; remember(null); output.textContent = ''; show('Revoked'); }

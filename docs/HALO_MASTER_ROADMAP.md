@@ -20,6 +20,12 @@ Authoritative sequence adopted October 16, 2026. Halo is the hub; no new applica
 
 Each stage: inspect → plan → implement → test → integrate → regression test → review → commit → push → verify → report. Stop at any failing gate. Three recorded passes: own acceptance, backward compatibility, ecosystem integration. Reuse already working implementations; do not rebuild to manufacture change.
 
+Master M3 is being completed on the selected Windows computer. The optional
+companion uses an in-memory session and scoped OS grants; it does not create a
+second project store or grant World a privileged route. Windows execution and
+browser regression evidence are in HALO_TEST_REPORT.md. M4 remains gated until
+the final scoped push and exact remote SHA receipt are recorded.
+
 Stage only scoped files on feature/halo-jarvis-foundation. Review cached diff, whitespace and secrets; descriptive commits; ordinary push to origin; verify exact branch SHA with git ls-remote. No force push, protected-main merge or deployment. Push receipts identify the delivered payload SHA; subsequent tracking commits record verified receipts (a commit cannot contain its own SHA). COMPLETE_AND_PUSHED requires an observed remote match, never just a local commit.
 
 Use HALO_MILESTONE_STATUS.md to resume. Keep pending visual preview out of milestone commits until approved. No external AI or privileged integration is currently connected.

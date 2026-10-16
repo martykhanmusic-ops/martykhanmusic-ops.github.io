@@ -44,7 +44,48 @@ Ordinary branch pushes succeeded and `git ls-remote origin refs/heads/feature/ha
 
 M3 inspection only: `uname -srm` identifies the cloud Linux host; source search for companion/local-OS/audio/device bridge found only test-runner child processes. No target-computer execution channel was found. Proposed bridge contract is documentation, not implemented or tested functionality. M3 is BLOCKED pending target OS and local execution/testing arrangement. No later milestone started. Final receipt/blocker documentation requires whitespace and scoped-diff review; no runtime code changes justify repeating the entire test suite.
 
-User clarified Windows as first target and confirmed Codex can run locally. No Windows execution has occurred in this cloud session. M3 remains BLOCKED on opening that local session, not on OS selection. Windows handoff supplies the exact resume task; no skipped milestone or hardware validation claim.
+At that cloud handoff, the user clarified Windows as first target and confirmed Codex could run locally. No Windows execution had occurred in that cloud session; the local Windows validation below resolves that earlier blocker.
+
+## Master M3 — Windows local companion validation
+
+October 16, 2026, Windows host `MKLAPTOP`, Node `win32`, Windows release
+`10.0.26200`, x64. Existing checkout began clean at `cbdd097b`; branch and
+GitHub origin matched the handoff. `npm ci` passed. `npx playwright install
+chromium` downloaded its Chromium payload but did not finish installation in
+the observed session, so it was stopped; browser runs used installed Google
+Chrome via `HALO_CHROMIUM_PATH` and are reported as Chrome, not Playwright's
+downloaded Chromium.
+
+Pass 1 — companion acceptance: pair → live device status → revoke was observed
+through actual local HTTP requests and desktop/mobile browser panels. Windows
+queries returned live process IDs and names plus PnP AudioEndpoint names and
+statuses. An approved `docs` folder listed/read `HALO_LOCAL_BRIDGE.md` and
+denied `../README.md`. The allowlisted Start Menu `File Explorer.lnk` was
+discovered and launched after a one-time code printed to the local companion
+window. The fixed PowerShell launcher replaced an initial `explorer.exe`
+attempt that returned an error; the successful attempt was re-run and verified.
+No arbitrary command was submitted. Some audio endpoint statuses returned
+`Unknown`; no audio playback or DAW performance claim follows from this.
+
+Pass 2 — security and recovery: `node --test tests/companion*.test.js` passed
+five Windows tests. They cover denied origin and Host, denied missing/bad auth,
+malformed JSON, default-off grants, grant removal, session expiration and
+revoke, stale pairing code, relative path traversal, absolute path and symlink
+escape, binary rejection, actual process/audio queries, and application
+allowlist discovery. `node tests/companion-browser.cjs` passed desktop 1440px,
+mobile 390px, and the scoped-grant browser scenario: absent/pair/verified
+status/revoke/stale code denial/reconnect/service loss, unchanged workspace
+storage, live process/audio/file/app controls and process-grant removal.
+
+Pass 3 — backward compatibility and ecosystem: final `npm test` passed 36/36
+(31 committed foundation tests plus five companion tests). `npm run check`,
+`node scripts/check-world.mjs`, companion/browser syntax checks and
+`git diff --check` passed. The exact requested eight-suite browser command
+passed the core desktop/mobile, Jarvis desktop/mobile, foundation, integration
+desktop/mobile and all four World groups using installed Chrome. It covers
+backups, tasks, permissions, deletion approval, recovery, and World Desktop
+fallback with the additive companion code present. Final remote receipt is
+recorded after push.
 
 ## Master M3 first increment — Windows pairing/device/revocation
 

@@ -4,6 +4,15 @@ Audit: October 16, 2026, /workspace/halo, branch feature/halo-jarvis-foundation.
 
 ## Runtime and dependency map
 
+Master M3 adds an optional Windows Node companion under `companion/`. It is a
+separate loopback process with no workspace database. `halo/companion.js`
+renders an additive sidebar panel and is not imported by the project store,
+Jarvis adapters, or World scene. Its in-memory bearer session, startup grants,
+single-use app launch approvals and recent audit belong to the companion
+process. With the process absent, the original static shell continues to run.
+The companion uses only Node built-ins and fixed Windows PowerShell commands;
+no new npm runtime dependency, public endpoint, or provider credential exists.
+
 Static music landing /index.html → /halo/index.html → singleton app.js → store.js + jarvis.js → shared project-state.js. Native ES modules/HTML/CSS, no server API, framework, authentication, bundler or build step. Node runs tests; Python serves local development. Playwright 1.56.1 is the only npm development dependency (lockfile); World locally vendors MIT Three.js 0.160.1, loaded only on opt-in. No package lint/build scripts exist.
 
 app.js owns rendering, events, drafts, recovery and routing. Persisted views are dashboard/project/jarvis (not URL-router paths). Projects/notes/tasks are one workspace. Existing shared controls use styles.css. No general application registration framework exists.
@@ -28,7 +37,10 @@ audio adapters are intentionally still absent pending their scoped contracts.
 
 Uncommitted UI preview modifies README, app/index/styles/package and foundation/browser selectors; adds halo/ui, tokens.css, universe.css, halo/world.css, scenic asset, docs/previews, UI-DESIGN-REVIEW.md and UI tests. Preserve all of it. It is a design preview, not an approved milestone. halo/world.css is distinct from committed halo/world/world-mode.css. Independent committed-tree checks are necessary so preview files cannot conceal missing dependencies.
 
-No filesystem index, companion, actual music/audio import, streaming, VST3, DAW control, game, dose or writing application was found. No API endpoints or external AI connection exist.
+No filesystem index, actual music/audio import, streaming, VST3, DAW control,
+game, dose or writing application was found. The companion exposes only
+authenticated loopback endpoints for its specific OS operations; no external
+AI connection exists.
 
 ## Recovery and rollback
 

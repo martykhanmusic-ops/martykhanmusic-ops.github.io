@@ -1,6 +1,6 @@
-# Local computer bridge — proposed M3 boundary
+# Local computer bridge — Windows implementation
 
-Status: IN_PROGRESS. The first vertical slice is implemented and pushed in 3753bfe372bc0701db54e31e66e0fd2af92ff729: loopback pairing, live Windows device verification, and revocation. Filesystem/app/process/audio capabilities remain unimplemented; this document does not authorize unrestricted computer control or claim completion.
+Status: implemented and validated on the target Windows computer. Initial pairing slice was pushed in 3753bfe372bc0701db54e31e66e0fd2af92ff729. Remaining scoped operations are implemented in `companion/windows.mjs` and exposed only through the local authenticated service. Final remote receipt is recorded in HALO_MILESTONE_STATUS.md after push verification.
 
 ## Inspect and plan
 
@@ -22,4 +22,37 @@ Pair local companion → display timestamped verified device status in Halo → 
 4. Original baseline and integration suites remain green; no secrets in staged files; document local installation/run/stop/uninstall and grant removal.
 5. Review, commit, ordinary development-branch push and exact remote SHA verification. If actual target validation is unavailable remain BLOCKED, not COMPLETE_AND_PUSHED.
 
-The pairing adapter and device status UI are delivered; filesystem grants, application discovery/launch, process/audio status, and the full M3 acceptance gate remain outstanding. M4 cannot start until M3 meets its gate.
+## Implemented contract
+
+`node companion/server.mjs` binds only `127.0.0.1:4174`, accepts the exact
+`Host: 127.0.0.1:4174` and `Origin: http://localhost:4173`, and never sends
+wildcard CORS. A six digit code printed in the local terminal creates one
+256-bit bearer session in memory. Five failed codes impose a one minute lock.
+The session expires within eight hours; revoke invalidates it and rotates the
+code. Stopping the process clears all credentials. The browser stores the token
+only in sessionStorage so reopening a browser session requires pairing again.
+
+The operator chooses grants at startup: `--root` for one absolute read-only
+folder, repeated `--app` values for exact Start Menu shortcut names,
+`--processes`, and `--audio`. Nothing is granted by default. Halo can revoke
+each grant for the running process and cannot re-enable it. File operations
+resolve the canonical target on each request, reject escapes and symlink
+escapes, cap text reads at 64 KB, and never write. Application discovery
+returns only allowed shortcuts. A launch requires an additional single-use code
+shown only in the local terminal, bound to one app and valid for one minute.
+The launcher uses a fixed PowerShell script with a path argument, not a shell
+command supplied by the browser. Process and audio endpoint lists come from
+Windows system queries. Every result includes a verification timestamp.
+Recent operations and denials appear in the in-process audit panel; this is
+not durable history and is cleared on restart. Halo's projects, notes, tasks,
+Jarvis plans and approvals remain solely in the existing workspace store.
+World retains the same mounted shell and no companion command path is added to
+World or Jarvis adapters.
+
+Limits: the service is intentionally restricted to the local development
+origin. A deployed site and other devices cannot pair with it. Audio status is
+the Windows PnP endpoint status, which may report `Unknown`; it is not an
+active signal or latency measurement. The file path check is revalidated for
+each request, but a different local process with write access to the granted
+folder could race a file replacement between validation and open. Use a folder
+you trust. These limits do not claim DAW control or M7 Live Listen.

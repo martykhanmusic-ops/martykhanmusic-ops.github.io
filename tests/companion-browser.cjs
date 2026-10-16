@@ -7,8 +7,8 @@ const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css' };
 
-async function startCompanion() {
-  const child = spawn(process.execPath, ['companion/server.mjs'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] });
+async function startCompanion(args = []) {
+  const child = spawn(process.execPath, ['companion/server.mjs', ...args], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] });
   const code = await new Promise((resolve, reject) => {
     const timeout = setTimeout(() => reject(new Error('Companion start timed out')), 5000);
     child.stdout.on('data', chunk => {
@@ -42,20 +42,51 @@ async function startCompanion() {
       const before = await page.evaluate(() => localStorage.getItem('halo.workspace.v1'));
       let companion = await startCompanion();
       try {
-        await page.getByLabel('Code from companion window', { exact: true }).fill(companion.code);
+        await page.locator('#companion-pair input').fill(companion.code);
         await page.getByRole('button', { name: 'Pair', exact: true }).click();
         await page.getByText(/Connected · verified/).waitFor();
         assert.match(await page.locator('#companion-device').innerText(), /Windows/);
+        const nextCode = new Promise(resolve => companion.child.stdout.once('data', chunk => resolve(String(chunk).match(/New pairing code: (\d{6})/)[1])));
         await page.getByRole('button', { name: 'Revoke pairing' }).click();
         await page.getByText('Revoked', { exact: true }).waitFor();
         assert.equal(await page.evaluate(() => localStorage.getItem('halo.workspace.v1')), before);
-        await page.getByLabel('Code from companion window', { exact: true }).fill(companion.code);
+        await page.locator('#companion-pair input').fill(companion.code);
         await page.getByRole('button', { name: 'Pair', exact: true }).click();
         await page.getByText(/Pairing failed/).waitFor();
+        await page.locator('#companion-pair input').fill(await nextCode);
+        await page.getByRole('button', { name: 'Pair', exact: true }).click();
+        await page.getByText(/Connected · verified/).waitFor();
+        companion.child.kill();
+        await new Promise(resolve => companion.child.once('exit', resolve));
+        await page.getByRole('button', { name: 'Refresh status' }).click();
+        await page.getByText(/Unavailable/).waitFor();
       } finally { companion.child.kill(); }
       await context.close();
-      console.log(`PASS companion browser ${width}px: pair, verified status, revoke, stale code denied, workspace unchanged`);
+      console.log(`PASS companion browser ${width}px: pair, verified status, revoke, stale code denied, reconnect, unavailable recovery, workspace unchanged`);
     }
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    await page.goto('http://localhost:4173/halo/');
+    const companion = await startCompanion(['--root', path.join(root, 'docs'), '--app', 'File Explorer.lnk', '--processes', '--audio']);
+    try {
+      await page.locator('#companion-pair input').fill(companion.code);
+      await page.getByRole('button', { name: 'Pair', exact: true }).click();
+      await page.getByText(/Connected · verified/).waitFor();
+      await page.getByRole('button', { name: 'Process status' }).click();
+      await page.getByText(/ProcessName/).waitFor();
+      await page.getByRole('button', { name: 'Audio devices' }).click();
+      await page.getByText(/devices/).waitFor();
+      await page.getByRole('button', { name: 'List files' }).click();
+      await page.getByText(/HALO_LOCAL_BRIDGE.md/).waitFor();
+      await page.getByRole('button', { name: 'Discover applications' }).click();
+      await page.locator('#companion-app-list option').first().waitFor({ state: 'attached' });
+      assert.ok(await page.locator('#companion-app-list option').count() >= 1);
+      await page.getByText('Permissions and audit').click();
+      await page.getByRole('button', { name: 'Remove processes access' }).click();
+      await page.getByRole('button', { name: 'Process status' }).waitFor({ state: 'hidden' });
+      assert.equal(await page.getByRole('button', { name: 'Process status' }).isHidden(), true);
+      console.log('PASS companion browser grants: live operations, scoped removal and UI state');
+    } finally { companion.child.kill(); await context.close(); }
   } finally {
     await browser.close();
     server.closeAllConnections();

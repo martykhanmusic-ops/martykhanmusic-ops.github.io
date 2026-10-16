@@ -5,7 +5,8 @@
   "scripts": {
     "test": "node --test --test-isolation=none tests/*.test.js",
     "test:browser": "node tests/browser.cjs && node tests/integration-browser.cjs",
-    "check": "node --check halo/app.js && node --check halo/store.js && node --check halo/jarvis.js && node --check halo/project-state.js",
+    "check": "node --check halo/app.js && node --check halo/store.js && node --check halo/jarvis.js && node --check halo/project-state.js && node --check halo/companion.js && node --check companion/server.mjs && node --check companion/windows.mjs",
+    "test:companion:browser": "node tests/companion-browser.cjs",
     "start": "python3 -m http.server 4173"
   },
   "devDependencies": {

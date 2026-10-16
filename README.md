@@ -1,8 +1,9 @@
 # Marty Khan Music · Halo OS
 
 The original music landing page lives at `/`. Halo and Jarvis live at `/halo/`.
-This is a static application: there is no build step, backend, or runtime npm
-dependency. Visual styling is provisional for review.
+The browser application is static and has no build step or runtime npm
+dependency. An optional local Windows companion is described below. Visual
+styling is provisional for review.
 
 ## Run locally
 
@@ -24,6 +25,36 @@ With the server running, run the real-browser workflow suite in another terminal
 npx playwright install chromium
 npm run test:browser
 ```
+
+## Optional Windows companion
+
+Run Halo at `http://localhost:4173/halo/` on the same Windows computer as the
+companion. Start the static site with `py -m http.server 4173`. In another
+PowerShell window, start the companion from the repository root:
+
+```powershell
+node companion/server.mjs --root C:\Users\owner\Documents --app "File Explorer.lnk" --processes --audio
+```
+
+Replace the example folder with a folder you choose. Omit any flag to withhold
+that capability. `--root` permits listing and reading text files up to 64 KB
+inside that folder; it does not write files. Each `--app` names a discovered
+Start Menu shortcut; only named shortcuts can be launched, and each launch
+needs a fresh one minute code printed in the companion window. Process and
+audio endpoint discovery are read-only. The browser shows the grants after
+pairing. You can remove a grant in Halo, revoke the whole pairing, or press
+Ctrl+C in the companion window to stop it. Restart without a flag to remove
+that grant permanently for the next session. No installation or background
+service is created; to uninstall, stop the process and remove the `companion/`
+source with the checkout when no longer needed.
+
+The pairing code appears only in the local companion window. Enter it in Halo;
+never put it in a URL or screenshot. Pairing credentials expire after eight
+hours, and stopping the process invalidates them immediately. The companion
+accepts only loopback requests from `http://localhost:4173`; a deployed Halo
+page or a remote/mobile browser reports unavailable. The companion is optional:
+projects, tasks, notes, Jarvis and World continue to work without it. Its
+recent operation audit lasts for the current companion process only.
 
 The tests use system Chromium if available; set `HALO_CHROMIUM_PATH` to select a
 different executable, or let Playwright use its installed browser. Runtime
@@ -52,9 +83,10 @@ dependencies remain zero; Playwright is a pinned development-only dependency.
 
 ## Data and scope
 
-Everything is stored in localStorage on this browser origin. No cloud sync,
-authentication, encryption, AI provider, external messaging or integrations are
-connected. Jarvis uses deterministic local adapters, not natural-language AI.
+Workspace data is stored in localStorage on this browser origin. No cloud sync,
+workspace authentication, encryption, AI provider, or external messaging is
+connected. The optional Windows companion uses separate local pairing and
+grants. Jarvis uses deterministic local adapters, not natural-language AI.
 Don't store secrets. Export backups before clearing browser data. Data from a
 localhost session will not automatically appear on a deployed domain.
 

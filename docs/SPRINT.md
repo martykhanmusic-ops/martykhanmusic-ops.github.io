@@ -1,5 +1,18 @@
 # Halo / Jarvis foundation
 
+## Master M3 Windows companion · October 16, 2026
+
+The optional loopback companion now pairs with Halo, displays verified Windows
+device status, and revokes access. Startup grants bound a read-only folder,
+named Start Menu shortcuts, process status and audio endpoint discovery.
+Application launch needs a separate single-use code in the companion window.
+Desktop/mobile browser checks, Windows OS checks and the foundation/Jarvis/World
+regression suites are recorded in HALO_TEST_REPORT.md. The companion retains
+only session grants and a recent audit in memory; the browser workspace remains
+the single store. The local origin restriction and file replacement race are
+recorded in HALO_LOCAL_BRIDGE.md. This master milestone is distinct from the
+historical technical World stages below.
+
 ## Repository audit · October 16, 2026
 
 Source: `martykhanmusic-ops/martykhanmusic-ops.github.io`, default branch `main`.
