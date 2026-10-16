@@ -94,3 +94,16 @@ syntax/whitespace checks, and all six current Chromium workflow scenarios
 See `HALO-WORLD.md` for the actual feature inventory, session ownership plan,
 rendering decision, feature gate, risk register and unresolved blind spots.
 No production code was changed before this baseline gate passed.
+
+## Halo World M1 · default-off plaza
+
+Added isolated `halo/world/` modules, a lazy gate and opt-in mode controller.
+Three.js 0.160.1 is locally vendored with MIT license and checksum; 3D does not
+load in default Desktop. A small plaza provides WASD/arrows/Shift movement,
+third-person follow camera, circle/boundary collision, Projects destination
+proximity, rendering cleanup and explicit mobile Desktop fallback.
+Gate: all 31 core tests, existing app syntax, World syntax and whitespace checks
+passed. `HALO_TEST_URL=http://127.0.0.1:4175 node tests/world-browser.cjs` passed
+actual Chromium WebGL rendering, movement, default-off lazy loading, disposal,
+Desktop return and mobile fallback with no page errors. Route integration and
+workstation actions are intentionally not enabled in this milestone.
