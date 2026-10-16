@@ -6,6 +6,9 @@ export function installModeSwitcher(){
   const button=document.createElement('button');button.id='enter-world';button.className='world-mode-entry';button.textContent='Enter Halo World';
   document.querySelector('.topbar').append(button);
   let instance=null,root=null,generation=0,position,previousFocus,session;
+  document.addEventListener('focusin',event=>{
+    if(event.target!==button&&(shell.contains(event.target)||dock?.contains(event.target)))previousFocus=event.target;
+  });
   function interaction(destination){
     if(!root||destination.availability!=='available')return;
     instance.pause();root.querySelector('.world-actions')?.remove();
@@ -27,11 +30,16 @@ export function installModeSwitcher(){
   button.addEventListener('click',async()=>{
     if(root)return;
     if(matchMedia('(max-width: 699px), (pointer: coarse)').matches){desktop('Halo World currently requires a desktop keyboard. All features remain available in Desktop.');return;}
-    previousFocus=document.activeElement;const ticket=++generation;button.disabled=true;
+    if(!previousFocus)previousFocus=document.activeElement;const ticket=++generation;button.disabled=true;
     if(!document.querySelector('[data-world-styles]')){const style=document.createElement('link');style.rel='stylesheet';style.href=new URL('../world/world-mode.css',import.meta.url).href;style.dataset.worldStyles='';document.head.append(style);}
     root=document.createElement('section');root.className='world-root';root.tabIndex=0;root.setAttribute('aria-label','Halo World');root.innerHTML='<div class="world-viewport"></div><div class="world-hud"><div class="world-info"><h1>Halo World</h1><p>Experimental central plaza · local session only</p><p>WASD / arrows · Shift to run · E to interact</p></div><button id="exit-world">Return to Desktop</button></div><div id="world-prompt" class="world-status" role="status">Loading the plaza…</div>';
     document.body.append(root);root.querySelector('#exit-world').onclick=()=>desktop();
     try{
+      // Probe before constructing Three so unsupported GPUs fail without engine
+      // errors or any dependency on successful initialization of Desktop.
+      const probe=document.createElement('canvas');const gl=probe.getContext('webgl2')||probe.getContext('webgl');
+      if(!gl)throw new Error('WebGL is not supported.');
+      gl.getExtension('WEBGL_lose_context')?.loseContext();
       const {mountWorld}=await import('../world/HaloWorld.js');if(ticket!==generation)return;
       session=connectApplicationSession();
       const accessible=document.createElement('button');accessible.textContent='Projects destination';accessible.onclick=()=>interaction(destinations[0]);root.querySelector('.world-info').append(accessible);

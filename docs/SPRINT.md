@@ -119,3 +119,18 @@ Gate: 32 core tests, app/World syntax and whitespace passed. The M2 Chromium tes
 walked to Projects, opened the original route, edited/saved real notes, returned
 through World/Desktop and verified the same single persisted project, with no
 page errors. Existing uncommitted app changes remain excluded from this commit.
+
+## Halo World M3 · lifecycle and fallback
+
+Preserves the same editor DOM, unsaved text and focus across switching; adds
+graphics preflight, cancellation-safe loading, context-loss fallback and distinct
+hidden-document/user pause ownership. Visible destination labels and initial
+instructions were corrected during visual inspection. A self-contained local
+HTTP test runner replaces unreliable long-lived server sessions.
+Gate: all 32 core tests, app/World syntax and whitespace checks passed.
+`node scripts/test-world.cjs tests/world-lifecycle-browser.cjs` passed Chromium
+repeated enter/dispose cycles, exact saved-data preservation, original unsaved
+editor/focus retention, real context-loss extension, reload behavior, cancelled
+lazy-import race, unsupported WebGL and simulated sustained-slow-frame fallback.
+No page errors. Slow timestamps are injected for fallback verification; this is
+not a real-device GPU benchmark. Reload restores only saved data, as before.
