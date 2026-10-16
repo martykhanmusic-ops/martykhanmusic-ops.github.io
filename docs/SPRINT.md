@@ -39,3 +39,48 @@ workspace after user confirmation. Backups contain private project information.
 No production deployment, external accounts, paid services, credentials, or
 external communications were created. Music Shelf, Dose Tracker and songwriting
 remain future milestones.
+
+## Milestone 2 · Jarvis local orchestration
+
+- New `halo/jarvis.js` adapter registry: task creation, note append, recorded-data
+  status summary, and deletion of specifically planned completed tasks.
+- `halo/app.js` provides plan review, persistent queue/history, status filters,
+  individual tool permissions, approval, cancellation, explicit retry and logs.
+- Destructive permission is off by default. Approval binds to captured task IDs;
+  changed targets fail safely. Restore invalidates approvals and resets access.
+- `halo/store.js` validates workflow schemas and persists adapter effects and
+  completion together. An interruption before that commit has no partial effect.
+  Startup marks interrupted jobs failed without executing them again.
+- `halo/styles.css` adds shared status, log, form and filter presentation;
+  the Saturn orb opens Jarvis. `index.html` adds a link into the application.
+- `package.json` / lockfile pin the Playwright development dependency. README
+  documents setup, scope and storage behavior. No production dependencies added.
+- `tests/jarvis.test.js` adds ten tests for execution, approval, permissions,
+  recovery, retries, restore, validation and atomic failure. Together with
+  `tests/store.test.js`, all 16 tests passed (`npm test`).
+- `npm run check`: JavaScript syntax checks passed. `git diff --check`: passed.
+- `npm run test:browser`: Chromium passed create/save/close/reopen/resume/search,
+  task completion, Jarvis plan/run/reload/history, permission denial and deletion
+  approval, actual deletion and task creation, keyboard dialog open/Escape,
+  reduced-motion media support, escaped markup and visible quota failure.
+  Desktop 1440px and mobile 390px: no horizontal overflow or JavaScript errors.
+- Desktop/mobile screenshots were inspected; a visible hidden file-input issue
+  was corrected. Styling remains provisional; no approved brand reference exists.
+- Baseline browser test had a selector ambiguity against a closed dialog; fixed
+  by scoping the project editor selector. The final full browser run passed.
+
+## Remaining scope / next implementation
+
+Jarvis is a functioning local workflow engine, not an AI agent or remote worker.
+External actions are unavailable, so none bypass approval. A server-side worker,
+authentication, durable database, provider configuration and credential isolation
+are required before adding an AI planner or remote integrations. Permissions in
+a local browser UI are safeguards, not a security boundary against scripts with
+same-origin access. Global search indexes project/task/note records only; there
+is no file index yet. No actual device or assistive-technology audit, other browser
+engine testing, encryption, cross-device sync or production deployment was done.
+
+Recommended next milestone: add IndexedDB-backed file metadata and audio storage
+for Music Shelf, with import/preview/tag/project/reopen tests. For cloud-connected
+Jarvis, first agree on the backend and authentication architecture. Avoid putting
+provider credentials into this static site.
