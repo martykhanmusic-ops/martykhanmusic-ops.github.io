@@ -19,8 +19,9 @@ This is the portable access point for resuming builds from another chat or devic
 5. Resume from current project status and the user's latest request. Do not infer that a milestone remains complete solely from this index.
 6. Keep the final editable source in the canonical local project folder and report its absolute path. Update the local index and this portable copy when the access route changes.
 
-Master M3's Windows companion was completed and pushed on the development branch. Verify the current milestone status before starting later work. Do not merge into main or deploy based on this roadmap.
+Master M4 application framework was completed and pushed on the development branch (payload f5a93fbcc39511ca002c33493544e155caad6ccc). Verify the current milestone status before starting later work. Master M5 visual approval remains pending. Do not merge into main or deploy based on this roadmap.
 
 ## Prompt for a new chat
 
 > Resume my build. First read this repository's `docs/CODEX_MEMORY_ROADMAP.md`. If you can access my Windows PC, also read `%USERPROFILE%\_Code\CODEX_MEMORY_ROADMAP.md` and open the canonical project folder. Verify Git branch, remote, commits, uncommitted changes, and current status files before editing. Preserve existing work. If you cannot access the PC, say so and use the verified remote branch or files I provide.
+
