@@ -9,6 +9,21 @@ styling is provisional for review.
 
 ## Run locally
 
+### Windows launcher
+
+Run [the generated Halo.exe](dist/Halo.exe) on this Windows PC. It opens Halo in
+your default browser at `http://localhost:4173/halo/`. Keep its console window
+open while using Halo; close it or press Ctrl+C to stop the local server. The
+executable contains the current static site and can be copied to another folder.
+It requires Windows .NET Framework 4.x and a browser, but not Node.js or Python
+at runtime. The optional Windows companion still starts separately with Node.js.
+Halo data remains in the browser profile for the `localhost:4173` origin.
+
+Rebuild after changing site files with
+`powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-launcher.ps1`.
+The generated `dist/` folder is local output and is excluded from Git. If
+another server already uses port 4173, close it before starting Halo.exe.
+
 Requires Node.js 24+ for tests and Python 3 for the development server.
 
 ```sh

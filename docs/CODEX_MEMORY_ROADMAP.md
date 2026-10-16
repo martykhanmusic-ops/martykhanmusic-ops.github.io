@@ -21,6 +21,8 @@ This is the portable access point for resuming builds from another chat or devic
 
 Master M4 application framework was completed and pushed on the development branch (payload f5a93fbcc39511ca002c33493544e155caad6ccc). Verify the current milestone status before starting later work. Master M5 visual approval remains pending. Do not merge into main or deploy based on this roadmap.
 
+The Windows launcher source is `launcher/HaloLauncher.cs`, the build command is `scripts/build-launcher.ps1`, and the local generated executable is `dist/Halo.exe`. The executable is ignored by Git; rebuild it from the source after checkout. Verify its presence locally before promising it in another chat.
+
 ## Prompt for a new chat
 
 > Resume my build. First read this repository's `docs/CODEX_MEMORY_ROADMAP.md`. If you can access my Windows PC, also read `%USERPROFILE%\_Code\CODEX_MEMORY_ROADMAP.md` and open the canonical project folder. Verify Git branch, remote, commits, uncommitted changes, and current status files before editing. Preserve existing work. If you cannot access the PC, say so and use the verified remote branch or files I provide.
