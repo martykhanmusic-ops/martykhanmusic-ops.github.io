@@ -14,3 +14,9 @@
 | R10 | No lint/build scripts, other-browser or assistive-technology validation | Report unavailable checks explicitly; syntax/Chromium are limited evidence |
 
 No credential contents are recorded. No production deployment, protected-main merge, account creation, paid service or AI provider is authorized. Blocked milestones must stop sequencing; upcoming risks are not evidence their milestones passed.
+
+## Active blocker — master M3
+
+M0–M2 remote payloads were verified; sequence is now stopped at M3. Repository search found no companion implementation, OS bridge endpoint, filesystem grants or audio-device service. `uname -srm` reports Linux 6.18.44 x86_64 for the cloud workspace only. Available execution tools do not provide a session on the user's computer. No target OS was specified; choosing platform-specific app/audio discovery would be unsupported.
+
+Requested input: first target OS and either local Codex workspace access or user-assisted command/testing availability. This is required for actual app/process/audio-device validation, not permission to perform already-authorized ordinary coding. No server credentials or public OS-control endpoint should be supplied. Safe action taken: preserve foundation, document proposed boundary, avoid introducing a simulated bridge, and stop before M4. User data was not accessed or migrated.

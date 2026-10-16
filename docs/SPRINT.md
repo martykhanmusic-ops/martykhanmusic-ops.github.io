@@ -180,3 +180,11 @@ Working tree: 35 tests; isolated committed scope: 31 tests, syntax and eight
 Chromium scenarios passed. Cancellation remains pre-execution; atomic effects
 cannot be rolled back by a late cancellation. Existing permissions, deletion
 approval, logs and recovery are unchanged. No external AI/provider connected.
+
+
+Master M0/M1/M2 payloads are now COMPLETE_AND_PUSHED with exact remote SHA
+receipts in HALO_MILESTONE_STATUS.md. Master M3 is BLOCKED: target OS and a local
+computer testing arrangement are required before an actual companion can be
+verified. HALO_LOCAL_BRIDGE.md is a proposal only. No later master stage started;
+no preview design finalized, runtime feature replaced, schema migrated or site
+deployed. Resume from the active blocker rather than restarting the audit.

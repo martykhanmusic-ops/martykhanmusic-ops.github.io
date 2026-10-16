@@ -37,3 +37,9 @@ Pass 2 — compatibility: `npm test` passed 35 current tests (31 committed-scope
 Pass 3 — integration: isolated command `node scripts/test-world.cjs tests/master-core-browser.cjs tests/master-jarvis-browser.cjs tests/browser.cjs tests/integration-browser.cjs tests/world-workstation-browser.cjs` exited 0, eight scenario groups: core desktop/mobile, Jarvis desktop/mobile, foundation, integration desktop/mobile and World workstation. Permissions, captured deletion targets, explicit approval, restore grant reset, history, task/project IDs and recovery all remain on existing paths. New master suites and workstation reported no console/page errors; existing foundation/integration reported no page errors. Earlier M1 ran the other World lifecycle suites; M2 changes only tests/docs.
 
 Cancellation is supported for pending/awaiting-approval/failed jobs, not an atomic action already executing. There is no arbitrary OS, remote worker, external AI or background scheduler. Existing local engine is adopted rather than replaced.
+
+## Remote receipts and M3 boundary
+
+Ordinary branch pushes succeeded and `git ls-remote origin refs/heads/feature/halo-jarvis-foundation` independently returned each exact payload SHA: M0 3838b0fb0a3c75c9ac5711f5bc82014272fd7e95; M1 67122cd7b2554d7144fa7c151642a231321dd429; M2 3ccf43c8fc1fd4e2285b912b5ca7b21c7ac89aed. No force push, merge or deployment.
+
+M3 inspection only: `uname -srm` identifies the cloud Linux host; source search for companion/local-OS/audio/device bridge found only test-runner child processes. No target-computer execution channel was found. Proposed bridge contract is documentation, not implemented or tested functionality. M3 is BLOCKED pending target OS and local execution/testing arrangement. No later milestone started. Final receipt/blocker documentation requires whitespace and scoped-diff review; no runtime code changes justify repeating the entire test suite.
