@@ -299,3 +299,8 @@ with the actual `music-hub-browser.cjs` and `music-daw-browser.cjs` files.
 - Node tests 56/56, npm run check, World syntax check and git diff --check passed.
 - Windows Chrome browser regression passed master core/Jarvis, browser/integration, World M1–M4, lobby, Jarvis center, Saturn portals and accessibility. The Saturn test covered Desktop keyboard selection, truthful planned status, real Projects route, World planned interaction and unchanged project view.
 - Browser binaries from Playwright's cache were missing during this run; the suite used the installed Google Chrome executable via HALO_CHROMIUM_PATH. Chromium browser installation was attempted and the full browser checks still ran against installed Chrome.
+
+### Halo lobby directive E — October 18, 2026
+
+- npm test: 56/56. Focused Windows Chrome journey passed Desktop Music Shelf → canonical project music library → World Music doorway → same saved project ID and notes, with real focus and active app record.
+- Broad browser regression passed master core/Jarvis, browser/integration, framework, World M1/lifecycle/lobby/Jarvis, Music/Saturn portals and accessibility at desktop/mobile widths. World M2/workstation also passed in the focused run. No page errors were reported.

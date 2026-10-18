@@ -32,3 +32,5 @@ remains real VST3 capture, secure transport, QR rooms, mobile player/producer
 controls, Halo/World access, and measured live DAW-to-device latency and
 stability. Do not present simulated audio or a browser-only microphone demo as
 VST3 capture.
+
+Lobby directive E: Music Shelf portal uses the real registered project music panel from Desktop and World, with the same project store and no duplicate data. Browser journey and regression passed on Windows Chrome. F accessibility/control remapping is next. The separate master M7 Live Listen gate remains open and is not claimed by this lobby work.

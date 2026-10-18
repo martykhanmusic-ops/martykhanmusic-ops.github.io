@@ -1,0 +1,40 @@
+const {chromium}=require('playwright');
+const assert=require('node:assert/strict');
+(async()=>{
+  const browser=await chromium.launch({executablePath:process.env.HALO_CHROMIUM_PATH||undefined,headless:true,args:['--no-sandbox','--enable-unsafe-swiftshader','--use-gl=angle','--use-angle=swiftshader']});
+  try{
+    const page=await browser.newPage({viewport:{width:1280,height:900}}),errors=[];
+    page.on('pageerror',error=>errors.push(error.message));
+    await page.goto((process.env.HALO_TEST_URL||'http://127.0.0.1:4173')+'/halo/?world=1');
+    await page.getByRole('button',{name:'＋ New project',exact:true}).click();
+    await page.locator('#project-form input[name=name]').fill('Music portal project');
+    await page.locator('#project-form button.primary').click();
+    await page.getByLabel('Working notes').fill('One canonical music project');
+    await page.getByRole('button',{name:'Save project',exact:true}).click();
+    const before=await page.evaluate(()=>JSON.parse(localStorage.getItem('halo.workspace.v1')));
+    await page.locator('nav [data-view="jarvis"]').click();
+    await page.locator('.saturn-portal[data-portal="music"]').click();
+    await page.getByRole('region',{name:'Project music library'}).waitFor();
+    assert.equal(await page.evaluate(()=>document.activeElement?.id),'music-browse');
+    assert.equal(await page.evaluate(()=>window.haloApplications.get('music').state),'active');
+    assert.equal(await page.getByLabel('Working notes').inputValue(),'One canonical music project');
+    await page.getByRole('button',{name:'Enter Halo World'}).click();
+    await page.waitForFunction(()=>document.body.dataset.mode==='world');
+    await page.keyboard.down('KeyA');
+    await page.waitForFunction(()=>Number(document.querySelector('.world-root')?.dataset.avatarX)<-3.5);
+    await page.keyboard.up('KeyA');
+    await page.keyboard.down('KeyW');
+    await page.waitForFunction(()=>document.querySelector('.world-root')?.dataset.nearby==='music',{timeout:15000});
+    await page.keyboard.up('KeyW');
+    await page.keyboard.press('KeyE');
+    await page.getByRole('button',{name:'Open App'}).click();
+    await page.getByRole('region',{name:'Project music library'}).waitFor();
+    assert.equal(await page.evaluate(()=>document.activeElement?.id),'music-browse');
+    const after=await page.evaluate(()=>JSON.parse(localStorage.getItem('halo.workspace.v1')));
+    assert.equal(after.activeProjectId,before.activeProjectId);
+    assert.equal(after.projects.length,1);
+    assert.equal(after.projects[0].notes,'One canonical music project');
+    assert.deepEqual(errors,[]);
+    console.log('PASS Music portal: Desktop ring and World doorway open the same project music library and saved project ID');
+  }finally{await browser.close();}
+})().catch(error=>{console.error(error);process.exit(1);});

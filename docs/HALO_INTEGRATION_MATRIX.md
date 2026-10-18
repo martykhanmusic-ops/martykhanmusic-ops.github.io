@@ -62,3 +62,5 @@ covers approach/E, click, route, and no automatic job creation.
 The Windows-built VST3 pass-through is source-owned in `live-listen/` and has no connection to Halo or World yet. Companion pairing, room grants and audio transport must be integrated and tested before this matrix can mark Live Listen connected.
 
 Lobby Saturn portals: one DestinationRegistry supplies Desktop ring and World doorways. Projects resolves through the existing application-session route and canonical store. Seven planned entries present bounded descriptions without opening placeholder applications. Proximity, keyboard selection and walk-through share the same route/availability decision; the World workstation still reparents the original shell.
+
+Music Shelf portal is now available and registered in the existing application framework. Both presentation modes route to the original project music panel through ApplicationSessionBridge; the active project ID, notes, library links, companion approvals and Jarvis permissions stay in their existing owners. Six other portal entries remain planned and inert.

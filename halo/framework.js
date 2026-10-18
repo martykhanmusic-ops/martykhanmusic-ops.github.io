@@ -112,5 +112,6 @@ export function createApplicationRegistry({ platform = 'desktop', shellVersion =
 
 export const coreApplications = [
   { id: 'projects', name: 'Projects', version: '1.0.0', route: { view: 'dashboard' }, permissions: [], description: 'Canonical Halo projects, notes, and tasks.' },
-  { id: 'jarvis', name: 'Jarvis', version: '1.0.0', route: { view: 'jarvis' }, permissions: [], description: 'Local plans and explicitly approved tools.' }
+  { id: 'jarvis', name: 'Jarvis', version: '1.0.0', route: { view: 'jarvis' }, permissions: [], description: 'Local plans and explicitly approved tools.' },
+  { id: 'music', name: 'Music Shelf', version: '1.0.0', route: { view: 'project' }, permissions: [], description: 'The canonical project music library and approved DAW links.' }
 ];

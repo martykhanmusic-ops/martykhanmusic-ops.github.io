@@ -5,9 +5,9 @@ import { createApplicationRegistry, coreApplications, APPLICATIONS_KEY } from '.
 test('framework discovers core applications without creating another workspace store', () => {
   const registry = createApplicationRegistry();
   for (const app of coreApplications) registry.register(app);
-  assert.deepEqual(registry.discover().map(app => app.id), ['projects', 'jarvis']);
+  assert.deepEqual(registry.discover().map(app => app.id), ['projects', 'jarvis', 'music']);
   assert.deepEqual(registry.get('projects').route, { view: 'dashboard' });
-  assert.equal(registry.snapshot().applications.length, 2);
+  assert.equal(registry.snapshot().applications.length, 3);
 });
 
 test('framework lifecycle is explicit and records transitions', () => {

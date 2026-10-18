@@ -7,7 +7,7 @@
 /** @type {ReadonlyArray<Destination>} */
 export const destinations = Object.freeze([
   Object.freeze({id:'projects',label:'Projects',featureId:'projects',icon:'▣',preview:'Open your saved workspace',accessibilityLabel:'Projects portal',desktop:{order:0},world:{doorwayWidth:2.3},route:{view:'project'},location:{x:-6,z:2},appearance:{color:0xdab78c},interactionModes:['open-app','workstation'],availability:'available',permissions:[],workstationAdapter:'existing-project-shell'}),
-  Object.freeze({id:'music',label:'Music Shelf',featureId:'music',icon:'♫',preview:'Music library and studio links',accessibilityLabel:'Music Shelf portal',desktop:{order:1},world:{doorwayWidth:2.3},route:{view:'project'},location:{x:-4,z:-5},appearance:{color:0x90bbb1},interactionModes:['open-app'],availability:'planned',permissions:[]}),
+  Object.freeze({id:'music',label:'Music Shelf',featureId:'music',icon:'♫',preview:'Open the active project’s music library',accessibilityLabel:'Music Shelf portal',desktop:{order:1},world:{doorwayWidth:2.3},route:{view:'project'},location:{x:-4,z:-5},appearance:{color:0x90bbb1},interactionModes:['open-app'],availability:'available',permissions:[]}),
   Object.freeze({id:'creative',label:'Creative',featureId:'creative',icon:'✎',preview:'Creative applications are being built',accessibilityLabel:'Creative portal, planned',desktop:{order:2},world:{doorwayWidth:2.3},route:{view:'dashboard'},location:{x:2,z:-6},appearance:{color:0xc7a6b4},interactionModes:['open-app'],availability:'planned',permissions:[]}),
   Object.freeze({id:'halo-world',label:'Halo World',featureId:'world',icon:'◎',preview:'World destinations are being built',accessibilityLabel:'Halo World portal, planned',desktop:{order:3},world:{doorwayWidth:2.3},route:{view:'dashboard'},location:{x:6,z:-2},appearance:{color:0x9daec9},interactionModes:['open-app'],availability:'planned',permissions:[]}),
   Object.freeze({id:'games',label:'Games Hub',featureId:'games',icon:'◇',preview:'Games Hub is being built',accessibilityLabel:'Games Hub portal, planned',desktop:{order:4},world:{doorwayWidth:2.3},route:{view:'dashboard'},location:{x:6,z:4},appearance:{color:0xb4a6c8},interactionModes:['open-app'],availability:'planned',permissions:[]}),
@@ -26,6 +26,6 @@ export function validateDestinations(entries) {
 validateDestinations(destinations);
 export function destinationRoute(destination,state){
   if(destination.availability!=='available')throw new Error('This destination is not available.');
-  if(destination.route.view==='project')return state.activeProjectId?{view:'project',projectId:state.activeProjectId}:{view:'dashboard'};
+  if(destination.route.view==='project')return state.activeProjectId?{view:'project',projectId:state.activeProjectId,...(destination.id==='music'?{focus:'music'}:{})}:{view:'dashboard'};
   return {...destination.route};
 }

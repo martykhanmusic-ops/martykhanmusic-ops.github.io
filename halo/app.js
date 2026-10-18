@@ -37,6 +37,15 @@ function navigate(view, projectId) {
   if (dirty && !confirm('Discard your unsaved project changes?')) return;
   run(() => { store.navigate(view, projectId); dirty = false; search = ''; render(); $('#main').focus(); });
 }
+function focusRoute(route) {
+  if (route.focus === 'music' && store.get().view === 'project') {
+    try { applications.open('music', {view:'project',projectId:store.get().activeProjectId}); }
+    catch (error) { notify(`Music Shelf registry: ${error.message}`, true); }
+    const target = document.querySelector('.music-hub');
+    target?.scrollIntoView({ block: 'start' });
+    target?.querySelector('button')?.focus({ preventScroll: true });
+  }
+}
 function dashboard(s) {
   const active = s.projects.find(p => p.id === s.activeProjectId);
   const tasks = s.projects.flatMap(p => p.tasks);
@@ -143,7 +152,7 @@ function render() {
   bindMain();
   if (s.view === 'project') { musicHub.bind(); musicHub.render(s); }
   if (s.view === 'dashboard') musicReference.bind();
-  if (s.view === 'jarvis') { voice.bind(() => store.get().jobs.find(job => job.status === 'completed')?.result || ''); localLlm.bind(); localLlm.renderChat(s.chat || []); reminders.bind(); mountDesktopRing(document.querySelector('.jarvis-intro'), portal => { const route=destinationRoute(portal,store.get());navigate(route.view,route.projectId); }); }
+  if (s.view === 'jarvis') { voice.bind(() => store.get().jobs.find(job => job.status === 'completed')?.result || ''); localLlm.bind(); localLlm.renderChat(s.chat || []); reminders.bind(); mountDesktopRing(document.querySelector('.jarvis-intro'), portal => { const route=destinationRoute(portal,store.get());navigate(route.view,route.projectId);focusRoute(route); }); }
   if (s.view === 'jarvis') setOrbState(s.jobs.some(job=>job.status==='running')?'executing':s.jobs.some(job=>['pending','awaiting_approval'].includes(job.status))?'waiting':'idle');
   reminders.render(s);
 }
@@ -236,12 +245,13 @@ if (store) {
 if (store) window.addEventListener('halo:session-request', event => {
   event.detail.accept(Object.freeze({
     getState: () => store.get(),
-    openRoute: ({view, projectId}) => {
+    openRoute: ({view, projectId, focus}) => {
       const before = store.get();
-      if (before.view === view && (!projectId || before.activeProjectId === projectId)) return true;
-      navigate(view, projectId);
+      if (before.view !== view || (projectId && before.activeProjectId !== projectId)) navigate(view, projectId);
       const after = store.get();
-      return after.view === view && (!projectId || after.activeProjectId === projectId);
+      const opened=after.view === view && (!projectId || after.activeProjectId === projectId);
+      if(opened)focusRoute({view,projectId,focus});
+      return opened;
     }
   }));
 });

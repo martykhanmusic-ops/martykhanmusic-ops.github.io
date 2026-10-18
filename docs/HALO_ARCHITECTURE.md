@@ -106,3 +106,5 @@ The October 18 live M6 check exercised that browser → companion → Windows pa
 The same file-bound project flow now maps FL Studio 2026 to `.flp` and its `FL64.exe` target. Companion and PowerShell helper both enforce the shortcut/extension/target association; the UI filters linked projects by the selected approved DAW. This does not expand the folder grant or permit arbitrary file arguments. Each companion run still has one explicitly approved root.
 
 Lobby portal layer: DestinationRegistry is the shared metadata/route source for DesktopRing and WorldScene. PortalInteraction tracks World interaction states, and ModeSwitcher alone crosses into the existing ApplicationSessionBridge. Planned entries have no executable route. The ring and scene own only presentation state; project/Jarvis data stays in the canonical store.
+
+Music Shelf is a registered application manifest with a project route. DestinationRegistry adds only a focus hint; app.js resolves it after successful project navigation and activates the original music section. The World bridge forwards the route to that same application session. No new project or music store is created.

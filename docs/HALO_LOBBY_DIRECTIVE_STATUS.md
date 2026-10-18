@@ -7,8 +7,8 @@ Updated October 18, 2026. This tracks the user-supplied Halo Lobby / Jarvis / Sa
 | A Audit | Complete after the baseline and remote receipt recorded below | Source, Git, dependencies, shared-state integration and gaps verified |
 | B Playable Lobby | Complete after remote receipt below | Existing single controller gains the requested controls and movement/camera/collision behavior; desktop/mobile fallback and core regression pass |
 | C Jarvis Center | Complete after remote receipt below | Central World orb invokes the real Jarvis surface, with explicit interaction states and existing approvals |
-| D Saturn Doorways | Implemented; remote receipt pending | One shared registry drives stationary walk-through World doorways and Desktop ring, with truthful route states |
-| E Application Integration | Not started | Available portals reach real registered Halo applications; unavailable entries remain visibly unavailable |
+| D Saturn Doorways | Complete; remote SHA `cb53c1f754e39688ac137a6f03c6e677d28ad8e3` verified | One shared registry drives stationary walk-through World doorways and Desktop ring, with truthful route states |
+| E Application Integration | Implemented; remote receipt pending | Available portals reach real registered Halo applications; unavailable entries remain visibly unavailable |
 | F Accessibility | Not started | Remappable persisted controls, presets, semantic destination alternative, keyboard/focus and applicable WCAG 2.2 AA checks |
 | G Visual System | Not started | Nostalgic, warm, calm visual pass with saved token-based variants and measured performance |
 | H Validation and Delivery | Not started | Full regression, measured performance, desktop/mobile/accessibility evidence, reviewed branch and remote receipt |
@@ -46,3 +46,9 @@ Milestone protocol: complete each row's work, run focused and ecosystem tests, r
 - Desktop Jarvis gains a focusable ring with contextual caption, keyboard arrow/Enter, focused wheel, hover, click/tap and touch swipe selection. World renders stationary pillar/lintel doorways with destination preview surfaces; proximity/E and walking through a doorway use the same interaction handler. A small explicit state machine records near, preview, requested, transitioning, open and returning states and rejects duplicate requests.
 - Focused Windows Chrome tests passed the ring, real Projects route, planned-portal status, World interaction and the existing M2–M4 session/workstation journeys. Full core/Jarvis/browser/integration/World M1–M4/lobby/Jarvis/Saturn/accessibility browser suite passed at supported widths, including axe, forced colors and reduced motion. Node tests are 56/56 after the new portal state test; syntax and World checks passed.
 - E must connect additional portals only after their real application routes and shared-state journeys are verified. The World doorway preview is a stylized destination surface, not a live camera into an app environment. The exact Windows EXE runtime remains unverified until launch can be observed.
+
+## E — application integration
+
+- Music Shelf is now an available, registered Halo application whose route opens the existing active project's music library and approved DAW links. Desktop ring and World doorway resolve through the same destination and route. With no active project the route opens the existing project overview so the user can create or choose one. No music data is copied to an app store.
+- The application session bridge retains dirty navigation guards, active project identity, and the canonical `halo.workspace.v1` notes/music data. Music Shelf's application registry lifecycle records its open event after successful navigation. The other six unbuilt destinations remain visibly planned with no app opened.
+- A new browser journey verifies Desktop ring → music library → World → Music doorway → music library with the same saved project ID and notes, focus on the real music browse control, and an active application record. Node framework tests verify the registered app count. Broad regression and remote receipt are pending in this entry.
