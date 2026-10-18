@@ -26,12 +26,20 @@ export function moveAvatar(position,keys,elapsed,obstacles=[],limit=12.5,setting
 }
 export class AvatarController {
   constructor(target,controls={bindings:DEFAULT_BINDINGS}) {
-    this.physical=new Set();this.target=target;this.controls=controls;
-    Object.defineProperty(this,'keys',{get:()=>mappedKeys(this.physical,this.controls.bindings)});
-    this.down=event=>{if(/^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(event.target.tagName)) return;if(Object.values(this.controls.bindings).includes(event.code)){event.preventDefault();this.physical.add(event.code);}};
+    this.physical=new Set();this.target=target;this.controls=controls;this.runToggled=false;this.virtual={x:0,y:0};
+    Object.defineProperty(this,'keys',{get:()=>{
+      const keys=mappedKeys(this.physical,this.controls.bindings);
+      if(this.virtual.y<-.25)keys.add('KeyW');if(this.virtual.y>.25)keys.add('KeyS');if(this.virtual.x<-.25)keys.add('KeyA');if(this.virtual.x>.25)keys.add('KeyD');
+      if(this.controls.autoWalk)keys.add('KeyW');
+      if(this.controls.autoRun||this.controls.toggleRun&&this.runToggled)keys.add('ShiftLeft');
+      try{for(const pad of navigator.getGamepads?.()||[]){if(!pad)continue;const x=pad.axes?.[0]||0,z=pad.axes?.[1]||0;if(z<-.3)keys.add('KeyW');if(z>.3)keys.add('KeyS');if(x<-.3)keys.add('KeyA');if(x>.3)keys.add('KeyD');if(pad.buttons?.[0]?.pressed)keys.add('Space');if(pad.buttons?.[5]?.pressed)keys.add('ShiftLeft');}}catch{}
+      return keys;
+    }});
+    this.down=event=>{if(/^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(event.target.tagName)) return;if(Object.values(this.controls.bindings).includes(event.code)){event.preventDefault();if(this.controls.toggleRun&&event.code===this.controls.bindings.run&&!event.repeat)this.runToggled=!this.runToggled;else this.physical.add(event.code);}};
     this.up=event=>this.physical.delete(event.code);this.blur=()=>this.physical.clear();
     target.addEventListener('keydown',this.down);window.addEventListener('keyup',this.up);window.addEventListener('blur',this.blur);
   }
-  clear(){this.physical.clear();}
+  clear(){this.physical.clear();this.setVirtualAxes(0,0);}
+  setVirtualAxes(x,y){this.virtual={x:Math.max(-1,Math.min(1,x)),y:Math.max(-1,Math.min(1,y))};}
   dispose(){this.target.removeEventListener('keydown',this.down);window.removeEventListener('keyup',this.up);window.removeEventListener('blur',this.blur);this.clear();}
 }

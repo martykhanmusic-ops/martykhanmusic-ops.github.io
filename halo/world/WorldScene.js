@@ -1,12 +1,13 @@
 import * as THREE from './vendor/three.module.js';
 import { followCamera } from './FollowCamera.js';
-export function createScene(container,entries,onJarvis=()=>{}){
+export function createScene(container,entries,onJarvis=()=>{},controls={}){
   const renderer=new THREE.WebGLRenderer({antialias:false,powerPreference:'low-power',failIfMajorPerformanceCaveat:false});
   const tokens=getComputedStyle(document.documentElement),background=tokens.getPropertyValue('--bg').trim()||'#181c2c';
   renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setClearColor(background);
   renderer.domElement.setAttribute('aria-label','Halo World third-person plaza');
   const scene=new THREE.Scene();scene.fog=new THREE.Fog(background,18,48);
   const camera=new THREE.PerspectiveCamera(50,1,.1,70);
+  const groundRay=new THREE.Raycaster(),groundPlane=new THREE.Plane(new THREE.Vector3(0,1,0),0);
   scene.add(new THREE.HemisphereLight(0xf4d4aa,0x293848,2.5));
   const sun=new THREE.DirectionalLight(0xffdbad,2.5);sun.position.set(-5,9,3);scene.add(sun);
   const geometries=new Set(),materials=new Set();
@@ -57,15 +58,20 @@ export function createScene(container,entries,onJarvis=()=>{}){
   let initialized=false,walkTime=0,orbTime=0,lastOrbState='';
   return {
     canvas:renderer.domElement,obstacles,
+    groundPoint(clientX,clientY){const bounds=renderer.domElement.getBoundingClientRect();const point=new THREE.Vector2((clientX-bounds.left)/bounds.width*2-1,-((clientY-bounds.top)/bounds.height*2-1));groundRay.setFromCamera(point,camera);const hit=new THREE.Vector3();return groundRay.ray.intersectPlane(groundPlane,hit)?{x:hit.x,z:hit.z}:null;},
     setJarvisState(state){
       if(state===lastOrbState)return;
       lastOrbState=state;
       const colors={idle:0x247394,nearby:0x6eadd4,executing:0xd09b56,waiting:0xd09b56,completed:0x4dba91,error:0xcf6f64};
       orb.material.emissive.setHex(colors[state]??colors.idle);
+      orb.material.emissiveIntensity=controls.reducedGlare?.12:.38;
+      core.material.emissiveIntensity=controls.reducedGlare?.2:.7;
       jarvisButton.dataset.state=state;
       jarvisButton.title=`Jarvis · ${state}`;
     },
     render(position,dt,reducedMotion,cameraOrbit=0){
+      if(camera.fov!==controls.fieldOfView&&Number.isFinite(controls.fieldOfView)){camera.fov=controls.fieldOfView;camera.updateProjectionMatrix();}
+      orb.material.emissiveIntensity=controls.reducedGlare?.12:.38;core.material.emissiveIntensity=controls.reducedGlare?.2:.7;
       orbTime+=dt;
       const bob=reducedMotion?0:Math.sin(orbTime*1.2)*.045;
       orb.position.y=1.85+bob;core.position.y=1.85+bob;orbRing.position.y=1.85+bob;
@@ -74,7 +80,7 @@ export function createScene(container,entries,onJarvis=()=>{}){
       if(position.moving)walkTime+=dt*(Math.hypot(position.vx??0,position.vz??0)>4?13:8);
       const swing=position.moving&&!reducedMotion?Math.sin(walkTime)*.35:0;
       leftLeg.rotation.x=swing;rightLeg.rotation.x=-swing;leftArm.rotation.x=-swing*.7;rightArm.rotation.x=swing*.7;
-      followCamera(camera,position,initialized?dt:1,initialized?reducedMotion:true,obstacles,cameraOrbit);initialized=true;
+      followCamera(camera,position,initialized?dt:1,initialized?reducedMotion:true,obstacles,controls.fixedCamera?0:cameraOrbit);initialized=true;
       renderer.render(scene,camera);
       const jarvisScreen=new THREE.Vector3(0,2.2,0).project(camera);
       jarvisButton.hidden=jarvisScreen.z>1||jarvisScreen.z< -1||Math.abs(jarvisScreen.x)>1||Math.abs(jarvisScreen.y)>1;

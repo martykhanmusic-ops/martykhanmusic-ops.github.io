@@ -354,3 +354,5 @@ body[data-view=jarvis] #application-directory,body[data-view=jarvis] .companion-
 @media(prefers-reduced-motion:reduce){.saturn-portal{transition:none}}
 
 .world-settings{width:min(620px,calc(100vw - 24px));max-height:85vh;overflow:auto;background:var(--panel);color:var(--text);border:1px solid var(--accent);border-radius:18px;padding:22px;box-shadow:var(--elevation)}.world-settings::backdrop{background:#06141fbd}.world-settings h2{margin-top:0}.world-settings label{display:block;margin:12px 0}.world-settings input[type=range]{display:block;width:100%}.world-key-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px;margin:16px 0}.world-key-list button{min-height:44px}.world-settings>button{margin:8px 8px 0 0}.world-settings-entry{font-size:11px;min-height:44px}
+
+#voice-text,#chat-log{font-size:calc(1rem * var(--jarvis-caption-scale,1))}

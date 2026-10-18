@@ -36,3 +36,5 @@ VST3 capture.
 Lobby directive E: Music Shelf portal uses the real registered project music panel from Desktop and World, with the same project store and no duplicate data. Browser journey and regression passed on Windows Chrome. F accessibility/control remapping is next. The separate master M7 Live Listen gate remains open and is not claimed by this lobby work.
 
 Lobby directive F is in progress: persistent remappable keyboard controls and a 2D destination list passed Windows Chrome and Node checks. Remaining F work includes alternate movement inputs and broader accessibility settings; G/H have not started.
+
+Lobby directive F implementation and automated desktop/mobile acceptance passed: keyboard remapping/presets, alternative movement, touch opt-in, gamepad wiring, 2D destinations, visual settings and Jarvis voice levels. Physical controller/touchscreen and manual assistive-technology verification remain unclaimed and are tracked for delivery review. Proceed to G visual-system architecture under the user's latest request.

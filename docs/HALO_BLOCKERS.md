@@ -56,3 +56,5 @@ tests after the master milestone gate. See `3DCODEVERSE_EVALUATION.md`.
 # Local Jarvis capability limit (October 18, 2026)
 
 Local qwen3:4b adds a stronger conversational model, bounded text input and reviewed plan drafting. It does not provide ChatGPT model parity, image interpretation, live web research, autonomous coding, or general computer control. The approved direction remains local Ollama. Existing permission and review boundaries apply to all Jarvis actions.
+
+Lobby F verification limit (October 18): Chrome emulation exercised gamepad axes/buttons and mobile touch World, but this PC session did not expose a physical controller or touchscreen to verify hardware-specific behavior. Automated axe WCAG 2.2 AA checks passed for World states; manual screen-reader review is still needed before an accessibility certification claim. These limits do not affect the verified Desktop fallback.

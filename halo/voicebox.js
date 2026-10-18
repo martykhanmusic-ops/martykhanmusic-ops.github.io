@@ -1,4 +1,5 @@
 import { setOrbState } from './orb-state.js';
+import {loadControls} from './world/Controls.js';
 const API = '/voicebox';
 const MAX_AUDIO_BYTES = 12_000_000;
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -92,6 +93,7 @@ export function createJarvisVoice({ fetcher = fetch, mediaDevices = navigator.me
           if (current !== generation) return;
           audioUrl = URL.createObjectURL(blob);
           player = new AudioPlayer(audioUrl);
+          player.volume=loadControls().voiceVolume;
           player.onended = () => { status('Speech finished.'); setOrbState('completed'); if (audioUrl) URL.revokeObjectURL(audioUrl); audioUrl = null; player = null; };
           await player.play(); status('Speaking through Voicebox.');setOrbState('responding'); return;
         }
@@ -106,6 +108,7 @@ export function createJarvisVoice({ fetcher = fetch, mediaDevices = navigator.me
     if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) { status('Browser speech is unavailable here.'); return; }
     stopPlayback();
     const utterance = new SpeechSynthesisUtterance(text.slice(0, 10000));
+    utterance.volume=loadControls().browserVoiceVolume;
     utterance.onend = () => status('Browser speech finished.');
     utterance.onerror = () => status('Browser speech failed.');
     window.speechSynthesis.speak(utterance);

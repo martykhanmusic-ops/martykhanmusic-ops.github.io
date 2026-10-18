@@ -309,3 +309,8 @@ with the actual `music-hub-browser.cjs` and `music-daw-browser.cjs` files.
 
 - Node tests 57/57, World syntax check and browser controls scenario passed. The browser changed interaction KeyE to KeyF, verified persisted local settings, reset it, used the semantic 2D destination list, saw a planned status and returned to Desktop.
 - Chrome regression passed desktop/mobile accessibility (axe, keyboard, forced colors, reduced motion), master core/Jarvis, Music/Saturn portals, lobby movement and World project continuity. Full F acceptance remains open for additional control modes and review.
+
+### Halo lobby directive F completion pass — October 18, 2026
+
+- npm test 57/57, npm run check, World syntax check and git diff --check passed. Full Windows Chrome browser regression passed master core/Jarvis, browser/integration, framework, World M1–M4, lobby, Jarvis, Saturn/Music portals, controls, desktop/mobile accessibility and World-specific axe WCAG 2.2 AA states.
+- Focused browser checks passed opt-in mobile joystick movement, gamepad axis/button mapping, click-to-move, controls persistence/reset, and local Jarvis voice regression. Gamepad input was emulated in Chrome; physical controller hardware was unavailable. Mobile was tested with Chrome touch emulation. Manual screen-reader and physical device verification remain delivery evidence limits.
