@@ -189,7 +189,15 @@ To work with an **Ableton Live 12 Suite** project file, restart the companion wi
 node companion/server.mjs --root "C:\Users\owner\Documents\Ableton" --app "Ableton Live 12 Suite.lnk"
 ```
 
-Pair again, browse to a `.als` file, and **Verify and link file** in the Halo project. Select the linked file under **Open a linked Ableton project**, request its separate project-open code, enter the code from the companion window, and confirm. The companion checks the exact approved path, size and modification time against the saved link before issuing a code, and checks them again before starting Ableton with the file path. Halo reports an accepted open request; confirm inside Ableton that the project actually loaded. Changing the file requires re-linking it. FL Studio `.flp` project opening is not connected yet.
+Pair again, browse to a `.als` file, and **Verify and link file** in the Halo project. Select the linked file under **Open a linked DAW project**, request its separate project-open code, enter the code from the companion window, and confirm. The companion checks the exact approved path, size and modification time against the saved link before issuing a code, and checks them again before starting Ableton with the file path. Halo reports an accepted open request; confirm inside Ableton that the project actually loaded. Changing the file requires re-linking it.
+
+For **FL Studio 2026**, restart the companion with its project folder and its shortcut instead:
+
+```powershell
+node companion/server.mjs --root "C:\Users\owner\Documents\Image-Line\FL Studio" --app "FL Studio 2026.lnk"
+```
+
+Browse to a `.flp` file, verify and link it, then select FL Studio 2026 and that link in the same project-open panel. FL Studio uses a separate file-bound one-time code. Halo cannot prove that FL Studio finished loading the file; check the DAW window. Only the one folder passed as `--root` is available to the companion in that run.
 
 ## Public music reference
 

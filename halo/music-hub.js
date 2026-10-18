@@ -12,6 +12,7 @@ export function createMusicHub(store, { fetcher = fetch } = {}) {
   const childPath = (folder, name) => folder === '.' ? name : `${folder}/${name}`;
   const safeName = name => typeof name === 'string' && name.length > 0 && name !== '.' && name !== '..' && !/[\\/\0]/.test(name);
   const dawName = name => /^(Ableton Live|FL Studio|Pro Tools)(?:\b|$)/i.test(name);
+  const projectExtensions = { 'ableton live 12 suite.lnk': '.als', 'fl studio 2026.lnk': '.flp' };
 
   function sessionToken() {
     let token;
@@ -74,11 +75,13 @@ export function createMusicHub(store, { fetcher = fetch } = {}) {
     const project = state.projects.find(item => item.id === state.activeProjectId);
     const resources = project?.musicResources || [];
     const projectSelect = $('#music-project-select');
-    const linkedProjects = resources.filter(item => item.kind === 'daw-project' && item.relative.toLowerCase().endsWith('.als'));
-    const projectKey = `${project?.id}|${JSON.stringify(linkedProjects.map(item => [item.id, item.name, item.relative, item.bytes, item.modifiedAt]))}`;
+    const selectedDaw = $('#music-daw-select')?.value;
+    const extension = Object.hasOwn(projectExtensions, selectedDaw) ? projectExtensions[selectedDaw] : null;
+    const linkedProjects = resources.filter(item => extension && item.kind === 'daw-project' && item.relative.toLowerCase().endsWith(extension));
+    const projectKey = `${project?.id}|${selectedDaw}|${JSON.stringify(linkedProjects.map(item => [item.id, item.name, item.relative, item.bytes, item.modifiedAt]))}`;
     if (projectSelect && (projectSelect !== lastProjectSelect || projectKey !== lastProjectKey)) {
       const selected = projectSelect.value;
-      projectSelect.replaceChildren(new Option('Select linked Ableton project', ''));
+      projectSelect.replaceChildren(new Option(extension ? `Select linked ${extension} project` : 'Select an approved DAW first', ''));
       for (const item of linkedProjects) projectSelect.add(new Option(`${item.name} · ${item.relative}`, item.id));
       if (linkedProjects.some(item => item.id === selected)) projectSelect.value = selected;
       lastProjectSelect = projectSelect; lastProjectKey = projectKey;
@@ -128,7 +131,7 @@ export function createMusicHub(store, { fetcher = fetch } = {}) {
         dawStatus(approvedDaws.length ? `${approvedDaws.length} approved DAW shortcut(s) found. Select one to request a launch code.` : 'No approved DAW shortcuts found. Start the companion with an allowlisted DAW shortcut.');
       } catch (error) { dawStatus(`DAW discovery failed: ${error.message}`); }
     });
-    dawSelect?.addEventListener('change', () => { approvalFor = null; projectApprovalFor = null; launchButton.disabled = true; projectOpenButton.disabled = true; $('#music-daw-code').value = ''; $('#music-project-code').value = ''; dawStatus('Selection changed. Request a fresh launch code.'); });
+    dawSelect?.addEventListener('change', () => { approvalFor = null; projectApprovalFor = null; launchButton.disabled = true; projectOpenButton.disabled = true; $('#music-daw-code').value = ''; $('#music-project-code').value = ''; dawStatus('Selection changed. Request a fresh launch code.'); render(); });
     $('#music-daw-approval')?.addEventListener('click', async () => {
       const app = approvedDaws.find(item => item.id === dawSelect.value);
       if (!app) return dawStatus('Discover and select an approved DAW first.');
@@ -158,7 +161,8 @@ export function createMusicHub(store, { fetcher = fetch } = {}) {
       const app = approvedDaws.find(item => item.id === dawSelect.value);
       const projectId = store.get().activeProjectId;
       const resource = store.get().projects.find(item => item.id === projectId)?.musicResources?.find(item => item.id === projectSelect.value);
-      if (app?.id !== 'ableton live 12 suite.lnk' || resource?.kind !== 'daw-project' || !resource.relative.toLowerCase().endsWith('.als')) return projectStatus('Select the approved Ableton Live 12 Suite shortcut and a linked .als project.');
+      const extension = app && Object.hasOwn(projectExtensions, app.id) ? projectExtensions[app.id] : null;
+      if (!extension || resource?.kind !== 'daw-project' || !resource.relative.toLowerCase().endsWith(extension)) return projectStatus('Select an approved Ableton or FL Studio shortcut and its matching linked project file.');
       projectApprovalFor = null; projectOpenButton.disabled = true;
       projectStatus('Rechecking the linked project in the approved folder…');
       try {
@@ -174,14 +178,14 @@ export function createMusicHub(store, { fetcher = fetch } = {}) {
       const projectId = store.get().activeProjectId;
       const resource = store.get().projects.find(item => item.id === projectId)?.musicResources?.find(item => item.id === projectSelect.value);
       const code = $('#music-project-code').value.trim();
-      if (!app || !resource || projectApprovalFor?.appId !== app.id || projectApprovalFor.resourceId !== resource.id || !/^[0-9]{6}$/.test(code)) return projectStatus('Select the approved Ableton project and enter its six-digit companion code.');
-      if (!confirm(`Ask Ableton Live 12 Suite to open ${resource.name} on this Windows PC?`)) return;
+      if (!app || !resource || projectApprovalFor?.appId !== app.id || projectApprovalFor.resourceId !== resource.id || !/^[0-9]{6}$/.test(code)) return projectStatus('Select the approved DAW project and enter its six-digit companion code.');
+      if (!confirm(`Ask ${app.name} to open ${resource.name} on this Windows PC?`)) return;
       projectApprovalFor = null; projectOpenButton.disabled = true; $('#music-project-code').value = '';
-      projectStatus('Asking the companion to open the verified Ableton project…');
+      projectStatus(`Asking the companion to open the verified project in ${app.name}…`);
       try {
         const result = await companionRequest('/apps/project-open', 'POST', { id: app.id, relative: resource.relative, code });
         if (result.launchRequested !== true || result.app !== app.name || result.relative !== resource.relative || !Number.isFinite(Date.parse(result.verifiedAt))) throw new Error('The companion did not verify the open request.');
-        projectStatus(`Ableton project-open request accepted at ${new Date(result.verifiedAt).toLocaleTimeString()}. Check Ableton to confirm the project loaded.`);
+        projectStatus(`${app.name} project-open request accepted at ${new Date(result.verifiedAt).toLocaleTimeString()}. Check the DAW to confirm the project loaded.`);
       } catch (error) { projectStatus(`Project open failed: ${error.message}. Request a new code to retry.`); }
     });
     $('#music-browse')?.addEventListener('click', () => browse().catch(error => status(`Folder unavailable: ${error.message}`)));

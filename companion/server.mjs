@@ -2,7 +2,7 @@ import http from 'node:http';
 import os from 'node:os';
 import crypto from 'node:crypto';
 import path from 'node:path';
-import { processes, audioDevices, listFiles, readFile, statMusicFile, discoverApps, launchApp, launchAbletonProject } from './windows.mjs';
+import { processes, audioDevices, listFiles, readFile, statMusicFile, discoverApps, launchApp, launchApprovedProject, projectAssociations } from './windows.mjs';
 
 const HOST = '127.0.0.1';
 const PORT = 4174;
@@ -149,11 +149,12 @@ export function createCompanionServer() {
       if (req.url === '/apps/project-approval' && req.method === 'POST') {
         if (!grants.apps || !grants.files) return reply(res, 403, { error: 'Application and Files grants are required' });
         const { id, relative, expected } = await readJson(req);
-        if (id !== 'ableton live 12 suite.lnk') return reply(res, 400, { error: 'Unsupported DAW project association' });
+        if (!Object.hasOwn(projectAssociations, id)) return reply(res, 400, { error: 'Unsupported DAW project association' });
+        const extension = projectAssociations[id];
         const app = (await discoverApps(allowedApps)).find(item => item.id === id);
-        if (!app) return reply(res, 404, { error: 'Ableton shortcut is not allowlisted or not found' });
+        if (!app) return reply(res, 404, { error: 'DAW shortcut is not allowlisted or not found' });
         const file = await statMusicFile(root, relative);
-        if (!file.relative.toLowerCase().endsWith('.als')) return reply(res, 400, { error: 'Only Ableton .als projects are supported' });
+        if (!file.relative.toLowerCase().endsWith(extension)) return reply(res, 400, { error: `Only ${extension} projects are supported for this DAW` });
         if (!expected || expected.root !== file.root || expected.relative !== file.relative || expected.bytes !== file.bytes || expected.modifiedAt !== file.modifiedAt) return reply(res, 409, { error: 'Linked project file changed; re-link it before opening' });
         launchApproval = { kind: 'project', code: String(crypto.randomInt(100000, 1000000)), id, relative: file.relative, root: file.root, bytes: file.bytes, modifiedAt: file.modifiedAt, expires: Date.now() + 60_000 };
         console.log(`Approve opening ${file.relative} in ${app.name}: ${launchApproval.code} (valid 60 seconds)`);
@@ -169,8 +170,8 @@ export function createCompanionServer() {
         const file = await statMusicFile(root, relative);
         if (file.root !== approval.root || file.relative !== approval.relative || file.bytes !== approval.bytes || file.modifiedAt !== approval.modifiedAt) { record('apps:project-open', 'changed'); return reply(res, 409, { error: 'Project file changed since approval' }); }
         const app = (await discoverApps(allowedApps)).find(item => item.id === id);
-        if (!app) return reply(res, 404, { error: 'Ableton shortcut is not allowlisted or not found' });
-        const result = await launchAbletonProject(app, root, relative);
+        if (!app) return reply(res, 404, { error: 'DAW shortcut is not allowlisted or not found' });
+        const result = await launchApprovedProject(app, root, relative);
         record('apps:project-open', 'success'); return reply(res, 200, result);
       }
       if (req.url === '/revoke' && req.method === 'POST') {

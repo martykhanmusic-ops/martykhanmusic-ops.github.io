@@ -107,10 +107,16 @@ export async function launchApp(app) {
   return { launched: true, app: app.name, verifiedAt: new Date().toISOString() };
 }
 
-export async function launchAbletonProject(app, root, relative) {
-  if (app.id !== 'ableton live 12 suite.lnk') throw new Error('Only the approved Ableton Live 12 Suite shortcut may open this project');
+export const projectAssociations = Object.freeze({
+  'ableton live 12 suite.lnk': '.als',
+  'fl studio 2026.lnk': '.flp'
+});
+
+export async function launchApprovedProject(app, root, relative) {
+  if (!Object.hasOwn(projectAssociations, app.id)) throw new Error('Unsupported DAW project association');
+  const extension = projectAssociations[app.id];
   const file = await statMusicFile(root, relative);
-  if (path.extname(file.relative).toLowerCase() !== '.als') throw new Error('Only verified Ableton .als projects may be opened');
+  if (path.extname(file.relative).toLowerCase() !== extension) throw new Error(`Only verified ${extension} projects may be opened with this DAW`);
   const shortcut = await fs.realpath(app.path);
   if (shortcut !== app.path || !(await fs.stat(shortcut)).isFile()) throw new Error('Application shortcut changed');
   const projectPath = await approvedPath(root, file.relative);

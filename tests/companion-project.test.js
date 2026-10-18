@@ -6,12 +6,14 @@ import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { discoverApps, statMusicFile } from '../companion/windows.mjs';
 
-test('Ableton project approval is bound to exact approved file and consumed on attempt', { skip: process.platform !== 'win32' }, async t => {
-  if (!(await discoverApps(new Set(['ableton live 12 suite.lnk']))).length) return t.skip('Ableton Live 12 Suite shortcut is unavailable');
+test('DAW project approval is bound to exact approved file and matching application', { skip: process.platform !== 'win32' }, async t => {
+  if ((await discoverApps(new Set(['ableton live 12 suite.lnk', 'fl studio 2026.lnk']))).length !== 2) return t.skip('Selected DAW shortcuts are unavailable');
   const sandbox = await fs.mkdtemp(path.join(os.tmpdir(), 'halo-ableton-'));
   const file = path.join(sandbox, 'test.als');
   await fs.writeFile(file, Buffer.from([1, 2, 3]));
-  const child = spawn(process.execPath, ['companion/server.mjs', '--root', sandbox, '--app', 'Ableton Live 12 Suite.lnk'], { stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true });
+  const flFile = path.join(sandbox, 'test.flp');
+  await fs.writeFile(flFile, Buffer.from([4, 5, 6]));
+  const child = spawn(process.execPath, ['companion/server.mjs', '--root', sandbox, '--app', 'Ableton Live 12 Suite.lnk', '--app', 'FL Studio 2026.lnk'], { stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true });
   let output = '';
   child.stdout.on('data', chunk => { output += String(chunk); });
   const waitFor = async (pattern, from = 0) => {
@@ -46,6 +48,19 @@ test('Ableton project approval is bound to exact approved file and consumed on a
     const secondCode = await waitFor(/Approve opening test\.als in Ableton Live 12 Suite: (\d{6})/, secondOffset);
     await fs.writeFile(file, Buffer.from([1, 2, 3, 4]));
     assert.equal((await call('/apps/project-open', token, { id: request.id, relative: 'test.als', code: secondCode })).status, 409);
+    const flStat = await statMusicFile(sandbox, 'test.flp');
+    const flRequest = { id: 'fl studio 2026.lnk', relative: 'test.flp', expected: { root: flStat.root, relative: flStat.relative, bytes: flStat.bytes, modifiedAt: flStat.modifiedAt } };
+    assert.equal((await call('/apps/project-approval', token, { ...flRequest, id: request.id })).status, 400);
+    assert.equal((await call('/apps/project-approval', token, { ...flRequest, relative: 'test.als' })).status, 400);
+    const flOffset = output.length;
+    assert.equal((await call('/apps/project-approval', token, flRequest)).status, 200);
+    const flCode = await waitFor(/Approve opening test\.flp in FL Studio 2026: (\d{6})/, flOffset);
+    assert.equal((await call('/apps/project-open', token, { id: request.id, relative: flRequest.relative, code: flCode })).status, 403);
+    const flSecondOffset = output.length;
+    assert.equal((await call('/apps/project-approval', token, flRequest)).status, 200);
+    const flSecondCode = await waitFor(/Approve opening test\.flp in FL Studio 2026: (\d{6})/, flSecondOffset);
+    await fs.writeFile(flFile, Buffer.from([4, 5, 6, 7]));
+    assert.equal((await call('/apps/project-open', token, { id: flRequest.id, relative: flRequest.relative, code: flSecondCode })).status, 409);
     assert.equal((await call('/grants/revoke', token, { scope: 'files' })).status, 200);
     assert.equal((await call('/apps/project-approval', token, request)).status, 403);
     assert.equal((await call('/revoke', token, {})).status, 200);
