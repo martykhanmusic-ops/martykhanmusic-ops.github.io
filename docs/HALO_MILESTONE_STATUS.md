@@ -22,6 +22,6 @@ Next action: finish the M5 accessibility review before declaring the milestone c
 
 Jarvis voice box is a scoped feature increment under the current M5 work: local Voicebox TTS and generated-WAV transcription were verified October 17, 2026. Physical microphone capture remains to check on the user's device; this does not mark M5 complete.
 
-Optional local LLM draft integration is a separate scoped increment: the launcher route and Jarvis form integration are implemented, with controlled desktop/mobile tests. Ollama 0.40.6 was installed and its loopback service verified on October 18, 2026; the model download remains in progress, so live model inference is not yet verified. It does not mark M5 complete or start M6.
+Optional local LLM draft integration is a separate scoped increment: Ollama 0.40.6 and qwen3:0.6b returned a real draft through Halo's launcher on October 18, 2026. A live browser test verified that it filled the Jarvis review form without automatically creating a plan or task. It does not mark M5 complete or start M6.
 
 The M3 completion claim follows the observed `git ls-remote` match for payload 6202829284d9d089ac2c24697ea6c1139d0778e9. This tracking receipt commit necessarily has its own later SHA. The untracked preview image remains untouched and uncommitted.

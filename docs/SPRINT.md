@@ -216,3 +216,4 @@ Jarvis voice box increment: local Voicebox speech output and limited launcher br
 M5 package increment: Appearance now previews Orbital and Classic, cancels or Escape-rolls back, and saves only an independent visual preference on Apply. Desktop/mobile appearance and full existing browser regression pass. Accessibility review remains before M5 completion; M6 has not begun.
 
 Local LLM draft increment: optional loopback Ollama bridge and three-action validated suggestion fill the existing Jarvis form; voice text can be copied into the request. No automatic planning or execution. Controlled tests pass; live Ollama is not installed on this PC. M5 accessibility gate remains.
+October 18 live follow-up: Ollama 0.40.6 and qwen3:0.6b are installed. Real launcher and browser requests returned a task draft while leaving Jarvis job/task counts unchanged until explicit plan generation. M5 accessibility gate remains.

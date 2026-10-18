@@ -152,3 +152,4 @@ Open **Appearance** in Halo to preview the Orbital or Classic visual package. **
 ## Optional local model drafts
 
 The Windows launcher can connect Jarvis to an Ollama service on `127.0.0.1:11434`. Install Ollama and a model separately; Halo does not download a model or create an account. In Jarvis, choose **Find models**, enter or copy a voice request, then choose **Suggest draft**. The returned suggestion can only fill a supported Jarvis form action (`add_task`, `append_note`, or `summarize`). Review/edit the form, generate a plan, and use the existing permission and Run controls. A model response never executes an action by itself. If the local service is unavailable, ordinary Jarvis remains usable.
+On this Windows PC, Ollama 0.40.6 with `qwen3:0.6b` has been verified through the launcher and browser. To repeat the live check while a Halo launcher runs on port 4174, set `HALO_TEST_URL=http://localhost:4174` and run `node tests/local-llm-live-browser.cjs`.
