@@ -28,4 +28,6 @@ Jarvis chat is another scoped increment: local Ollama replies, two-turn context,
 
 Local reminders are a scoped Jarvis increment under the current M5 work: create, due badge, optional while-open browser alerts, denial, reload, done and removal passed desktop/mobile controlled tests October 18, 2026. This does not deliver background automation or advance M11. M5 accessibility review remains open.
 
+Public music reference is a scoped read-only integration under current M5 work: Overview artist search uses the local launcher's fixed MusicBrainz route. The supplied public-apis ZIP has no catalog, so bulk API integration is unavailable. This does not complete the M6 music hub; M5 accessibility review remains open.
+
 The M3 completion claim follows the observed `git ls-remote` match for payload 6202829284d9d089ac2c24697ea6c1139d0778e9. This tracking receipt commit necessarily has its own later SHA. The untracked preview image remains untouched and uncommitted.

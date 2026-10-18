@@ -3,12 +3,14 @@ import { createJarvis, adapters } from './jarvis.js';
 import { createJarvisVoice } from './voicebox.js';
 import { createLocalLlm } from './local-llm.js';
 import { createReminders } from './reminders.js';
+import { createMusicReference } from './music-reference.js';
 import { projectJobs } from './project-state.js';
 import { createApplicationRegistry, coreApplications } from './framework.js';
 const $ = selector => document.querySelector(selector);
 const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const date = value => new Date(value).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
 let store, jarvis, voice, localLlm, reminders, search = '', dirty = false, jobFilter = 'all', jobScope = 'all', editorBase = null;
+const musicReference = createMusicReference();
 let applications, applicationWarning = '';
 try {
   applications = createApplicationRegistry({ storage: localStorage, platform: matchMedia('(max-width: 699px)').matches ? 'mobile' : 'desktop' });
@@ -40,6 +42,7 @@ function dashboard(s) {
   <section class="hero" aria-label="Resume work"><div><span class="badge">YOUR CREATIVE WORKSPACE</span><h2>${active ? `Pick up where you left off.` : 'Every great thing starts somewhere.'}</h2><p class="muted">${active ? escape(active.name) + (active.description ? ' · ' + escape(active.description) : '') : 'Give your next idea a home. Create a project, capture your thoughts, and keep moving.'}</p><button ${active ? `data-open="${escape(active.id)}"` : 'data-new'} class="primary">${active ? 'Resume project' : 'Create your first project'} ↗</button>${active ? `<p><small class="muted">Last saved ${date(active.updatedAt)}</small></p>` : ''}</div><div class="orbit"><span class="planet" aria-hidden="true"></span><span class="ring" aria-hidden="true"></span><button data-view="jarvis" aria-label="Open Jarvis portal"><span class="portal-label">JARVIS PORTAL</span></button></div></section>
   <div class="metrics"><div class="metric"><strong>${s.projects.length}</strong><span>PROJECTS IN ORBIT</span></div><div class="metric"><strong>${tasks.filter(t => !t.done).length}</strong><span>OPEN TASKS</span></div><div class="metric"><strong>${tasks.filter(t => t.done).length}</strong><span>TASKS COMPLETED</span></div></div>
   <section><div class="section-heading"><h2>Your projects <span class="muted">/ ${projects.length}</span></h2><label class="search">Search projects, notes & tasks<input id="search" type="search" value="${escape(search)}" placeholder="Find something in your orbit…"></label></div><div id="project-results">${projectCards(projects, q)}</div></section>
+  <section class="card music-reference" aria-label="Music reference"><div class="section-heading"><div><p class="eyebrow">PUBLIC MUSIC REFERENCE / READ ONLY</p><h2>Find an artist.</h2></div></div><p class="muted">Search MusicBrainz for artist details. Results are reference links and do not change your Halo projects or Jarvis plans.</p><form id="artist-search"><label>Artist name<input name="name" required minlength="2" maxlength="80" placeholder="Search an artist"></label><button class="primary">Search artists</button></form><p id="artist-status" role="status" aria-live="polite">The local Halo launcher is needed for this search.</p><div id="artist-results"></div><small>Data from <a href="https://musicbrainz.org" target="_blank" rel="noopener noreferrer">MusicBrainz</a>.</small></section>
   <section><h2>Recent activity</h2>${s.activity.slice(0, 6).map(a => `<div class="activity"><span>${escape(a.message)}</span><time datetime="${a.at}">${date(a.at)}</time></div>`).join('') || '<p class="muted">Your story starts with your first project.</p>'}</section>`;
 }
 function projectCards(projects, query) {
@@ -118,6 +121,7 @@ function render() {
   document.querySelectorAll('nav [data-view]').forEach(b => { if (b.dataset.view === s.view) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
   $('#main').innerHTML = s.view === 'dashboard' ? dashboard(s) : s.view === 'project' ? projectView(s) : jarvisView(s);
   bindMain();
+  if (s.view === 'dashboard') musicReference.bind();
   if (s.view === 'jarvis') { voice.bind(() => store.get().jobs.find(job => job.status === 'completed')?.result || ''); localLlm.bind(); localLlm.renderChat(s.chat || []); reminders.bind(); }
   reminders.render(s);
 }

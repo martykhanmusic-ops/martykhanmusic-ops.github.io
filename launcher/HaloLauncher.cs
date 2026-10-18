@@ -12,6 +12,8 @@ internal static class HaloLauncher
 {
     private static readonly Dictionary<string, byte[]> Files = new Dictionary<string, byte[]>(StringComparer.Ordinal);
     private static readonly Regex VoiceId = new Regex("^/voicebox/(history|audio)/[a-f0-9-]{36}$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly object MusicLock = new object();
+    private static DateTime LastMusicRequest = DateTime.MinValue;
 
     private static int Main(string[] args)
     {
@@ -74,6 +76,11 @@ internal static class HaloLauncher
             if (path.StartsWith("/local-llm/", StringComparison.Ordinal))
             {
                 ProxyLocalLlm(context, path);
+                return;
+            }
+            if (path.StartsWith("/public-data/", StringComparison.Ordinal))
+            {
+                SearchArtists(context, path);
                 return;
             }
             if (context.Request.HttpMethod != "GET" && context.Request.HttpMethod != "HEAD")
@@ -188,6 +195,57 @@ internal static class HaloLauncher
         downstream.Headers["Cache-Control"] = "no-store";
         downstream.Headers["X-Content-Type-Options"] = "nosniff";
         using (Stream input = upstream.GetResponseStream()) input.CopyTo(downstream.OutputStream);
+    }
+
+    private static void SearchArtists(HttpListenerContext context, string path)
+    {
+        HttpListenerResponse response = context.Response;
+        if (path != "/public-data/artists" || context.Request.HttpMethod != "GET") { response.StatusCode = 404; return; }
+        string origin = context.Request.Headers["Origin"] ?? "";
+        if (origin.Length > 0 && origin != "http://localhost:" + context.Request.LocalEndPoint.Port) { response.StatusCode = 403; return; }
+        string name = (context.Request.QueryString["name"] ?? "").Trim();
+        if (name.Length < 2 || name.Length > 80 || name.IndexOfAny(new[] { '\r', '\n', '\0' }) >= 0)
+        { response.StatusCode = 400; return; }
+        lock (MusicLock)
+        {
+            if ((DateTime.UtcNow - LastMusicRequest).TotalMilliseconds < 1200) { response.StatusCode = 429; return; }
+            LastMusicRequest = DateTime.UtcNow;
+        }
+        string target = "https://musicbrainz.org/ws/2/artist/?query=" + Uri.EscapeDataString(name) + "&fmt=json&limit=8";
+        string curl = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "curl.exe");
+        if (!File.Exists(curl)) { response.StatusCode = 503; return; }
+        try
+        {
+            ProcessStartInfo start = new ProcessStartInfo(curl);
+            start.UseShellExecute = false;
+            start.CreateNoWindow = true;
+            start.RedirectStandardOutput = true;
+            start.Arguments = "--silent --fail --max-time 10 --max-filesize 100000 --proto =https --user-agent \"HaloMusicReference/1.0 (https://github.com/martykhanmusic-ops/martykhanmusic-ops.github.io)\" --url \"" + target + "\"";
+            using (Process process = Process.Start(start))
+            using (MemoryStream output = new MemoryStream())
+            {
+                byte[] buffer = new byte[8192]; int read;
+                while ((read = process.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    if (output.Length + read > 100000) { process.Kill(); response.StatusCode = 502; return; }
+                    output.Write(buffer, 0, read);
+                }
+                if (!process.WaitForExit(12000)) { process.Kill(); response.StatusCode = 503; return; }
+                if (process.ExitCode != 0) { response.StatusCode = 503; return; }
+                byte[] data = output.ToArray();
+                response.StatusCode = 200;
+                response.ContentType = "application/json; charset=utf-8";
+                response.Headers["Cache-Control"] = "no-store";
+                response.Headers["X-Content-Type-Options"] = "nosniff";
+                response.ContentLength64 = data.Length;
+                response.OutputStream.Write(data, 0, data.Length);
+            }
+        }
+        catch (Exception error)
+        {
+            Console.Error.WriteLine("Music reference unavailable: " + error.Message);
+            response.StatusCode = 503;
+        }
     }
 
     private static string ContentType(string path)

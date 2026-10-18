@@ -162,3 +162,9 @@ You can copy voice text into chat, or copy the latest chat reply to the voice bo
 ## Local reminders
 
 Open **Jarvis → Reminders**, enter a title and future date/time, then choose **Save reminder**. Due reminders appear in the Halo top bar. **Enable browser alerts** requests notification permission explicitly; these alerts work only while Halo is open. The reminder list remains available if permission is denied. Mark an item done, cancel it, or remove it from the list. Reminders use the existing Halo workspace and JSON backup; they do not create Jarvis jobs or run OS actions. This is an in-app reminder feature, not a background Windows scheduler.
+
+## Public music reference
+
+The Overview page can search MusicBrainz artists through the local Windows launcher. Enter an artist name and choose **Search artists**. Results link to MusicBrainz and do not alter projects, notes, tasks, or Jarvis plans. The launcher uses a fixed read-only lookup, a 1.2-second request spacing, a descriptive User-Agent, and Windows' system `curl.exe` for HTTPS. A static site server or unavailable network shows an error rather than a simulated result. [MusicBrainz](https://musicbrainz.org) supplies the reference data.
+
+The supplied `public-apis-master.zip` contains validation scripts but no catalog of API entries. It was not imported as a list of live Halo integrations; see [the archive audit](docs/PUBLIC_APIS_AUDIT.md).

@@ -19,6 +19,8 @@ No credential contents are recorded. No production deployment, protected-main me
 
 Local reminder limit: the page must stay open for its 15-second due check and optional browser notification. Notification permission may be denied, and there is no Windows background scheduler or closed-app delivery. Due items remain visible when Halo is reopened. This is not M11 automation completion.
 
+The supplied public-apis ZIP lacks its API catalog and endpoints. Bulk setup cannot be validated from it. MusicBrainz artist lookup is a separate fixed integration; it needs network access and the Windows system `curl.exe`. Provider outages and rate limits surface as errors. No external API is granted Jarvis actions or workspace writes.
+
 ## Master M3 blocker resolution
 
 The prior cloud blocker was resolved by running Codex and the companion on the selected Windows computer. Node reported `win32`, Windows release `10.0.26200`, x64 and hostname `MKLAPTOP`. Live Windows queries returned process and audio endpoint entries. A folder grant listed and read a documentation file while rejecting `../README.md`; the explicitly allowlisted `File Explorer.lnk` was discovered and launched after the local one-time approval code. These are local observations, not simulated telemetry. No M4 work has started.

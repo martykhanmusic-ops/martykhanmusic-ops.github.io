@@ -221,3 +221,5 @@ October 18 live follow-up: Ollama 0.40.6 and qwen3:0.6b are installed. Real laun
 Jarvis chat increment: local Ollama conversation is available in the command center, using bounded history in the existing Halo workspace/backup. Two-turn context, reload, cancellation of clear, offline retry and real qwen3:0.6b response passed. Chat has no tool execution. M5 accessibility gate remains.
 
 Local reminder increment: Jarvis has manual reminders in the same workspace backup, a due top bar badge, explicit browser alert permission, and done/cancel/remove controls. Desktop/mobile tests cover permission denial, due state, controlled alert creation, persistence and no job effects. Closed-app/background notification is outside this increment. M5 accessibility gate remains.
+
+Public music reference increment: audited the supplied incomplete public-apis archive; implemented a fixed MusicBrainz artist search in the Windows launcher and read-only Overview panel. Live packaged browser lookup and route restrictions passed; no project/Jarvis state changed. Complete catalog and additional service selections remain open. M5 accessibility gate remains.
