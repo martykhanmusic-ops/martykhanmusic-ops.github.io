@@ -1,3 +1,4 @@
+import { setOrbState } from './orb-state.js';
 const SUPPORTED = new Set(['add_task', 'append_note', 'summarize']);
 
 export function finalModelText(raw) {
@@ -53,7 +54,7 @@ export function createLocalLlm(store, fetcher = fetch) {
     const create = document.createElement('button'); create.type = 'button'; create.className = 'primary'; create.id = 'chat-proposal-create'; create.textContent = 'Create plan for review';
     const cancel = document.createElement('button'); cancel.type = 'button'; cancel.id = 'chat-proposal-cancel'; cancel.textContent = 'Cancel';
     panel.append(heading, detail, project, label, create, cancel);
-    cancel.addEventListener('click', () => { proposal = null; panel.hidden = true; panel.replaceChildren(); chatStatus('Proposal cancelled. Nothing changed.'); });
+    cancel.addEventListener('click', () => { proposal = null; panel.hidden = true; panel.replaceChildren(); setOrbState('idle'); chatStatus('Proposal cancelled. Nothing changed.'); });
     create.addEventListener('click', () => {
       if (!proposal || proposal.projectId !== store.get().activeProjectId) { chatStatus('Project changed. Draft again before creating a plan.'); return; }
       const form = document.querySelector('#plan-form');
@@ -65,6 +66,7 @@ export function createLocalLlm(store, fetcher = fetch) {
       form.querySelector('[name="action"]').dispatchEvent(new Event('change', { bubbles: true }));
       form.querySelector('[name="input"]').value = value;
       proposal = null; panel.hidden = true; panel.replaceChildren();
+      setOrbState('waiting');
       form.requestSubmit();
     });
   }
@@ -137,6 +139,7 @@ export function createLocalLlm(store, fetcher = fetch) {
     const projectSelect = document.querySelector('#chat-project'); if (projectSelect) projectSelect.disabled = true;
     const stop = document.querySelector('#chat-stop'); if (stop) stop.hidden = false;
     chatStatus('Jarvis is thinking locally. No tool or plan is running.');
+    setOrbState('thinking');
     connection('loading', `Ollama loading · ${model}`);
     try {
       const attachment = document.querySelector('#chat-attachment');
@@ -180,6 +183,7 @@ export function createLocalLlm(store, fetcher = fetch) {
             preview.textContent = visible || 'Jarvis is thinking locally…';
             chatStatus(visible ? 'Jarvis is replying locally…' : 'Jarvis is thinking locally…');
             if (visible) connection('streaming', `Ollama replying · ${model}`);
+            if (visible) setOrbState('responding');
             if (part.done) done = true;
           }
           if (next.done && !done) throw new Error('The model stream ended before the reply completed.');
@@ -195,7 +199,8 @@ export function createLocalLlm(store, fetcher = fetch) {
       const attachmentStatus = document.querySelector('#chat-attachment-status'); if (attachmentStatus) attachmentStatus.textContent = 'No file attached.';
       chatStatus(`Reply saved in your Halo workspace. ${file ? 'A bounded file excerpt was sent to local Ollama. ' : ''}Chat has not run a tool.`);
       connection('ready', `Ollama ready · ${model} · ${voiceState}`);
-    } catch (error) { document.querySelector('#chat-stream')?.remove(); chatStatus(error.name === 'AbortError' ? 'Reply stopped. Your message remains in the box; no exchange was saved.' : `${error.message || 'Chat failed.'} Your message is still in the box; try again when the model is ready.`); connection(error.name === 'AbortError' ? 'ready' : 'offline', error.name === 'AbortError' ? `Ollama ready · ${model} · ${voiceState}` : 'Ollama reply failed · Retry connection.'); }
+      setOrbState('completed');
+    } catch (error) { document.querySelector('#chat-stream')?.remove(); chatStatus(error.name === 'AbortError' ? 'Reply stopped. Your message remains in the box; no exchange was saved.' : `${error.message || 'Chat failed.'} Your message is still in the box; try again when the model is ready.`); connection(error.name === 'AbortError' ? 'ready' : 'offline', error.name === 'AbortError' ? `Ollama ready · ${model} · ${voiceState}` : 'Ollama reply failed · Retry connection.'); setOrbState(error.name === 'AbortError' ? 'idle' : 'error'); }
     finally { busy = false; chatController = null; if (button?.isConnected) button.disabled = false; if (stop?.isConnected) stop.hidden = true; if (projectSelect?.isConnected) projectSelect.disabled = false; if (modelSelect?.isConnected) modelSelect.disabled = false; }
   }
   async function suggest(promptOverride) {
@@ -206,6 +211,7 @@ export function createLocalLlm(store, fetcher = fetch) {
     if (!model || !prompt) { status('Choose a local model and enter a request.'); return; }
     if (fromChat && !document.querySelector('#plan-form')) { chatStatus('Create a project before drafting a Jarvis plan.'); return; }
     busy = true;
+    setOrbState('planning');
     document.querySelector('#llm-suggest').disabled = true;
     status('Asking the local model for a draft. No Jarvis plan or action has been created.');
     try {
@@ -221,6 +227,7 @@ export function createLocalLlm(store, fetcher = fetch) {
         showProposal(draft);
         status('Draft is ready in the conversation. Review it before creating a plan.');
         chatStatus('Proposal ready for review. Nothing has run.');
+        setOrbState('waiting');
         document.querySelector('#chat-proposal')?.scrollIntoView({ block: 'nearest' });
         return;
       }
@@ -230,7 +237,8 @@ export function createLocalLlm(store, fetcher = fetch) {
       document.querySelector('#plan-input').value = draft.input;
       status('Draft copied into the Jarvis form. Review and edit it, then choose Generate plan. Nothing has run.');
       action.focus();
-    } catch (error) { status(error.message || 'The local model could not draft a plan.'); if (fromChat) chatStatus(error.message || 'Could not draft a plan.'); }
+      setOrbState('waiting');
+    } catch (error) { status(error.message || 'The local model could not draft a plan.'); if (fromChat) chatStatus(error.message || 'Could not draft a plan.'); setOrbState('error'); }
     finally { busy = false; const button = document.querySelector('#llm-suggest'); if (button) button.disabled = false; }
   }
   return { renderChat, bind() {

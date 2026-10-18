@@ -53,4 +53,10 @@ canonical active project, and the connection indicator checks the Ollama model
 list plus Voicebox health. Controlled desktop/mobile tests cover switch,
 stream, stop, disconnection, recovery and no automatic effect.
 
+Lobby Jarvis center: the World orb is a presentation/interaction target that
+opens the existing Jarvis route. Its state reads recorded jobs and proximity;
+Desktop orb states come from actual voice, model and job events. The shared
+workspace and Jarvis permissions remain unchanged. Focused browser evidence
+covers approach/E, click, route, and no automatic job creation.
+
 The Windows-built VST3 pass-through is source-owned in `live-listen/` and has no connection to Halo or World yet. Companion pairing, room grants and audio transport must be integrated and tested before this matrix can mark Live Listen connected.

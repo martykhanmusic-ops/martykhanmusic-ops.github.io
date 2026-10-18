@@ -1,6 +1,6 @@
 import * as THREE from './vendor/three.module.js';
 import { followCamera } from './FollowCamera.js';
-export function createScene(container,entries){
+export function createScene(container,entries,onJarvis=()=>{}){
   const renderer=new THREE.WebGLRenderer({antialias:false,powerPreference:'low-power',failIfMajorPerformanceCaveat:false});
   const tokens=getComputedStyle(document.documentElement),background=tokens.getPropertyValue('--bg').trim()||'#181c2c';
   renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setClearColor(background);
@@ -16,8 +16,14 @@ export function createScene(container,entries){
   }
   mesh(new THREE.CylinderGeometry(14,14,.3,64),0x303846,0,-.2,0);
   const ring=mesh(new THREE.TorusGeometry(10.5,.025,6,64),0xd6b990,0,.01,0);ring.rotation.x=Math.PI/2;
+  mesh(new THREE.CylinderGeometry(1.8,2,.24,32),0x806746,0,.02,0);
+  const orb=mesh(new THREE.SphereGeometry(.82,32,20),0x152535,0,1.85,0);
+  orb.material.roughness=.22;orb.material.metalness=.72;orb.material.emissive=new THREE.Color(0x247394);orb.material.emissiveIntensity=.38;
+  const core=mesh(new THREE.SphereGeometry(.43,24,16),0xa4dce9,0,1.85,0);
+  core.material.emissive=new THREE.Color(0x70d5f0);core.material.emissiveIntensity=.7;
+  const orbRing=mesh(new THREE.TorusGeometry(1.12,.035,8,64),0xd8b276,0,1.85,0);orbRing.rotation.x=.35;
   for(let i=-10;i<=10;i+=2){mesh(new THREE.BoxGeometry(.018,.02,22),0x56606b,i,0,0);mesh(new THREE.BoxGeometry(22,.02,.018),0x56606b,0,0,i);}
-  const obstacles=entries.map(d=>({x:d.location.x,z:d.location.z,radius:1.5}));
+  const obstacles=[{x:0,z:0,radius:1.1},...entries.map(d=>({x:d.location.x,z:d.location.z,radius:1.5}))];
   for(const d of entries){
     mesh(new THREE.CylinderGeometry(1.7,1.9,.25,24),0x53606a,d.location.x,.1,d.location.z);
     mesh(new THREE.BoxGeometry(2.2,2.2,1.5),0x4b515e,d.location.x,1.3,d.location.z);
@@ -37,21 +43,37 @@ export function createScene(container,entries){
   const leftArm=avatarPart(new THREE.BoxGeometry(.12,.5,.16),0xc6a381,-.33,.95,0);
   const rightArm=avatarPart(new THREE.BoxGeometry(.12,.5,.16),0xc6a381,.33,.95,0);
   const labels=entries.map(d=>{const label=document.createElement('span');label.className='world-label';label.textContent=d.label+(d.availability==='planned'?' · Planned':'');container.append(label);return {d,label};});
+  const jarvisButton=document.createElement('button');jarvisButton.className='world-jarvis-target';jarvisButton.type='button';jarvisButton.textContent='✧';jarvisButton.setAttribute('aria-label','Talk to Jarvis');jarvisButton.onclick=onJarvis;container.append(jarvisButton);
   container.prepend(renderer.domElement);
   const resize=()=>{const {width,height}=container.getBoundingClientRect();renderer.setSize(Math.max(width,1),Math.max(height,1),false);camera.aspect=Math.max(width,1)/Math.max(height,1);camera.updateProjectionMatrix();};
   const observer=new ResizeObserver(resize);observer.observe(container);resize();
-  let initialized=false,walkTime=0;
+  let initialized=false,walkTime=0,orbTime=0,lastOrbState='';
   return {
     canvas:renderer.domElement,obstacles,
-    render(position,dt,reducedMotion,orbit=0){
+    setJarvisState(state){
+      if(state===lastOrbState)return;
+      lastOrbState=state;
+      const colors={idle:0x247394,nearby:0x6eadd4,executing:0xd09b56,waiting:0xd09b56,completed:0x4dba91,error:0xcf6f64};
+      orb.material.emissive.setHex(colors[state]??colors.idle);
+      jarvisButton.dataset.state=state;
+      jarvisButton.title=`Jarvis · ${state}`;
+    },
+    render(position,dt,reducedMotion,cameraOrbit=0){
+      orbTime+=dt;
+      const bob=reducedMotion?0:Math.sin(orbTime*1.2)*.045;
+      orb.position.y=1.85+bob;core.position.y=1.85+bob;orbRing.position.y=1.85+bob;
+      if(!reducedMotion)orbRing.rotation.z+=dt*.13;
       avatar.position.set(position.x,position.y??0,position.z);avatar.rotation.y=position.heading;
       if(position.moving)walkTime+=dt*(Math.hypot(position.vx??0,position.vz??0)>4?13:8);
       const swing=position.moving&&!reducedMotion?Math.sin(walkTime)*.35:0;
       leftLeg.rotation.x=swing;rightLeg.rotation.x=-swing;leftArm.rotation.x=-swing*.7;rightArm.rotation.x=swing*.7;
-      followCamera(camera,position,initialized?dt:1,initialized?reducedMotion:true,obstacles,orbit);initialized=true;
+      followCamera(camera,position,initialized?dt:1,initialized?reducedMotion:true,obstacles,cameraOrbit);initialized=true;
       renderer.render(scene,camera);
+      const jarvisScreen=new THREE.Vector3(0,2.2,0).project(camera);
+      jarvisButton.hidden=jarvisScreen.z>1||jarvisScreen.z< -1||Math.abs(jarvisScreen.x)>1||Math.abs(jarvisScreen.y)>1;
+      jarvisButton.style.left=`${(jarvisScreen.x+1)*50}%`;jarvisButton.style.top=`${(-jarvisScreen.y+1)*50}%`;
       for(const {d,label} of labels){const vector=new THREE.Vector3(d.location.x,3.2,d.location.z).project(camera);label.hidden=vector.z>1||vector.z< -1||Math.abs(vector.x)>1.1||Math.abs(vector.y)>1.1;label.style.left=`${(vector.x+1)*50}%`;label.style.top=`${(-vector.y+1)*50}%`;}
     },
-    dispose(){observer.disconnect();labels.forEach(({label})=>label.remove());geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());renderer.dispose();renderer.forceContextLoss();renderer.domElement.remove();scene.clear();}
+    dispose(){observer.disconnect();labels.forEach(({label})=>label.remove());jarvisButton.remove();geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());renderer.dispose();renderer.forceContextLoss();renderer.domElement.remove();scene.clear();}
   };
 }

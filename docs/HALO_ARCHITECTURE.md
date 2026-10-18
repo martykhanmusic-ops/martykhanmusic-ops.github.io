@@ -23,6 +23,8 @@ executed automatically.
 
 M7 adds a separate Windows VST3 plugin source under `live-listen/`. It builds against a local external Steinberg VST3 SDK checkout and currently passes stereo audio through the host. It has no connection to the browser workspace, Windows companion, Halo World, transport or room service. The SDK build produces an ignored local artifact and does not install a plugin globally. Audio capture and room transport remain architectural work.
 
+The user-directed lobby sequence reuses the single World renderer and the original Jarvis route. `WorldScene.js` owns a central 3D orb and projected accessible click target. `HaloWorld.js` detects proximity and E interaction, while `ModeSwitcher.js` resolves the real Jarvis route through `ApplicationSessionBridge`; it never adds another Jarvis state store or privileged bridge method. World orb color reflects nearby status and recorded job state from read-only session snapshots. Desktop orb labels are set by actual Voicebox, local model, proposal and execution events through `orb-state.js`; permissions and audit remain in `jarvis.js`.
+
 Master M3 adds an optional Windows Node companion under `companion/`. It is a
 separate loopback process with no workspace database. `halo/companion.js`
 renders an additive sidebar panel and is not imported by the project store,

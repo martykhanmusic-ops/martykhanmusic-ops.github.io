@@ -64,7 +64,16 @@ export function installModeSwitcher(){
       const {mountWorld}=await import('../world/HaloWorld.js');if(ticket!==generation)return;
       session=connectApplicationSession();
       const accessible=document.createElement('button');accessible.textContent='Projects destination';accessible.onclick=()=>interaction(destinations[0]);root.querySelector('.world-info').append(accessible);
-      instance=mountWorld(root,{position,onFailure:desktop,onInteract:interaction});
+      instance=mountWorld(root,{position,onFailure:desktop,onInteract:interaction,
+        onJarvis:()=>{desktop();session.openRoute({view:'jarvis'});},
+        getJarvisState:()=>{
+          const jobs=session.getState().jobs||[];
+          if(jobs.some(job=>job.status==='running'))return 'executing';
+          if(jobs.some(job=>job.status==='awaiting_approval'))return 'waiting';
+          const latest=jobs[0];
+          if(latest&&Date.now()-Date.parse(latest.updatedAt)<10000)return latest.status==='completed'?'completed':latest.status==='failed'?'error':'idle';
+          return 'idle';
+        }});
       if(ticket!==generation){instance.dispose();instance=null;return;}
       shell.hidden=true;shell.inert=true;if(dock){dock.hidden=true;dock.inert=true;}
       document.body.dataset.mode='world';button.disabled=false;root.focus();instance.resume();

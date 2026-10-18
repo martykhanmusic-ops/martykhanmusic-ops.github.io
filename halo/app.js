@@ -2,6 +2,7 @@ import { createStore, STORAGE_KEY } from './store.js';
 import { createJarvis, adapters } from './jarvis.js';
 import { createJarvisVoice } from './voicebox.js';
 import { createLocalLlm } from './local-llm.js';
+import { setOrbState } from './orb-state.js';
 import { createReminders } from './reminders.js';
 import { createMusicReference } from './music-reference.js';
 import { createMusicHub } from './music-hub.js';
@@ -94,6 +95,8 @@ function syncView() {
     bindTaskInputs();
   }
   if(s.view === 'jarvis' && $('#job-results')) {
+    if(s.jobs.some(job=>job.status==='running'))setOrbState('executing');
+    else if(s.jobs.some(job=>job.status==='awaiting_approval'))setOrbState('waiting');
     localLlm?.renderChat(s.chat || []);
     $('#job-results').innerHTML = jobCards(s,filteredJobs(s));
     if($('#plan-task')) taskChoices();
@@ -139,6 +142,7 @@ function render() {
   if (s.view === 'project') { musicHub.bind(); musicHub.render(s); }
   if (s.view === 'dashboard') musicReference.bind();
   if (s.view === 'jarvis') { voice.bind(() => store.get().jobs.find(job => job.status === 'completed')?.result || ''); localLlm.bind(); localLlm.renderChat(s.chat || []); reminders.bind(); }
+  if (s.view === 'jarvis') setOrbState(s.jobs.some(job=>job.status==='running')?'executing':s.jobs.some(job=>['pending','awaiting_approval'].includes(job.status))?'waiting':'idle');
   reminders.render(s);
 }
 function taskChoices() {
@@ -207,10 +211,10 @@ if (store) {
     if (button.dataset.jobAction) {
       const action = button.dataset.jobAction, id = button.closest('[data-job]').dataset.job;
       try {
-        if(action==='execute') { await jarvis.execute(id); }
+        if(action==='execute') { setOrbState('executing'); await jarvis.execute(id); setOrbState('completed'); }
         else { jarvis[action](id); }
         notify(action==='execute'?'Job completed. Local result verified and saved.':action==='approve'?'Plan approved. Run the job when ready.':'Queue updated.');
-      } catch(error) { notify(error.message,true); }
+      } catch(error) { setOrbState('error'); notify(error.message,true); }
     }
   });
   $('#close-dialog').onclick = () => $('#project-dialog').close();

@@ -340,3 +340,7 @@ body[data-view=jarvis] #application-directory,body[data-view=jarvis] .companion-
 .chat-proposal textarea{min-height:72px}
 .chat-proposal button{justify-self:start}
 #chat-stream{white-space:pre-wrap}
+.jarvis-orb[data-state="listening"] .jarvis-orb-core,.jarvis-orb[data-state="responding"] .jarvis-orb-core{box-shadow:inset -18px -22px 34px #0915109c,0 0 52px #74d7f5aa,0 0 0 12px #8fcfe852}
+.jarvis-orb[data-state="thinking"] .jarvis-orb-ring,.jarvis-orb[data-state="planning"] .jarvis-orb-ring,.jarvis-orb[data-state="executing"] .jarvis-orb-ring,.jarvis-orb[data-state="waiting"] .jarvis-orb-ring{border-color:#f2cf86;box-shadow:0 0 28px #f2cf86aa}
+.jarvis-orb[data-state="completed"] .jarvis-orb-core{box-shadow:inset -18px -22px 34px #0915109c,0 0 52px #75d8ab9c,0 0 0 12px #75d8ab48}
+.jarvis-orb[data-state="error"] .jarvis-orb-ring{border-color:#ef978e;box-shadow:0 0 26px #ef978e8c}

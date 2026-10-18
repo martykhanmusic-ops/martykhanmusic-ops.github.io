@@ -1,3 +1,4 @@
+import { setOrbState } from './orb-state.js';
 const API = '/voicebox';
 const MAX_AUDIO_BYTES = 12_000_000;
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -28,6 +29,7 @@ export function createJarvisVoice({ fetcher = fetch, mediaDevices = navigator.me
     if (player) { player.pause(); player.src = ''; player = null; }
     if (audioUrl) { URL.revokeObjectURL(audioUrl); audioUrl = null; }
     status('Playback stopped.');
+    setOrbState('idle');
   }
   function cancelRecording() {
     if (recorder && recorder.state !== 'inactive') { recorder.onstop = null; recorder.stop(); }
@@ -42,7 +44,7 @@ export function createJarvisVoice({ fetcher = fetch, mediaDevices = navigator.me
   }
   async function record() {
     if (recorder) return;
-    if (!mediaDevices?.getUserMedia || !Recorder) { status('Microphone recording is unavailable in this browser. Type in Jarvis instead.'); return; }
+    if (!mediaDevices?.getUserMedia || !Recorder) { status('Microphone recording is unavailable in this browser. Type in Jarvis instead.'); setOrbState('error'); return; }
     try {
       stream = await mediaDevices.getUserMedia({ audio: true });
       recorder = new Recorder(stream, Recorder.isTypeSupported?.('audio/webm') ? { mimeType: 'audio/webm' } : undefined);
@@ -55,17 +57,17 @@ export function createJarvisVoice({ fetcher = fetch, mediaDevices = navigator.me
         recorder = null; stream = null; chunks = []; controls();
         if (!blob.size) { status('No audio was captured.'); return; }
         if (blob.size > MAX_AUDIO_BYTES) { status('Recording is too large. Try a shorter message.'); return; }
-        status('Transcribing with local Voicebox…');
+        status('Transcribing with local Voicebox…');setOrbState('thinking');
         try {
           const form = new FormData(); form.append('file', blob, blob.type.includes('webm') ? 'jarvis.webm' : 'jarvis.wav');
           const result = await json(await fetcher(`${API}/transcribe`, { method: 'POST', mode: 'cors', body: form }));
           const text = document.querySelector('#voice-text');
           if (text && typeof result.text === 'string') { text.value = result.text.trim(); text.dispatchEvent(new Event('input', { bubbles: true })); if (text.value) document.dispatchEvent(new CustomEvent('halo:voice-transcript', { detail: text.value })); }
-          status(result.text?.trim() ? 'Transcript ready. Review it before using it in a plan.' : 'Voicebox returned an empty transcript.');
-        } catch (error) { status(error.message.includes('being downloaded') ? `Voicebox is preparing its transcription model. ${error.message}` : `Transcription failed: ${error.message}`); }
+          status(result.text?.trim() ? 'Transcript ready. Review it before using it in a plan.' : 'Voicebox returned an empty transcript.');setOrbState(result.text?.trim()?'completed':'error');
+        } catch (error) { status(error.message.includes('being downloaded') ? `Voicebox is preparing its transcription model. ${error.message}` : `Transcription failed: ${error.message}`);setOrbState('error'); }
       };
-      recorder.start(); controls(); status('Listening. Press Stop when you finish.');
-    } catch (error) { cancelRecording(); status(`Microphone unavailable: ${error.message}`); }
+      recorder.start(); controls(); status('Listening. Press Stop when you finish.');setOrbState('listening');
+    } catch (error) { cancelRecording(); status(`Microphone unavailable: ${error.message}`);setOrbState('error'); }
   }
   function stopRecording() { if (recorder?.state === 'recording') { status('Finishing recording…'); recorder.stop(); } }
   async function speak() {
@@ -74,7 +76,7 @@ export function createJarvisVoice({ fetcher = fetch, mediaDevices = navigator.me
     stopPlayback();
     const current = generation;
     const profile = document.querySelector('#voice-profile')?.value.trim();
-    status('Voicebox is generating speech…');
+    status('Voicebox is generating speech…');setOrbState('thinking');
     try {
       const request = { text: text.slice(0, 10000), personality: false };
       if (profile) request.profile = profile;
@@ -90,13 +92,13 @@ export function createJarvisVoice({ fetcher = fetch, mediaDevices = navigator.me
           if (current !== generation) return;
           audioUrl = URL.createObjectURL(blob);
           player = new AudioPlayer(audioUrl);
-          player.onended = () => { status('Speech finished.'); if (audioUrl) URL.revokeObjectURL(audioUrl); audioUrl = null; player = null; };
-          await player.play(); status('Speaking through Voicebox.'); return;
+          player.onended = () => { status('Speech finished.'); setOrbState('completed'); if (audioUrl) URL.revokeObjectURL(audioUrl); audioUrl = null; player = null; };
+          await player.play(); status('Speaking through Voicebox.');setOrbState('responding'); return;
         }
         await wait(1000);
       }
       if (current === generation) throw new Error('Voicebox took too long. Try again.');
-    } catch (error) { if (current === generation) status(`Speech failed: ${error.message}`); }
+    } catch (error) { if (current === generation) { status(`Speech failed: ${error.message}`);setOrbState('error'); } }
   }
   function speakInBrowser() {
     const text = document.querySelector('#voice-text')?.value.trim();

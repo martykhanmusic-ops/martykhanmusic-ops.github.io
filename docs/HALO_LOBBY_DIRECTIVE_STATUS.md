@@ -6,7 +6,7 @@ Updated October 18, 2026. This tracks the user-supplied Halo Lobby / Jarvis / Sa
 | --- | --- | --- |
 | A Audit | Complete after the baseline and remote receipt recorded below | Source, Git, dependencies, shared-state integration and gaps verified |
 | B Playable Lobby | Complete after remote receipt below | Existing single controller gains the requested controls and movement/camera/collision behavior; desktop/mobile fallback and core regression pass |
-| C Jarvis Center | Not started | Central World orb invokes the real Jarvis surface, with explicit interaction states and existing approvals |
+| C Jarvis Center | Complete after remote receipt below | Central World orb invokes the real Jarvis surface, with explicit interaction states and existing approvals |
 | D Saturn Doorways | Not started | One shared registry drives stationary walk-through World doorways and Desktop ring, with truthful route states |
 | E Application Integration | Not started | Available portals reach real registered Halo applications; unavailable entries remain visibly unavailable |
 | F Accessibility | Not started | Remappable persisted controls, presets, semantic destination alternative, keyboard/focus and applicable WCAG 2.2 AA checks |
@@ -31,3 +31,11 @@ Milestone protocol: complete each row's work, run focused and ecosystem tests, r
 - Focused checks: `npm test` 55/55, World syntax check, existing World M1–M4 Chromium scenarios, and new `tests/world-lobby-browser.cjs` for arrow turning, forward movement, jump/land, camera drag, Escape pause and Desktop return passed. The Windows launcher compiled to ignored `dist/Halo-Playable-Lobby.exe`; exact runtime execution of that new EXE has not been observed.
 - Full regression passed master core/Jarvis, browser/integration, framework, World M1–M4 plus new lobby, music library/DAW, Jarvis capability/streamlining and axe/keyboard/forced-colors/reduced-motion accessibility at supported desktop/mobile widths. The World remains desktop-only by design; mobile retained a tested Desktop fallback.
 - Milestone B covers the playable plaza and controller. Central Jarvis, physical Saturn doorways, destination integration, expanded accessibility and final art remain C–G. Mobile intentionally retains the existing Desktop fallback until an accessible mobile World controller is delivered in F.
+
+## C — Jarvis center implementation
+
+- The existing World scene now has one central dark reflective orb, blue-white core, gold orbit and accessible projected interaction target. Its label and emissive color express recorded idle, nearby, executing, waiting-for-approval, completed and recent error states. It uses the existing session snapshot; no separate Jarvis engine or response source was created.
+- Approaching the orb and pressing E, or clicking its visible target, opens the original Jarvis route and preserves World position for a later return. The ordinary Desktop Jarvis orb now labels listening, thinking, responding, planning, executing, waiting, completed and error based on actual Voicebox, Ollama, proposal and job events. Existing plans, permissions, deletion approvals, history and recovery remain authoritative.
+- Focused Windows Chromium checks passed central-orb proximity/E, click and real Jarvis navigation with zero jobs, plus bounded chat draft and Voicebox scenarios at desktop/mobile widths. World mobile fallback remains Desktop.
+- World does not claim an active microphone/model state while its Jarvis UI is closed; only recorded jobs and proximity are represented there. A configurable global shortcut is deferred to the controls/accessibility milestone F. Saturn portal ring and other destinations remain D–E.
+- Full regression passed master core/Jarvis, browser/integration, framework, World M1–M4 plus lobby/Jarvis, music library/DAW, Jarvis capability/streamlining/Voicebox and accessibility checks at supported desktop/mobile widths. `dist/Halo-Jarvis-Center.exe` compiled on Windows; launching this exact EXE remains unverified under the earlier automatic command-policy restriction.

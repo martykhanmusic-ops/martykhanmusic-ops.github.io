@@ -287,3 +287,9 @@ with the actual `music-hub-browser.cjs` and `music-daw-browser.cjs` files.
 - A audit baseline: 54/54 Node tests, syntax and World checks, and master core/Jarvis, browser/integration and World M1–M4 Chromium suites passed on Windows. Git feature branch and remote SHA matched; only the unrelated preview PNG was untracked.
 - B focused implementation: 55/55 Node tests including new turn/jump/camera checks; existing World M1–M4 browser suites passed. New World lobby browser scenario passed arrow turn/forward, jump/land, camera drag, Escape pause and Desktop return. `Halo-Playable-Lobby.exe` compiled locally.
 - B full regression passed master core/Jarvis, browser/integration, framework, World M1–M4 plus new lobby, music library/DAW, Jarvis capabilities/streamlining and accessibility suites at supported desktop/mobile widths.
+
+### Halo lobby directive C — October 18, 2026
+
+- `npm test` 55/55, `npm run check`, and World syntax checks passed after adding the central orb and state labels.
+- Focused Chromium scenarios passed World Jarvis proximity/E and click navigation, no automatic job creation, existing project World route, desktop/mobile Jarvis capability and Voicebox flows.
+- Full browser regression passed master core/Jarvis, browser/integration, framework, World M1–M4 plus lobby/Jarvis, music library/DAW, Jarvis capability/streamlining/Voicebox and accessibility at supported widths. `dist/Halo-Jarvis-Center.exe` compiled on Windows; live execution of that exact binary was not verified.
