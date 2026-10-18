@@ -40,4 +40,10 @@ The updated local executable containing this draft integration is `dist/Halo-Loc
 
 ## Prompt for a new chat
 
+October 18 local 3DCodeVerse evaluation: source from the user ZIP is under
+`C:\Users\owner\_Code\3dcodeverse`; Node runtime installed and an offline
+music kiosk GLB exported under `halo-experiments/`. See
+`docs/3DCODEVERSE_EVALUATION.md`. No Halo runtime integration or M10 start;
+master M6 is still in progress. Verify the local folder in a Windows session.
+
 > Resume my build. First read this repository's `docs/CODEX_MEMORY_ROADMAP.md`. If you can access my Windows PC, also read `%USERPROFILE%\_Code\CODEX_MEMORY_ROADMAP.md` and open the canonical project folder. Verify Git branch, remote, commits, uncommitted changes, and current status files before editing. Preserve existing work. If you cannot access the PC, say so and use the verified remote branch or files I provide.

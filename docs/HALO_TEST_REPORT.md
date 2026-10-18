@@ -178,3 +178,18 @@ The user chose Ableton projects first. A bounded Windows inspection found `.als`
 ## Master M6 FL Studio project association — October 18, 2026
 
 The existing file-bound project approval was extended only to FL Studio 2026 `.flp` files and the installed `FL64.exe` shortcut target. The fixed PowerShell launch helper parses successfully and the two selected Windows shortcuts resolve to the expected existing executable filenames. `tests/companion-project.test.js` used real temporary `.als` and `.flp` files; it rejects a project tied to the other DAW, mismatched extension, wrong/reused code, changed file fingerprint and revoked Files grant. `tests/music-project-browser.cjs` passed Ableton and FL Studio paths at 1440 and 390 pixels with selection filtering, stale-file denial, wrong code, cancelled confirmation, accepted response, unchanged workspace and no overflow/page errors. `npm test` passed 52/52, syntax and World checks passed, and the full core/Jarvis/integration/World/framework/voice/chat/reminders/reference/visual/accessibility/music browser regression passed. `dist/Halo-DAW-Projects.exe` was built from staged site assets and served `/halo/` and `/halo/music-hub.js` with HTTP 200 on localhost:4174. Browser accepted responses were controlled fixtures; neither a physical DAW launch nor project load is claimed.
+# 3DCodeVerse ZIP evaluation — October 18, 2026
+
+The supplied archive was inspected (1,343 ZIP entries, about 16.5 MB
+uncompressed), path-validated, and extracted to a separate local editable
+folder. Node 24.16.0 and npm 11.13.0 were found; `npm ci` installed the
+lockfile's 99 packages in `harness/runtime_js`. The reviewed
+`halo-experiments/src/object.js` exported a 38,560-byte GLB through the
+3DCodeVerse exporter with `ok:true`, selfcheck run, zero unnamed meshes and
+zero warnings. GLB magic/version/declared length matched actual bytes. The
+full Python harness and browser renderer were not run; see
+`3DCODEVERSE_EVALUATION.md` for compatibility and dependency limits.
+
+Halo regression after the documentation-only link: `npm test` passed 52/52,
+`npm run check` passed, `node scripts/check-world.mjs` passed, and
+`git diff --check` passed. No Halo runtime code or asset was changed.

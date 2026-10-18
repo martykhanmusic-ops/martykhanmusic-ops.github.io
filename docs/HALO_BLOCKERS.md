@@ -40,3 +40,13 @@ Ableton `.als` and FL Studio `.flp` project opening now have file-bound approval
 ## Master M4 limits
 
 The framework catalog contains trusted local modules only. Its in-page grants are UI authorization, not an OS security boundary or third-party isolation. Extension code runs on the Halo origin; adding untrusted modules requires a sandbox design. Version incompatibility blocks opening until an explicit migration is built. Application metadata is browser-local and quota-limited; a corrupt value is preserved and Halo continues with transient registry state. No visual redesign, production deployment or external app provider is included.
+## 3DCodeVerse local evaluation
+
+The supplied 3DCodeVerse code is installed separately under the local `_Code`
+library. Its Node exporter produced an offline Halo kiosk candidate. The full
+Python harness is not runnable in the observed Windows command environment:
+Python 3.13 and a WSL distribution were not found. The ZIP supplies no finished
+3D asset, and Halo World has no GLB loader and uses an older Three.js version.
+The supplied Node lockfile reports 10 npm advisories. A live Halo integration
+needs an M10 asset-loading design, reviewed dependencies and visual/performance
+tests after the master milestone gate. See `3DCODEVERSE_EVALUATION.md`.
