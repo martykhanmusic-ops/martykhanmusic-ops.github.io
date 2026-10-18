@@ -10,7 +10,7 @@
 | R6 | Historical SPRINT.md has old no-push statements | Historical records describe then-current authorization; master remote receipts supersede them |
 | R7 | Windows companion is restricted to the local development origin | Keep this scope explicit; a deployed or remote bridge needs its own security design and approval |
 | R8 | No actual DAW, plugin build environment or real mobile audio target | Required at M7; no simulated latency accepted |
-| R9 | User requested the Halo visual language for the UI; the initial style pass is implemented, but a full design package and expanded World art remain | Review the M5 package/rollback and accessibility before milestone completion; separately approve expanded World art |
+| R9 | M5 appearance package and targeted accessibility review are implemented; expanded World art is separate future work | Keep World expansion behind its own design review; do not treat automated axe checks as a screen-reader certification |
 | R10 | No lint/build scripts, other-browser or assistive-technology validation | Report unavailable checks explicitly; syntax/Chromium are limited evidence |
 | R11 | Local Voicebox models are stored outside Halo and can take time to download on a new PC; this PC completed Whisper base and Kokoro checks | Start the local Voicebox backend and verify model readiness on each new machine; report failures honestly |
 | R12 | RESOLVED October 18: Ollama 0.40.6 and qwen3:0.6b generated a real draft through Halo's launcher; browser verified review-only behavior | Recheck model availability on another PC or after reinstall; Jarvis remains usable when Ollama is unavailable |
