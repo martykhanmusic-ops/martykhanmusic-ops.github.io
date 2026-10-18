@@ -36,3 +36,5 @@ Master M4 application framework delivered on October 16, 2026. The trusted catal
 Master M5 has begun by direct user request to fit the UI to Halo's visual language. The first CSS-only increment keeps the existing shell and data model, unifies dark/light orbital styling and passes desktop/mobile visual inspection and regression. Package preview/rollback and full accessibility review remain before M5 completion; M6 has not begun.
 
 Master M5 later completed and was remotely verified; see milestone status. M6 has started with the user-directed library-first slice: verified Windows file references, metadata/tags/notes and shared project review tasks. DAW selection, approved launch, and remaining music-hub acceptance are pending. Do not begin M7 until M6 is complete and remotely verified.
+
+M6 library follow-up adds one-directory-at-a-time selection from the companion's approved root. It keeps the explicit verify-and-link step. DAW launch remains gated on a selected shortcut and project folder.

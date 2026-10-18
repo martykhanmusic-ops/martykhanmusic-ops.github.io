@@ -120,6 +120,9 @@ footer { color: var(--muted); }
 .music-reference form { display: flex; align-items: end; gap: 12px; flex-wrap: wrap; }
 .music-reference form label { flex: 1 1 220px; }
 .music-hub { margin: 22px 0; }
+#music-browser:not(:empty) { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; margin: 10px 0; border: 1px solid var(--line); border-radius: 12px; }
+#music-browser p { width: 100%; margin: 0; overflow-wrap: anywhere; }
+#music-browser button { margin: 0; max-width: 100%; overflow-wrap: anywhere; }
 .music-hub form, .music-resource-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .music-hub form button { justify-self: start; }
 .music-resource { padding: 14px 0; border-top: 1px solid var(--line); min-width: 0; }

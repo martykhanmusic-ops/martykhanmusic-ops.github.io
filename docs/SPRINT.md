@@ -230,3 +230,5 @@ M5 accessibility acceptance increment: added axe-core browser scans for Overview
 M5 acceptance payload d91c09dc716177c3bd22c54418ca8f75ff01a179 matched the remote feature branch. The packaged `Halo-Design-System.exe` served the corrected Halo page and CSS. M5 is complete; M6 music hub is next.
 
 M6 library-first increment: project-linked local music files use the paired Windows companion's read-only approved folder. Metadata, tags and notes live in the canonical project backup; review tasks use the existing task store. Actual Windows file stat, traversal/extension rejection, 51 Node tests and desktop/mobile browser paths passed. DAW shortcut and local project folder are still needed for verified launch, so M6 remains in progress.
+
+M6 folder-browser increment: project users can inspect one approved companion directory at a time, choose a supported file to fill its relative path, and explicitly verify/link it. Revoked or disconnected access clears stale listings. No media bytes or extra database are created; DAW launch is still pending.

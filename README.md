@@ -169,7 +169,7 @@ Open **Jarvis → Reminders**, enter a title and future date/time, then choose *
 
 ## Project music library
 
-Open a Halo project to link audio, MIDI, or DAW project files from a folder approved in the optional Windows companion. Pair the companion and grant read-only Files access first, then enter a path relative to that folder and choose **Verify and link file**. The library saves a title, tags, notes, file size, modification time, and last verification time in the existing project backup. Use **Recheck file** to check a link again; a disconnected or revoked companion reports failure. **Add review task** creates a normal project task, and **Remove link** removes only the Halo reference. Audio bytes stay in the Windows folder and are not included in Halo's JSON backup.
+Open a Halo project to link audio, MIDI, or DAW project files from a folder approved in the optional Windows companion. Pair the companion and grant read-only Files access first. Choose **Browse approved folder** to inspect one folder at a time and select a supported file, or type a relative path. Selecting a file only fills the path; choose **Verify and link file** to save it. Each listing is limited to 200 entries. The library saves a title, tags, notes, file size, modification time, and last verification time in the existing project backup. Use **Recheck file** to check a link again; a disconnected or revoked companion reports failure. **Add review task** creates a normal project task, and **Remove link** removes only the Halo reference. Audio bytes stay in the Windows folder and are not included in Halo's JSON backup.
 
 DAW launching and live audio are not part of this library increment.
 

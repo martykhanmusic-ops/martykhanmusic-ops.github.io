@@ -5,20 +5,55 @@ export function createMusicHub(store, { fetcher = fetch } = {}) {
   let lastList, lastKey;
   const status = message => { const element = $('#music-hub-status'); if (element) element.textContent = message; };
   const tagsFrom = text => text.split(',').map(tag => tag.trim()).filter(Boolean);
+  const musicFile = name => /\.(wav|mp3|flac|aiff|aif|ogg|m4a|mid|midi|als|flp|rpp|ptx|cpr|npr)$/i.test(name);
+  const childPath = (folder, name) => folder === '.' ? name : `${folder}/${name}`;
+  const safeName = name => typeof name === 'string' && name.length > 0 && name !== '.' && name !== '..' && !/[\\/\0]/.test(name);
 
-  async function stat(relative) {
+  async function companionPost(route, relative) {
     let token;
     try { token = sessionStorage.getItem('halo.companion.token'); } catch { /* A blocked session is disconnected. */ }
     if (!token) throw new Error('Pair the Windows companion with an approved folder first.');
-    const response = await fetcher(`${endpoint}/files/music-stat`, {
+    const response = await fetcher(`${endpoint}${route}`, {
       method: 'POST', mode: 'cors', cache: 'no-store',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ relative }), signal: AbortSignal.timeout(5000)
     });
     const result = await response.json();
-    if (!response.ok) throw new Error(result.error || 'The file could not be verified.');
+    if (!response.ok) throw new Error(result.error || 'The approved folder could not be checked.');
+    return result;
+  }
+
+  async function stat(relative) {
+    const result = await companionPost('/files/music-stat', relative);
     if (!result || !['audio', 'sample', 'daw-project'].includes(result.kind) || typeof result.root !== 'string' || typeof result.relative !== 'string' || !Number.isSafeInteger(result.bytes) || !Number.isFinite(Date.parse(result.verifiedAt)) || !Number.isFinite(Date.parse(result.modifiedAt))) throw new Error('The companion returned invalid file information.');
     return result;
+  }
+
+  async function browse(relative = '.') {
+    status('Reading the approved folder…');
+    let result;
+    try { result = await companionPost('/files/list', relative); }
+    catch (error) { $('#music-browser')?.replaceChildren(); throw error; }
+    if (!result || !Array.isArray(result.entries) || result.entries.length > 200 || result.entries.some(entry => !entry || !safeName(entry.name) || !['file', 'directory', 'other'].includes(entry.type))) throw new Error('The companion returned an invalid folder listing.');
+    const browser = $('#music-browser');
+    if (!browser) return;
+    browser.replaceChildren();
+    const heading = document.createElement('p'); heading.textContent = `Approved folder: ${relative}`; browser.append(heading);
+    if (relative !== '.') {
+      const up = document.createElement('button'); up.type = 'button'; up.textContent = '← Parent folder'; up.dataset.browseDir = relative.split('/').slice(0, -1).join('/') || '.'; browser.append(up);
+    }
+    let count = 0;
+    for (const entry of result.entries) {
+      if (entry.type !== 'directory' && !(entry.type === 'file' && musicFile(entry.name))) continue;
+      const path = childPath(relative, entry.name);
+      if (path.length > 500) continue;
+      const button = document.createElement('button'); button.type = 'button'; button.textContent = `${entry.type === 'directory' ? 'Folder' : 'File'}: ${entry.name}`;
+      if (entry.type === 'directory') button.dataset.browseDir = path;
+      else button.dataset.useFile = path;
+      browser.append(button); count++;
+    }
+    if (!count) { const empty = document.createElement('p'); empty.className = 'muted'; empty.textContent = 'No supported music files or folders in this listing.'; browser.append(empty); }
+    status(`Showing ${count} supported entries in ${relative}. Choose a file, then verify it to save a link.`);
   }
 
   function render(state = store.get()) {
@@ -54,6 +89,13 @@ export function createMusicHub(store, { fetcher = fetch } = {}) {
 
   function bind() {
     const form = $('#music-hub-form');
+    $('#music-browse')?.addEventListener('click', () => browse().catch(error => status(`Folder unavailable: ${error.message}`)));
+    $('#music-browser')?.addEventListener('click', event => {
+      const button = event.target.closest('button');
+      if (!button) return;
+      if (button.dataset.browseDir) browse(button.dataset.browseDir).catch(error => status(`Folder unavailable: ${error.message}`));
+      if (button.dataset.useFile) { form.elements.relative.value = button.dataset.useFile; form.elements.relative.focus(); status('Path selected. Verify and link the file to save it.'); }
+    });
     form?.addEventListener('submit', async event => {
       event.preventDefault();
       const data = new FormData(form), projectId = store.get().activeProjectId;
