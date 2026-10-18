@@ -31,4 +31,11 @@ music-link and session data; project session start/finish writes the same
 workspace; Jarvis local chat reads a bounded selected-project summary. Desktop
 and mobile journeys return from project to Home and back without another store.
 
+Jarvis orb integration: packaged `localhost` Halo selects an installed local
+model on Jarvis entry; Voicebox transcription populates the chat composer for
+review; reply speech is explicit. The existing plan, permission, reminder and
+audit controls are retained below the conversation. Controlled browser checks
+passed at desktop/mobile widths; live execution of the newly built launcher
+was blocked by command policy.
+
 The Windows-built VST3 pass-through is source-owned in `live-listen/` and has no connection to Halo or World yet. Companion pairing, room grants and audio transport must be integrated and tested before this matrix can mark Live Listen connected.

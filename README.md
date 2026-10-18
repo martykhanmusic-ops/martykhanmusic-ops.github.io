@@ -21,6 +21,12 @@ no file paths or full notes, and still has no tool access. Actions continue
 through the separate Jarvis permission and approval flow.
 In Jarvis chat, press Enter to send or Shift+Enter for a new line. The Send
 message button remains available for touch and pointer use.
+The Jarvis screen now leads with one orb and conversation. In the Windows
+launcher, it checks for installed local Ollama models automatically and prefers
+`qwen3:0.6b` when available. Press Talk to Jarvis to record, press it again
+to stop, review the transcribed message in chat, then send it. Hear latest
+reply speaks the saved response through Voicebox. Plans, reminders and tool
+permissions remain lower on the same page; chat and speech do not run them.
 
 ## Run locally
 

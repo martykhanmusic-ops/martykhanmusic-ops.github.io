@@ -259,3 +259,10 @@ with the actual `music-hub-browser.cjs` and `music-daw-browser.cjs` files.
 - `tests/jarvis-chat-browser.cjs` passed at 1440px and 390px with the keyboard path, safe rendering, reload, offline retry, and no tool effects.
 - `npm test` passed 54/54; `npm run check` and `git diff --check` passed.
 - `dist/Halo-Chat-Enter.exe` built locally. The earlier `Halo-Creative-Orbit.exe` was open, so this follow-up did not overwrite the running executable.
+
+### Jarvis orb and automatic local model — October 18, 2026
+
+- `npm test`: 54/54; `npm run check` and `node scripts/check-world.mjs`: passed.
+- `tests/jarvis-orb-browser.cjs` passed at 1440px and 390px: automatic local-model selection, microphone transcription into the reviewed chat composer, Enter send, spoken reply, no Jarvis job, and no overflow/page errors. Browser model/Voicebox routes were controlled fixtures.
+- Full browser regression passed core, Jarvis, chat, Voicebox, local LLM, reminders, music, World M1–M4, and axe/keyboard/forced-colors/reduced-motion accessibility checks at supported widths.
+- Actual Windows Ollama `/api/tags` returned installed `qwen3:0.6b`. `dist/Halo-Jarvis-Orb.exe` compiled from current source. Starting this new executable for a live launcher-route check was rejected by automatic command policy; its runtime and live model chat in this exact build remain unverified.

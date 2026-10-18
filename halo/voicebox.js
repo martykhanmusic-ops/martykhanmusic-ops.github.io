@@ -13,12 +13,14 @@ async function json(response) {
 
 export function createJarvisVoice({ fetcher = fetch, mediaDevices = navigator.mediaDevices, Recorder = window.MediaRecorder, AudioPlayer = window.Audio } = {}) {
   let recorder = null, stream = null, chunks = [], player = null, audioUrl = null, generation = 0;
-  const status = message => { const el = document.querySelector('#voice-status'); if (el) el.textContent = message; };
+  const status = message => { for (const selector of ['#voice-status', '#orb-voice-status']) { const el = document.querySelector(selector); if (el) el.textContent = message; } };
   const controls = () => {
     const record = document.querySelector('#voice-record'), stop = document.querySelector('#voice-stop'), speak = document.querySelector('#voice-speak');
     if (record) record.disabled = Boolean(recorder);
     if (stop) stop.disabled = !recorder;
     if (speak) speak.disabled = !document.querySelector('#voice-text')?.value.trim();
+    const orbTalk = document.querySelector('#orb-talk');
+    if (orbTalk) orbTalk.textContent = recorder ? '■ Stop listening' : '● Talk to Jarvis';
   };
   function stopPlayback() {
     generation++;
@@ -58,7 +60,7 @@ export function createJarvisVoice({ fetcher = fetch, mediaDevices = navigator.me
           const form = new FormData(); form.append('file', blob, blob.type.includes('webm') ? 'jarvis.webm' : 'jarvis.wav');
           const result = await json(await fetcher(`${API}/transcribe`, { method: 'POST', mode: 'cors', body: form }));
           const text = document.querySelector('#voice-text');
-          if (text && typeof result.text === 'string') { text.value = result.text.trim(); text.dispatchEvent(new Event('input', { bubbles: true })); }
+          if (text && typeof result.text === 'string') { text.value = result.text.trim(); text.dispatchEvent(new Event('input', { bubbles: true })); if (text.value) document.dispatchEvent(new CustomEvent('halo:voice-transcript', { detail: text.value })); }
           status(result.text?.trim() ? 'Transcript ready. Review it before using it in a plan.' : 'Voicebox returned an empty transcript.');
         } catch (error) { status(error.message.includes('being downloaded') ? `Voicebox is preparing its transcription model. ${error.message}` : `Transcription failed: ${error.message}`); }
       };
@@ -112,6 +114,12 @@ export function createJarvisVoice({ fetcher = fetch, mediaDevices = navigator.me
       document.querySelector('#voice-check')?.addEventListener('click', check);
       document.querySelector('#voice-record')?.addEventListener('click', record);
       document.querySelector('#voice-stop')?.addEventListener('click', stopRecording);
+      document.querySelector('#orb-talk')?.addEventListener('click', () => recorder ? stopRecording() : record());
+      document.querySelector('#orb-hear')?.addEventListener('click', () => {
+        const latest = [...document.querySelectorAll('.chat-assistant p')].at(-1)?.textContent;
+        if (!latest) { status('There is no Jarvis reply to speak yet.'); return; }
+        const text = document.querySelector('#voice-text'); text.value = latest; controls(); speak();
+      });
       document.querySelector('#voice-speak')?.addEventListener('click', speak);
       document.querySelector('#voice-browser')?.addEventListener('click', speakInBrowser);
       document.querySelector('#voice-stop-playback')?.addEventListener('click', stopPlayback);

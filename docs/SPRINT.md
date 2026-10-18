@@ -244,4 +244,11 @@ User-directed creative-orbit pass: Home, selected-project session continuity,
 and project-aware Jarvis chat are integrated with the canonical store. This
 supports the user's visual/workflow vision while M7 streaming remains open.
 
+Jarvis orb follow-up: conversation and voice controls are the first screen,
+installed local model discovery is automatic in the Windows launcher, and
+transcribed speech is reviewed in chat before sending. Plans, permissions,
+reminders and audit remain on the page below the conversation. Full browser
+regression passes; the newly built launcher could not be started for a live
+model-route check because the command was rejected by automatic policy.
+
 First increment: local Windows VST3 pass-through source under `live-listen/`, built with Visual Studio 2022 and validated by Steinberg's plugin validator. Remaining: real-time-safe capture, authenticated local relay, revocable QR rooms, mobile player and producer controls, Halo/World access, and measured Ableton-to-device latency and stability. Do not report Live Listen complete from a pass-through build.

@@ -12,6 +12,15 @@ sends a bounded selected-project summary to the local model only; filesystem
 paths, complete notes and tool authority are excluded. Voice and DAW actions
 remain behind their existing explicit controls.
 
+Jarvis now presents the orb and chat first, with Voicebox recording and speech
+controls connected to that surface. The existing plan, permission, reminder,
+and audit DOM remains in the same view below the conversation. On the Windows
+launcher's `localhost` origin, the local model list is requested on Jarvis
+entry; `qwen3:0.6b` is preferred when installed, otherwise the first local
+model is selected. The static test/development origin keeps manual discovery.
+Transcription fills the chat composer for review; no spoken text is sent or
+executed automatically.
+
 M7 adds a separate Windows VST3 plugin source under `live-listen/`. It builds against a local external Steinberg VST3 SDK checkout and currently passes stereo audio through the host. It has no connection to the browser workspace, Windows companion, Halo World, transport or room service. The SDK build produces an ignored local artifact and does not install a plugin globally. Audio capture and room transport remain architectural work.
 
 Master M3 adds an optional Windows Node companion under `companion/`. It is a

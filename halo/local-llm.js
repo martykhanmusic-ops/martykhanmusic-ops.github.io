@@ -20,6 +20,7 @@ export function parseSuggestion(raw) {
 
 export function createLocalLlm(store, fetcher = fetch) {
   let busy = false;
+  let transcriptBound = false;
   const status = message => { const el = document.querySelector('#llm-status'); if (el) el.textContent = message; };
   const chatStatus = message => { const el = document.querySelector('#chat-status'); if (el) el.textContent = message; };
   function renderChat(messages) {
@@ -55,10 +56,13 @@ export function createLocalLlm(store, fetcher = fetch) {
         if (!select) continue;
         select.replaceChildren(...names.map(name => new Option(name, name)));
         if (names.includes(prior)) select.value = prior;
+        else if (names.includes('qwen3:0.6b')) select.value = 'qwen3:0.6b';
+        else if (names.length) select.value = names[0];
       }
       status(names.length ? `${names.length} local model(s) available. Choose one to draft a plan.` : 'The local service is running, but no model is installed.');
-      chatStatus(names.length ? `${names.length} local model(s) available. Chat stays on this computer.` : 'The local service is running, but no model is installed.');
-    } catch { status('Local LLM unavailable. Start Ollama and install a model to use draft suggestions.'); chatStatus('Local model is unavailable. Your saved chat remains here.'); }
+      chatStatus(names.length ? `Connected to ${document.querySelector('#chat-model')?.value}. Chat stays on this computer.` : 'The local service is running, but no model is installed.');
+      const retry = document.querySelector('#chat-models'); if (retry) retry.hidden = Boolean(names.length);
+    } catch { status('Local LLM unavailable. Start Ollama and install a model to use draft suggestions.'); chatStatus('Local model is unavailable. Your saved chat remains here.'); const retry = document.querySelector('#chat-models'); if (retry) retry.hidden = false; }
   }
   async function sendChat(event) {
     event.preventDefault();
@@ -135,6 +139,16 @@ export function createLocalLlm(store, fetcher = fetch) {
       text.dispatchEvent(new Event('input', { bubbles: true }));
       chatStatus('Latest reply copied to the voice box. Choose Speak with Voicebox when ready.');
     });
+    if (!transcriptBound) {
+      transcriptBound = true;
+      document.addEventListener('halo:voice-transcript', event => {
+        const input = document.querySelector('#chat-input');
+        if (!input || typeof event.detail !== 'string') return;
+        input.value = event.detail.slice(0, 2000);
+        chatStatus('Voice message is ready. Review it, then press Enter to send.');
+        input.focus();
+      });
+    }
     document.querySelector('#chat-clear')?.addEventListener('click', () => {
       if (busy) { chatStatus('Wait for the current reply before clearing chat.'); return; }
       if (!store.get().chat.length) return;
@@ -149,5 +163,8 @@ export function createLocalLlm(store, fetcher = fetch) {
       document.querySelector('#llm-request').value = text.slice(0, 2000);
       status('Voice text copied into the local model request. Review it before suggesting a draft.');
     });
+    // The packaged Windows launcher uses localhost and exposes this route.
+    // Static test/development origins may have no model endpoint.
+    if (location.hostname === 'localhost') models();
   } };
 }

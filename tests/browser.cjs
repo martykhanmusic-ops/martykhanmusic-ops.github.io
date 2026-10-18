@@ -29,7 +29,7 @@ const { existsSync } = require('node:fs');
   await page.evaluate(()=>window.scrollTo(0,0));
   await page.screenshot({path:'/tmp/halo-desktop.png',fullPage:true});
   await page.getByRole('button',{name:'Open Jarvis portal',exact:true}).click();
-  assert.equal(await page.getByRole('heading',{name:'Your command center.',exact:true}).count(),1);
+  assert.equal(await page.getByRole('heading',{name:'Talk to Jarvis.',exact:true}).count(),1);
   await page.getByRole('button',{name:'◉ Overview',exact:true}).click();
   await page.setViewportSize({width:390,height:844});
   await page.screenshot({path:'/tmp/halo-mobile.png',fullPage:true});
