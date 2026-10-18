@@ -40,8 +40,21 @@ export function installModeSwitcher(){
     if(matchMedia('(max-width: 699px), (pointer: coarse)').matches){desktop('Halo World currently requires a desktop keyboard. All features remain available in Desktop.');return;}
     if(!previousFocus)previousFocus=document.activeElement;const ticket=++generation;button.disabled=true;
     if(!document.querySelector('[data-world-styles]')){const style=document.createElement('link');style.rel='stylesheet';style.href=new URL('../world/world-mode.css',import.meta.url).href;style.dataset.worldStyles='';document.head.append(style);}
-    root=document.createElement('section');root.className='world-root';root.tabIndex=0;root.setAttribute('aria-label','Halo World');root.innerHTML='<div class="world-viewport"></div><div class="world-hud"><div class="world-info"><h1>Halo World</h1><p>Experimental central plaza · local session only</p><p>WASD / arrows · Shift to run · E to interact</p></div><button id="exit-world">Return to Desktop</button></div><div id="world-prompt" class="world-status" role="status">Loading the plaza…</div>';
+    root=document.createElement('section');root.className='world-root';root.tabIndex=0;root.setAttribute('aria-label','Halo World');root.innerHTML='<div class="world-viewport"></div><div class="world-hud"><div class="world-info"><h1>Halo World</h1><p>Experimental central plaza · local session only</p><p>↑/↓ move · ←/→ turn · WASD strafe · Space jump · Shift run · E interact</p></div><button id="exit-world">Return to Desktop</button></div><div id="world-prompt" class="world-status" role="status">Loading the plaza…</div>';
     document.body.append(root);root.querySelector('#exit-world').onclick=()=>desktop();
+    root.addEventListener('keydown',event=>{
+      if(event.code!=='Escape'||workstation.isOpen()||!instance)return;
+      event.preventDefault();
+      const action=root.querySelector('.world-actions');
+      if(action){action.querySelector('button:last-of-type')?.click();return;}
+      const paused=root.querySelector('.world-pause');
+      if(paused){paused.remove();root.focus();instance.resume();return;}
+      instance.pause();
+      const panel=document.createElement('section');panel.className='world-actions world-pause';panel.setAttribute('aria-label','World paused');
+      const title=document.createElement('h2');title.textContent='World paused';
+      const resume=document.createElement('button');resume.textContent='Resume World';resume.onclick=()=>{panel.remove();root.focus();instance.resume();};
+      panel.append(title,resume);root.append(panel);resume.focus();
+    });
     try{
       // Probe before constructing Three so unsupported GPUs fail without engine
       // errors or any dependency on successful initialization of Desktop.

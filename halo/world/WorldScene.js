@@ -32,20 +32,23 @@ export function createScene(container,entries){
   function avatarPart(geometry,color,x,y,z){const part=mesh(geometry,color,0,0,0);scene.remove(part);avatar.add(part);part.position.set(x,y,z);return part;}
   avatarPart(new THREE.CylinderGeometry(.24,.28,.65,12),0xe0ba8d,0,.95,0);
   avatarPart(new THREE.SphereGeometry(.22,12,8),0xf0cfab,0,1.45,0);
-  avatarPart(new THREE.BoxGeometry(.14,.48,.18),0x303c56,-.13,.42,0);
-  avatarPart(new THREE.BoxGeometry(.14,.48,.18),0x303c56,.13,.42,0);
-  avatarPart(new THREE.BoxGeometry(.12,.5,.16),0xc6a381,-.33,.95,0);
-  avatarPart(new THREE.BoxGeometry(.12,.5,.16),0xc6a381,.33,.95,0);
+  const leftLeg=avatarPart(new THREE.BoxGeometry(.14,.48,.18),0x303c56,-.13,.42,0);
+  const rightLeg=avatarPart(new THREE.BoxGeometry(.14,.48,.18),0x303c56,.13,.42,0);
+  const leftArm=avatarPart(new THREE.BoxGeometry(.12,.5,.16),0xc6a381,-.33,.95,0);
+  const rightArm=avatarPart(new THREE.BoxGeometry(.12,.5,.16),0xc6a381,.33,.95,0);
   const labels=entries.map(d=>{const label=document.createElement('span');label.className='world-label';label.textContent=d.label+(d.availability==='planned'?' · Planned':'');container.append(label);return {d,label};});
   container.prepend(renderer.domElement);
   const resize=()=>{const {width,height}=container.getBoundingClientRect();renderer.setSize(Math.max(width,1),Math.max(height,1),false);camera.aspect=Math.max(width,1)/Math.max(height,1);camera.updateProjectionMatrix();};
   const observer=new ResizeObserver(resize);observer.observe(container);resize();
-  let initialized=false;
+  let initialized=false,walkTime=0;
   return {
     canvas:renderer.domElement,obstacles,
-    render(position,dt,reducedMotion){
-      avatar.position.set(position.x,0,position.z);avatar.rotation.y=position.heading;
-      followCamera(camera,position,initialized?dt:1,initialized?reducedMotion:true);initialized=true;
+    render(position,dt,reducedMotion,orbit=0){
+      avatar.position.set(position.x,position.y??0,position.z);avatar.rotation.y=position.heading;
+      if(position.moving)walkTime+=dt*(Math.hypot(position.vx??0,position.vz??0)>4?13:8);
+      const swing=position.moving&&!reducedMotion?Math.sin(walkTime)*.35:0;
+      leftLeg.rotation.x=swing;rightLeg.rotation.x=-swing;leftArm.rotation.x=-swing*.7;rightArm.rotation.x=swing*.7;
+      followCamera(camera,position,initialized?dt:1,initialized?reducedMotion:true,obstacles,orbit);initialized=true;
       renderer.render(scene,camera);
       for(const {d,label} of labels){const vector=new THREE.Vector3(d.location.x,3.2,d.location.z).project(camera);label.hidden=vector.z>1||vector.z< -1||Math.abs(vector.x)>1.1||Math.abs(vector.y)>1.1;label.style.left=`${(vector.x+1)*50}%`;label.style.top=`${(-vector.y+1)*50}%`;}
     },

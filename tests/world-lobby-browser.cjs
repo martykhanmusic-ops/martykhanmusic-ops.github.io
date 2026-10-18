@@ -1,0 +1,50 @@
+const { chromium } = require('playwright');
+const assert = require('node:assert/strict');
+
+(async () => {
+  const browser = await chromium.launch({ executablePath: process.env.HALO_CHROMIUM_PATH || undefined, headless: true, args: ['--no-sandbox', '--enable-unsafe-swiftshader', '--use-gl=angle', '--use-angle=swiftshader'] });
+  try {
+    const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+    const errors = [];
+    page.on('pageerror', error => errors.push(error.message));
+    await page.goto((process.env.HALO_TEST_URL || 'http://127.0.0.1:4173') + '/halo/?world=1');
+    await page.getByRole('button', { name: 'Enter Halo World' }).click();
+    const root = page.locator('.world-root');
+    await root.waitFor();
+    await page.waitForFunction(() => document.body.dataset.mode === 'world');
+    const start = Number(await root.getAttribute('data-avatar-heading'));
+    await page.keyboard.down('ArrowLeft');
+    await page.waitForTimeout(250);
+    await page.keyboard.up('ArrowLeft');
+    assert.ok(Number(await root.getAttribute('data-avatar-heading')) > start);
+    const before = Number(await root.getAttribute('data-avatar-z'));
+    await page.keyboard.down('ArrowUp');
+    await page.waitForTimeout(350);
+    await page.keyboard.up('ArrowUp');
+    assert.ok(Number(await root.getAttribute('data-avatar-z')) < before);
+    await page.keyboard.down('Space');
+    await page.waitForFunction(() => Number(document.querySelector('.world-root')?.dataset.avatarY) > 0.05);
+    await page.keyboard.up('Space');
+    await page.waitForFunction(() => Number(document.querySelector('.world-root')?.dataset.avatarY) === 0);
+    const canvas = page.locator('.world-viewport canvas');
+    const box = await canvas.boundingBox();
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width / 2 + 100, box.y + box.height / 2, { steps: 5 });
+    await page.mouse.up();
+    assert.notEqual(await root.getAttribute('data-camera-orbit'), '0.000');
+    await root.focus();
+    await page.keyboard.press('Escape');
+    await page.getByRole('button', { name: 'Resume World' }).waitFor();
+    const paused = await root.getAttribute('data-avatar-z');
+    await page.keyboard.down('KeyW'); await page.waitForTimeout(150); await page.keyboard.up('KeyW');
+    assert.equal(await root.getAttribute('data-avatar-z'), paused);
+    await page.keyboard.press('Escape');
+    await page.locator('.world-pause').waitFor({ state: 'detached' });
+    await page.getByRole('button', { name: 'Return to Desktop' }).click();
+    assert.equal(await page.locator('.world-root').count(), 0);
+    assert.deepEqual(errors, []);
+    await page.close();
+    console.log('PASS World lobby: arrow turn/forward, jump/land, camera drag, Escape pause, Desktop return');
+  } finally { await browser.close(); }
+})().catch(error => { console.error(error); process.exit(1); });

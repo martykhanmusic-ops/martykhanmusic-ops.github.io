@@ -281,3 +281,9 @@ with the actual `music-hub-browser.cjs` and `music-daw-browser.cjs` files.
 - Controlled desktop/mobile Jarvis tests passed for inline draft review, pending-only plan creation, project selection, local stream parsing, Stop with no partial save, connection loss/retry, Voicebox health, orb, chat persistence and safe rendering.
 - Full desktop/mobile regression passed master core/Jarvis, browser/integration, framework, World M1–M4, music library/DAW, creative orbit, reminders and accessibility.
 - Direct Windows Ollama `qwen3:0.6b` live stream returned `application/x-ndjson`, ten parsed chunks and a final `done:true`. The launcher compiled into `dist/Halo-Jarvis-Streamlined.exe` (2,674,688 bytes). Live execution of this exact EXE remains unverified because the earlier launch attempt was rejected by automatic command policy.
+
+### Halo lobby directive A–B — October 18, 2026
+
+- A audit baseline: 54/54 Node tests, syntax and World checks, and master core/Jarvis, browser/integration and World M1–M4 Chromium suites passed on Windows. Git feature branch and remote SHA matched; only the unrelated preview PNG was untracked.
+- B focused implementation: 55/55 Node tests including new turn/jump/camera checks; existing World M1–M4 browser suites passed. New World lobby browser scenario passed arrow turn/forward, jump/land, camera drag, Escape pause and Desktop return. `Halo-Playable-Lobby.exe` compiled locally.
+- B full regression passed master core/Jarvis, browser/integration, framework, World M1–M4 plus new lobby, music library/DAW, Jarvis capabilities/streamlining and accessibility suites at supported desktop/mobile widths.

@@ -2,6 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {worldEnabled} from '../halo/world/flags.js';
 import {moveAvatar,SPAWN} from '../halo/world/AvatarController.js';
+import {cameraTarget} from '../halo/world/FollowCamera.js';
 import {nearestDestination} from '../halo/world/InteractionManager.js';
 import {destinations,validateDestinations,destinationRoute} from '../halo/world/DestinationRegistry.js';
 import {WorldPerformanceManager} from '../halo/world/WorldPerformanceManager.js';
@@ -20,6 +21,23 @@ test('movement is normalized, bounded, collision-safe and frame-gap clamped',()=
   assert.ok(p.x<=12.5);assert.equal(moveAvatar(SPAWN,new Set(['KeyW']),100).z,a.z);
   for(let i=0;i<500;i++)p=moveAvatar(p,new Set(['KeyD','KeyS']),.05,[]);
   assert.ok(Math.hypot(p.x,p.z)<=12.5);
+});
+test('World arrow turning, jump and camera avoidance keep one bounded controller',()=>{
+  const turned=moveAvatar(SPAWN,new Set(['ArrowLeft']),.05);
+  assert.ok(turned.heading>SPAWN.heading);
+  assert.equal(turned.x,SPAWN.x);
+  const forward=moveAvatar(turned,new Set(['ArrowUp']),.05);
+  assert.ok(forward.z<SPAWN.z);
+  const jump=moveAvatar(SPAWN,new Set(['Space']),.05);
+  assert.ok(jump.y>0);
+  assert.equal(moveAvatar(jump,new Set(['Space']),.05).jumpHeld,true);
+  let landed=jump;
+  for(let i=0;i<100;i++)landed=moveAvatar(landed,new Set(),.05);
+  assert.equal(landed.y,0);
+  const clear=cameraTarget(SPAWN);
+  const obstructed=cameraTarget(SPAWN,[{x:0,z:10,radius:1}]);
+  assert.ok(obstructed.z<clear.z);
+  assert.ok(obstructed.z>SPAWN.z);
 });
 test('typed registry validates routes and discovery respects interaction distance',()=>{
   assert.equal(validateDestinations(destinations),destinations);

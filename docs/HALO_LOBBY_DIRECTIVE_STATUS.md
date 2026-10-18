@@ -5,7 +5,7 @@ Updated October 18, 2026. This tracks the user-supplied Halo Lobby / Jarvis / Sa
 | Directive milestone | Current state | Acceptance boundary |
 | --- | --- | --- |
 | A Audit | Complete after the baseline and remote receipt recorded below | Source, Git, dependencies, shared-state integration and gaps verified |
-| B Playable Lobby | In progress only after A remote verification | Existing single controller gains the requested controls and movement/camera/collision behavior; desktop/mobile fallback and core regression pass |
+| B Playable Lobby | Complete after remote receipt below | Existing single controller gains the requested controls and movement/camera/collision behavior; desktop/mobile fallback and core regression pass |
 | C Jarvis Center | Not started | Central World orb invokes the real Jarvis surface, with explicit interaction states and existing approvals |
 | D Saturn Doorways | Not started | One shared registry drives stationary walk-through World doorways and Desktop ring, with truthful route states |
 | E Application Integration | Not started | Available portals reach real registered Halo applications; unavailable entries remain visibly unavailable |
@@ -22,3 +22,12 @@ Updated October 18, 2026. This tracks the user-supplied Halo Lobby / Jarvis / Sa
 - Existing World foundation: default-off opt-in, low-poly plaza, avatar, absolute WASD/arrow translation, Shift speed, follow camera, obstacle limits, a Projects pavilion, proximity/E interaction, one-store workstation, graceful Desktop fallback and performance/context-loss recovery. It does not yet satisfy the new directive's relative forward/turn controls, jump, richer camera collision, central Jarvis interaction, stationary full-size portal ring, or customizable controls. Those are implementation acceptance criteria for B–F, not claims about the current build.
 
 Milestone protocol: complete each row's work, run focused and ecosystem tests, review scoped changes, commit/push to the feature branch, verify exact remote SHA, and record the result here before claiming the next row complete. No main merge or deployment is authorized.
+
+## B — playable lobby implementation
+
+- Reused the existing default-off plaza, single avatar controller, local Three.js scene, collision obstacles, performance monitor, project pavilion, session bridge and Desktop fallback.
+- Arrow Up/Down now move relative to avatar heading and Left/Right turn. W/S move and A/D strafe; Shift runs. Movement accelerates and decelerates, normalizes diagonals, clamps frame gaps, slides against axis-separated obstacles and stays inside the plaza boundary. Space gives a gravity-bound jump with ground landing and one jump per press.
+- The same low-poly avatar now animates its limbs while walking/running and follows heading/vertical motion. Camera follows the avatar, can orbit by pointer dragging on the canvas, and shortens its distance when a scene obstacle lies on the camera ray. Escape pauses/resumes or closes a World interaction overlay. Keyboard capture remains on the World root and ignores form controls.
+- Focused checks: `npm test` 55/55, World syntax check, existing World M1–M4 Chromium scenarios, and new `tests/world-lobby-browser.cjs` for arrow turning, forward movement, jump/land, camera drag, Escape pause and Desktop return passed. The Windows launcher compiled to ignored `dist/Halo-Playable-Lobby.exe`; exact runtime execution of that new EXE has not been observed.
+- Full regression passed master core/Jarvis, browser/integration, framework, World M1–M4 plus new lobby, music library/DAW, Jarvis capability/streamlining and axe/keyboard/forced-colors/reduced-motion accessibility at supported desktop/mobile widths. The World remains desktop-only by design; mobile retained a tested Desktop fallback.
+- Milestone B covers the playable plaza and controller. Central Jarvis, physical Saturn doorways, destination integration, expanded accessibility and final art remain C–G. Mobile intentionally retains the existing Desktop fallback until an accessible mobile World controller is delivered in F.
