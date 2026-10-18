@@ -40,3 +40,19 @@ test('backup restores data; invalid backup leaves state untouched', () => {
 test('empty project names and tasks are rejected', () => {
   const s = createStore(memory()); assert.throws(()=>s.createProject(' ')); const id=s.createProject('Valid'); assert.throws(()=>s.addTask(id,' '));
 });
+test('Jarvis chat stays in the canonical backup and cannot alter tasks or jobs', () => {
+  const disk = memory(), store = createStore(disk); const projectId = store.createProject('Chat project');
+  store.addChatExchange('How should I start?', 'Sketch the chorus.');
+  assert.equal(store.get().chat.length, 2);
+  assert.equal(store.get().projects[0].tasks.length, 0);
+  assert.equal(store.get().jobs.length, 0);
+  const reopened = createStore(disk);
+  assert.equal(reopened.get().chat[1].text, 'Sketch the chorus.');
+  const restored = createStore(memory()); restored.restore(JSON.stringify(reopened.get()));
+  assert.equal(restored.get().chat.length, 2);
+  assert.equal(restored.get().activeProjectId, projectId);
+  restored.clearChat();
+  assert.equal(restored.get().chat.length, 0);
+  assert.equal(restored.get().projects[0].id, projectId);
+  assert.throws(() => restored.addChatExchange('', 'reply'), /Invalid/);
+});

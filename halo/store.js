@@ -3,7 +3,7 @@ export const STORAGE_KEY = 'halo.workspace.v1';
 const stamp = () => new Date().toISOString();
 const id = () => crypto.randomUUID();
 export const defaultPermissions = () => ({ add_task: true, complete_task: false, append_note: true, summarize: true, delete_completed: false });
-export const emptyState = () => ({ version: 1, projects: [], activeProjectId: null, view: 'dashboard', theme: 'dark', activity: [], jobs: [], permissions: defaultPermissions() });
+export const emptyState = () => ({ version: 1, projects: [], activeProjectId: null, view: 'dashboard', theme: 'dark', activity: [], jobs: [], chat: [], permissions: defaultPermissions() });
 const isText = value => typeof value === 'string';
 const isDate = value => isText(value) && Number.isFinite(Date.parse(value));
 export function validate(state) {
@@ -19,6 +19,7 @@ export function validate(state) {
     }
   }
   if (state.activeProjectId !== null && !ids.has(state.activeProjectId)) throw new Error('The saved project could not be found.');
+  if (state.chat !== undefined && (!Array.isArray(state.chat) || state.chat.length > 60 || state.chat.some(message => !message || !isText(message.id) || !['user','assistant'].includes(message.role) || !isText(message.text) || !message.text.trim() || message.text.length > 4000 || !isDate(message.at)))) throw new Error('Invalid Jarvis chat data.');
   for (const a of state.activity) if (!a || !isText(a.id) || !isText(a.message) || !isDate(a.at)) throw new Error('Invalid activity data.');
   if (state.permissions !== undefined) {
     const required = ['add_task', 'append_note', 'summarize', 'delete_completed'];
@@ -38,6 +39,7 @@ export function createStore(storage) {
     const raw = storage.getItem(STORAGE_KEY);
     lastSaved = raw;
     state = raw === null ? emptyState() : validate(JSON.parse(raw));
+    state.chat = state.chat || [];
     state.permissions = { ...defaultPermissions(), ...state.permissions };
   } catch (error) { throw new Error(`Halo could not read saved data. Your stored data has not been changed. ${error.message}`); }
   const listeners = new Set();
@@ -90,8 +92,17 @@ export function createStore(storage) {
       transact(s => { const p = project(s, projectId); setTaskDone(p, taskId, !getTask(p, taskId).done); activity(s, `Updated task in ${p.name}`); });
     },
     setTheme(theme) { transact(s => { s.theme = theme; }); },
+    addChatExchange(user, assistant) {
+      if (!isText(user) || !user.trim() || user.length > 2000 || !isText(assistant) || !assistant.trim() || assistant.length > 4000) throw new Error('Invalid Jarvis chat exchange.');
+      transact(s => {
+        s.chat = (s.chat || []).slice(-58);
+        s.chat.push({ id: id(), role: 'user', text: user.trim(), at: stamp() }, { id: id(), role: 'assistant', text: assistant.trim(), at: stamp() });
+      });
+    },
+    clearChat() { transact(s => { s.chat = []; }); },
     restore(raw) {
       const imported = validate(JSON.parse(raw));
+      imported.chat = imported.chat || [];
       imported.permissions = defaultPermissions();
       for (const job of imported.jobs) {
         if (['running', 'pending', 'awaiting_approval'].includes(job.status)) {

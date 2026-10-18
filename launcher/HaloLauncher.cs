@@ -143,7 +143,7 @@ internal static class HaloLauncher
     private static void ProxyLocalLlm(HttpListenerContext context, string path)
     {
         string method = context.Request.HttpMethod;
-        if (!((method == "GET" && path == "/local-llm/models") || (method == "POST" && path == "/local-llm/draft")))
+        if (!((method == "GET" && path == "/local-llm/models") || (method == "POST" && (path == "/local-llm/draft" || path == "/local-llm/chat"))))
         { context.Response.StatusCode = 404; return; }
         string origin = context.Request.Headers["Origin"] ?? "";
         if (method == "POST" && origin != "http://localhost:" + context.Request.LocalEndPoint.Port)
