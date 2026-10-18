@@ -1,30 +1,36 @@
 import {connectApplicationSession} from '../shared/ApplicationSessionBridge.js';
 import {destinations,destinationRoute} from '../world/DestinationRegistry.js';
 import {createWorkstation} from '../world/WorldWorkstation.js';
+import {createPortalInteraction} from '../world/PortalInteraction.js';
 export function installModeSwitcher(){
   if(document.querySelector('#enter-world')||!document.querySelector('.shell'))return;
   const shell=document.querySelector('.shell'),dock=document.querySelector('.floating-dock');
   const button=document.createElement('button');button.id='enter-world';button.className='world-mode-entry';button.textContent='Enter Halo World';
   document.querySelector('.topbar').append(button);
-  let instance=null,root=null,generation=0,position,previousFocus,session;
+  let instance=null,root=null,generation=0,position,previousFocus,session,portalMachine;
   const workstation=createWorkstation(shell);
   document.addEventListener('focusin',event=>{
     if(event.target!==button&&(shell.contains(event.target)||dock?.contains(event.target)))previousFocus=event.target;
   });
   function interaction(destination){
-    if(!root||workstation.isOpen()||destination.availability!=='available')return;
+    if(!root||workstation.isOpen()||root.querySelector('.world-actions')||!portalMachine?.transition('preview',destination.id))return;
     instance.pause();root.querySelector('.world-actions')?.remove();
     const panel=document.createElement('section');panel.className='world-actions';panel.setAttribute('aria-label',`${destination.label} interaction`);
     const title=document.createElement('h2');title.textContent=destination.label;panel.append(title);
+    if(destination.availability!=='available'){
+      const unavailable=document.createElement('p');unavailable.textContent=`${destination.preview}. This portal is planned; no application has opened.`;
+      const back=document.createElement('button');back.textContent='Back to plaza';back.onclick=()=>{portalMachine.transition('returning');portalMachine.transition('idle');panel.remove();root.focus();instance.resume();};
+      panel.append(unavailable,back);root.append(panel);back.focus();return;
+    }
     const open=document.createElement('button');open.textContent='Open App';panel.append(open);
-    open.onclick=()=>{const route=destinationRoute(destination,session.getState());desktop();session.openRoute(route);};
+    open.onclick=()=>{if(!portalMachine.transition('requested'))return;portalMachine.transition('transitioning');const route=destinationRoute(destination,session.getState());desktop();const opened=session.openRoute(route);if(opened)portalMachine.transition('open');portalMachine.transition('returning');portalMachine.transition('idle');};
     const state=session.getState();
     if(destination.workstationAdapter && state.activeProjectId){
       const use=document.createElement('button');use.textContent='Use in World';panel.append(use);
-      use.onclick=()=>{if(workstation.open(root,destination,session,()=>{root.focus();instance.resume();})){panel.remove();}else{const status=panel.querySelector('p')||document.createElement('p');status.textContent='Select a saved project on Desktop before using a workstation.';panel.append(status);}};
+      use.onclick=()=>{if(!portalMachine.transition('requested'))return;portalMachine.transition('transitioning');if(workstation.open(root,destination,session,()=>{portalMachine.transition('returning');portalMachine.transition('idle');root.focus();instance.resume();})){portalMachine.transition('open');panel.remove();}else{portalMachine.transition('returning');portalMachine.transition('idle');const status=panel.querySelector('p')||document.createElement('p');status.textContent='Select a saved project on Desktop before using a workstation.';panel.append(status);}};
     }else{const hint=document.createElement('p');hint.textContent='Open App to create or select a project before using the workstation.';panel.append(hint);}
     const cancel=document.createElement('button');cancel.textContent='Back to plaza';panel.append(cancel);
-    cancel.onclick=()=>{panel.remove();root.focus();instance.resume();};
+    cancel.onclick=()=>{portalMachine.transition('returning');portalMachine.transition('idle');panel.remove();root.focus();instance.resume();};
     root.append(panel);open.focus();
   }
   function desktop(message=''){
@@ -42,6 +48,8 @@ export function installModeSwitcher(){
     if(!document.querySelector('[data-world-styles]')){const style=document.createElement('link');style.rel='stylesheet';style.href=new URL('../world/world-mode.css',import.meta.url).href;style.dataset.worldStyles='';document.head.append(style);}
     root=document.createElement('section');root.className='world-root';root.tabIndex=0;root.setAttribute('aria-label','Halo World');root.innerHTML='<div class="world-viewport"></div><div class="world-hud"><div class="world-info"><h1>Halo World</h1><p>Experimental central plaza · local session only</p><p>↑/↓ move · ←/→ turn · WASD strafe · Space jump · Shift run · E interact</p></div><button id="exit-world">Return to Desktop</button></div><div id="world-prompt" class="world-status" role="status">Loading the plaza…</div>';
     document.body.append(root);root.querySelector('#exit-world').onclick=()=>desktop();
+    portalMachine=createPortalInteraction(({state,portalId})=>{if(root){root.dataset.portalState=state;root.dataset.portalId=portalId||'';}});
+    root.dataset.portalState='idle';
     root.addEventListener('keydown',event=>{
       if(event.code!=='Escape'||workstation.isOpen()||!instance)return;
       event.preventDefault();
@@ -64,7 +72,7 @@ export function installModeSwitcher(){
       const {mountWorld}=await import('../world/HaloWorld.js');if(ticket!==generation)return;
       session=connectApplicationSession();
       const accessible=document.createElement('button');accessible.textContent='Projects destination';accessible.onclick=()=>interaction(destinations[0]);root.querySelector('.world-info').append(accessible);
-      instance=mountWorld(root,{position,onFailure:desktop,onInteract:interaction,
+      instance=mountWorld(root,{position,onFailure:desktop,onInteract:interaction,onProximity:destination=>portalMachine.proximity(destination?.id==='jarvis'?null:destination?.id),
         onJarvis:()=>{desktop();session.openRoute({view:'jarvis'});},
         getJarvisState:()=>{
           const jobs=session.getState().jobs||[];

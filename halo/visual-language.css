@@ -344,3 +344,11 @@ body[data-view=jarvis] #application-directory,body[data-view=jarvis] .companion-
 .jarvis-orb[data-state="thinking"] .jarvis-orb-ring,.jarvis-orb[data-state="planning"] .jarvis-orb-ring,.jarvis-orb[data-state="executing"] .jarvis-orb-ring,.jarvis-orb[data-state="waiting"] .jarvis-orb-ring{border-color:#f2cf86;box-shadow:0 0 28px #f2cf86aa}
 .jarvis-orb[data-state="completed"] .jarvis-orb-core{box-shadow:inset -18px -22px 34px #0915109c,0 0 52px #75d8ab9c,0 0 0 12px #75d8ab48}
 .jarvis-orb[data-state="error"] .jarvis-orb-ring{border-color:#ef978e;box-shadow:0 0 26px #ef978e8c}
+.saturn-desktop-ring{position:relative;width:min(100%,360px);height:340px;--ring-radius:142px;flex:none;outline:none}
+.saturn-desktop-ring .jarvis-orb{position:absolute;left:50%;top:50%;margin:0;transform:translate(-50%,-50%);z-index:2;pointer-events:none}
+.saturn-portal{position:absolute;left:50%;top:50%;z-index:3;width:42px;height:42px;border-radius:50%;padding:0;display:grid;place-items:center;background:var(--panel);border:1px solid var(--accent);color:var(--text);font-size:17px;transform:translate(-50%,-50%) rotate(var(--portal-angle)) translateX(var(--ring-radius)) rotate(calc(-1 * var(--portal-angle)));transition:filter .25s,box-shadow .25s}
+.saturn-portal[aria-pressed="true"]{z-index:4;box-shadow:0 0 0 3px #d9bd8066,0 0 20px #d9bd8088;filter:brightness(1.3)}
+.saturn-portal:focus-visible,.saturn-desktop-ring:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.saturn-caption{text-align:center;min-height:2.4em;margin:0;color:var(--muted);font-size:12px}
+@media(max-width:600px){.saturn-desktop-ring{width:300px;height:285px;--ring-radius:118px}.saturn-desktop-ring .jarvis-orb{transform:translate(-50%,-50%) scale(.9)}}
+@media(prefers-reduced-motion:reduce){.saturn-portal{transition:none}}

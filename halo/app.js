@@ -3,6 +3,8 @@ import { createJarvis, adapters } from './jarvis.js';
 import { createJarvisVoice } from './voicebox.js';
 import { createLocalLlm } from './local-llm.js';
 import { setOrbState } from './orb-state.js';
+import { mountDesktopRing } from './portals/DesktopRing.js';
+import { destinationRoute } from './world/DestinationRegistry.js';
 import { createReminders } from './reminders.js';
 import { createMusicReference } from './music-reference.js';
 import { createMusicHub } from './music-hub.js';
@@ -141,7 +143,7 @@ function render() {
   bindMain();
   if (s.view === 'project') { musicHub.bind(); musicHub.render(s); }
   if (s.view === 'dashboard') musicReference.bind();
-  if (s.view === 'jarvis') { voice.bind(() => store.get().jobs.find(job => job.status === 'completed')?.result || ''); localLlm.bind(); localLlm.renderChat(s.chat || []); reminders.bind(); }
+  if (s.view === 'jarvis') { voice.bind(() => store.get().jobs.find(job => job.status === 'completed')?.result || ''); localLlm.bind(); localLlm.renderChat(s.chat || []); reminders.bind(); mountDesktopRing(document.querySelector('.jarvis-intro'), portal => { const route=destinationRoute(portal,store.get());navigate(route.view,route.projectId); }); }
   if (s.view === 'jarvis') setOrbState(s.jobs.some(job=>job.status==='running')?'executing':s.jobs.some(job=>['pending','awaiting_approval'].includes(job.status))?'waiting':'idle');
   reminders.render(s);
 }

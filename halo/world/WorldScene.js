@@ -23,12 +23,19 @@ export function createScene(container,entries,onJarvis=()=>{}){
   core.material.emissive=new THREE.Color(0x70d5f0);core.material.emissiveIntensity=.7;
   const orbRing=mesh(new THREE.TorusGeometry(1.12,.035,8,64),0xd8b276,0,1.85,0);orbRing.rotation.x=.35;
   for(let i=-10;i<=10;i+=2){mesh(new THREE.BoxGeometry(.018,.02,22),0x56606b,i,0,0);mesh(new THREE.BoxGeometry(22,.02,.018),0x56606b,0,0,i);}
-  const obstacles=[{x:0,z:0,radius:1.1},...entries.map(d=>({x:d.location.x,z:d.location.z,radius:1.5}))];
+  const obstacles=[{x:0,z:0,radius:1.1}];
   for(const d of entries){
-    mesh(new THREE.CylinderGeometry(1.7,1.9,.25,24),0x53606a,d.location.x,.1,d.location.z);
-    mesh(new THREE.BoxGeometry(2.2,2.2,1.5),0x4b515e,d.location.x,1.3,d.location.z);
-    mesh(new THREE.BoxGeometry(2.6,.2,2),d.appearance.color,d.location.x,2.5,d.location.z);
-    mesh(new THREE.BoxGeometry(1.5,.85,.05),0x83b8ba,d.location.x,1.55,d.location.z+.78);
+    const angle=Math.atan2(d.location.x,d.location.z),tx=Math.cos(angle),tz=-Math.sin(angle),half=d.world.doorwayWidth/2+.22;
+    mesh(new THREE.BoxGeometry(3,.16,1.9),0x53606a,d.location.x,.02,d.location.z);
+    for(const side of [-1,1]){
+      const x=d.location.x+side*tx*half,z=d.location.z+side*tz*half;
+      obstacles.push({x,z,radius:.43});
+      mesh(new THREE.CylinderGeometry(.3,.38,3.2,10),d.appearance.color,x,1.65,z);
+      mesh(new THREE.BoxGeometry(.7,.23,.7),0xd9c39e,x,3.23,z);
+    }
+    const lintel=mesh(new THREE.BoxGeometry(d.world.doorwayWidth+1,.36,.62),d.appearance.color,d.location.x,3.33,d.location.z);lintel.rotation.y=angle;
+    const preview=mesh(new THREE.PlaneGeometry(d.world.doorwayWidth,2.7),d.appearance.color,d.location.x,1.55,d.location.z);
+    preview.rotation.y=angle;preview.material.transparent=true;preview.material.opacity=d.availability==='available'?.17:.08;preview.material.side=THREE.DoubleSide;
   }
   for(const [x,z] of [[5,-4],[-6,-7],[8,5]]){
     obstacles.push({x,z,radius:.85});mesh(new THREE.CylinderGeometry(.8,.9,.6,12),0x806b58,x,.2,z);

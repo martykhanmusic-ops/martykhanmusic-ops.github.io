@@ -3,12 +3,12 @@ import { AvatarController, moveAvatar, SPAWN } from './AvatarController.js';
 import { nearestDestination } from './InteractionManager.js';
 import { WorldPerformanceManager } from './WorldPerformanceManager.js';
 import { destinations } from './DestinationRegistry.js';
-export function mountWorld(root,{onFailure,position=SPAWN,onInteract=()=>{},onJarvis=()=>{},getJarvisState=()=> 'idle'}){
+export function mountWorld(root,{onFailure,position=SPAWN,onInteract=()=>{},onJarvis=()=>{},getJarvisState=()=> 'idle',onProximity=()=>{}}){
   const viewport=root.querySelector('.world-viewport'),prompt=root.querySelector('#world-prompt');
   const openJarvis=()=>{if(paused||disposed)return;input.clear();onJarvis();};
   const scene=createScene(viewport,destinations,openJarvis),input=new AvatarController(root),performance=new WorldPerformanceManager();
   prompt.textContent='Walk to Projects · ↑/↓ move, ←/→ turn · WASD strafe · Space jump · Shift run.';
-  let current={...position},frame=0,last=0,paused=true,disposed=false,nearby=null,requestedRunning=false,orbit=0,dragging=false,lastStateCheck=0,jarvisState='idle';
+  let current={...position},frame=0,last=0,paused=true,disposed=false,nearby=null,requestedRunning=false,orbit=0,dragging=false,lastStateCheck=0,jarvisState='idle',insidePortal=null;
   const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
   function tick(time){
     if(paused||disposed)return;
@@ -20,8 +20,11 @@ export function mountWorld(root,{onFailure,position=SPAWN,onInteract=()=>{},onJa
     const destination=jarvisDistance<=2.8&&(!closest||jarvisDistance<Math.hypot(current.x-closest.location.x,current.z-closest.location.z))?{id:'jarvis',label:'Jarvis'}:closest;
     if(time-lastStateCheck>500){jarvisState=getJarvisState();lastStateCheck=time;}
     scene.setJarvisState(jarvisState==='idle'&&destination?.id==='jarvis'?'nearby':jarvisState);
-    if(destination?.id!==nearby?.id){nearby=destination;prompt.textContent=nearby?`${nearby.label} · Press E to interact`:'Walk to Projects · ↑/↓ move, ←/→ turn · WASD strafe · Space jump · Shift run.';}
+    if(destination?.id!==nearby?.id){nearby=destination;onProximity(nearby);prompt.textContent=nearby?`${nearby.label}${nearby.availability==='planned'?' · Planned':''} · Press E to interact`:'Walk to Projects · ↑/↓ move, ←/→ turn · WASD strafe · Space jump · Shift run.';}
     root.dataset.avatarX=current.x.toFixed(3);root.dataset.avatarZ=current.z.toFixed(3);root.dataset.avatarY=(current.y??0).toFixed(3);root.dataset.avatarHeading=current.heading.toFixed(3);root.dataset.cameraOrbit=orbit.toFixed(3);root.dataset.nearby=nearby?.id??'';
+    const crossed=destinations.find(entry=>Math.hypot(current.x-entry.location.x,current.z-entry.location.z)<1.05);
+    if(!crossed)insidePortal=null;
+    else if(insidePortal!==crossed.id){insidePortal=crossed.id;input.clear();onInteract(crossed);}
     frame=requestAnimationFrame(tick);
   }
   const interact=event=>{if(event.code==='KeyE'&&nearby&&event.target===root){event.preventDefault();input.clear();if(nearby.id==='jarvis')openJarvis();else onInteract(nearby);}};

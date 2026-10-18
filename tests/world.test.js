@@ -6,6 +6,17 @@ import {cameraTarget} from '../halo/world/FollowCamera.js';
 import {nearestDestination} from '../halo/world/InteractionManager.js';
 import {destinations,validateDestinations,destinationRoute} from '../halo/world/DestinationRegistry.js';
 import {WorldPerformanceManager} from '../halo/world/WorldPerformanceManager.js';
+import {createPortalInteraction} from '../halo/world/PortalInteraction.js';
+test('portal requests require an ordered preview and cannot duplicate a transition',()=>{
+  const changes=[];const portal=createPortalInteraction(value=>changes.push(value));
+  assert.equal(portal.transition('open','projects'),false);
+  assert.equal(portal.proximity('projects'),true);
+  assert.deepEqual(portal.get(),{state:'near',portalId:'projects'});
+  for(const state of ['preview','requested','transitioning','open','returning','idle'])assert.equal(portal.transition(state,'projects'),true);
+  assert.equal(portal.transition('open','projects'),false);
+  assert.equal(changes.length,7);
+  assert.deepEqual(portal.get(),{state:'idle',portalId:null});
+});
 test('World flag is default off, opt-in only, safe when storage is blocked',()=>{
   assert.equal(worldEnabled({search:''},{getItem:()=>null}),false);
   assert.equal(worldEnabled({search:'?world=1'},{getItem:()=>null}),true);
