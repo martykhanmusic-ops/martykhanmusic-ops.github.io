@@ -35,6 +35,7 @@ Local reminders source is `halo/reminders.js` and the shared workspace store. Th
 Public music reference source is `halo/music-reference.js` and the fixed `/public-data/artists` launcher route. The supplied public-apis ZIP lacked a catalog; see `docs/PUBLIC_APIS_AUDIT.md`. Verify the current packaged executable and remote SHA before reporting completion.
 The next public music reference increment adds fixed `/public-data/recordings` and `/public-data/releases` routes and a shared Overview selector. Live packaged Windows/browser searches returned all three resource types. The complete catalog is still missing; this does not start or complete master M6.
 M5 targeted accessibility review: `tests/accessibility-browser.cjs` scans Orbital/Classic, dark/light, desktop/mobile routes/dialogs with axe and checks keyboard, forced colors and reduced motion. The brand link label was corrected. Verify the live M5 milestone status and remote SHA before starting master M6.
+M5 acceptance payload d91c09dc716177c3bd22c54418ca8f75ff01a179 matched the remote feature branch. The local `dist/Halo-Design-System.exe` served the corrected page on localhost:4174. M5 is COMPLETE_AND_PUSHED; master M6 music hub is next.
 The updated local executable containing this draft integration is `dist/Halo-Local-LLM.exe`. It was smoke-tested on localhost:4174; close an older Halo executable before opening the new one on the default localhost:4173 origin.
 
 ## Prompt for a new chat
