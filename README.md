@@ -171,7 +171,17 @@ Open **Jarvis → Reminders**, enter a title and future date/time, then choose *
 
 Open a Halo project to link audio, MIDI, or DAW project files from a folder approved in the optional Windows companion. Pair the companion and grant read-only Files access first. Choose **Browse approved folder** to inspect one folder at a time and select a supported file, or type a relative path. Selecting a file only fills the path; choose **Verify and link file** to save it. Each listing is limited to 200 entries. The library saves a title, tags, notes, file size, modification time, and last verification time in the existing project backup. Use **Recheck file** to check a link again; a disconnected or revoked companion reports failure. **Add review task** creates a normal project task, and **Remove link** removes only the Halo reference. Audio bytes stay in the Windows folder and are not included in Halo's JSON backup.
 
-DAW launching and live audio are not part of this library increment.
+Live audio is not part of this library increment.
+
+### Approved DAW launch
+
+Halo can discover and request launch of DAWs explicitly allowlisted in the Windows companion. On this PC, the selected shortcuts are **Ableton Live 12 Suite** and **FL Studio 2026**. Start the companion in a visible PowerShell window from the repository folder with:
+
+```powershell
+node companion/server.mjs --root "C:\Users\owner\Music" --app "Ableton Live 12 Suite.lnk" --app "FL Studio 2026.lnk"
+```
+
+Pair it from Halo on `http://localhost:4173/halo/`. In a project, choose **Discover approved DAWs**, select one, and choose **Request launch code**. The code appears in the companion window and expires after 60 seconds. Enter it in Halo, choose **Launch selected DAW**, and confirm. A new code is needed for every launch. Halo opens the approved application shortcut only; it does not open a project file or run a shell command. Removing Apps access or stopping the companion prevents another launch.
 
 ## Public music reference
 

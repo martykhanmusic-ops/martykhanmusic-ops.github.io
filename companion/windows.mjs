@@ -85,12 +85,15 @@ const startMenus = [
 
 export async function discoverApps(allowNames) {
   const found = [];
+  const seen = new Set();
   async function walk(dir, depth) {
     if (depth > 4) return;
     for (const item of await fs.readdir(dir, { withFileTypes: true }).catch(() => [])) {
       const full = path.join(dir, item.name);
       if (item.isDirectory()) await walk(full, depth + 1);
-      else if (item.isFile() && item.name.toLowerCase().endsWith('.lnk') && allowNames.has(item.name.toLowerCase())) found.push({ id: item.name.toLowerCase(), name: item.name.slice(0, -4), path: full });
+      else if (item.isFile() && item.name.toLowerCase().endsWith('.lnk') && allowNames.has(item.name.toLowerCase()) && !seen.has(item.name.toLowerCase())) {
+        seen.add(item.name.toLowerCase()); found.push({ id: item.name.toLowerCase(), name: item.name.slice(0, -4), path: full });
+      }
     }
   }
   for (const dir of startMenus) if (dir && path.isAbsolute(dir)) await walk(dir, 0);

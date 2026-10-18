@@ -60,4 +60,6 @@ test('application discovery returns only explicitly named Start Menu shortcuts',
   assert.deepEqual(await discoverApps(new Set()), []);
   const apps = await discoverApps(new Set(['file explorer.lnk']));
   assert.ok(apps.every(app => app.id === 'file explorer.lnk'));
+  const dawApps = await discoverApps(new Set(['fl studio 2026.lnk', 'ableton live 12 suite.lnk']));
+  assert.equal(new Set(dawApps.map(app => app.id)).size, dawApps.length);
 });

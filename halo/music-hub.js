@@ -3,24 +3,35 @@ const $ = selector => document.querySelector(selector);
 
 export function createMusicHub(store, { fetcher = fetch } = {}) {
   let lastList, lastKey;
+  let approvedDaws = [], approvalFor = null;
   const status = message => { const element = $('#music-hub-status'); if (element) element.textContent = message; };
+  const dawStatus = message => { const element = $('#music-daw-status'); if (element) element.textContent = message; };
   const tagsFrom = text => text.split(',').map(tag => tag.trim()).filter(Boolean);
   const musicFile = name => /\.(wav|mp3|flac|aiff|aif|ogg|m4a|mid|midi|als|flp|rpp|ptx|cpr|npr)$/i.test(name);
   const childPath = (folder, name) => folder === '.' ? name : `${folder}/${name}`;
   const safeName = name => typeof name === 'string' && name.length > 0 && name !== '.' && name !== '..' && !/[\\/\0]/.test(name);
+  const dawName = name => /^(Ableton Live|FL Studio|Pro Tools)(?:\b|$)/i.test(name);
 
-  async function companionPost(route, relative) {
+  function sessionToken() {
     let token;
     try { token = sessionStorage.getItem('halo.companion.token'); } catch { /* A blocked session is disconnected. */ }
-    if (!token) throw new Error('Pair the Windows companion with an approved folder first.');
+    if (!token) throw new Error('Pair the Windows companion first.');
+    return token;
+  }
+
+  async function companionRequest(route, method = 'GET', body) {
     const response = await fetcher(`${endpoint}${route}`, {
-      method: 'POST', mode: 'cors', cache: 'no-store',
-      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ relative }), signal: AbortSignal.timeout(5000)
+      method, mode: 'cors', cache: 'no-store',
+      headers: { Authorization: `Bearer ${sessionToken()}`, ...(body ? { 'Content-Type': 'application/json' } : {}) },
+      body: body ? JSON.stringify(body) : undefined, signal: AbortSignal.timeout(5000)
     });
     const result = await response.json();
-    if (!response.ok) throw new Error(result.error || 'The approved folder could not be checked.');
+    if (!response.ok) throw new Error(result.error || 'The Windows companion request failed.');
     return result;
+  }
+
+  async function companionPost(route, relative) {
+    return companionRequest(route, 'POST', { relative });
   }
 
   async function stat(relative) {
@@ -89,6 +100,45 @@ export function createMusicHub(store, { fetcher = fetch } = {}) {
 
   function bind() {
     const form = $('#music-hub-form');
+    approvedDaws = []; approvalFor = null;
+    const dawSelect = $('#music-daw-select'), launchButton = $('#music-daw-launch');
+    $('#music-daw-discover')?.addEventListener('click', async () => {
+      approvedDaws = []; approvalFor = null; launchButton.disabled = true;
+      dawSelect.replaceChildren(new Option('Discover DAWs first', ''));
+      dawStatus('Checking approved Windows shortcuts…');
+      try {
+        const result = await companionRequest('/apps');
+        if (!Array.isArray(result.apps) || result.apps.some(app => !app || typeof app.id !== 'string' || typeof app.name !== 'string' || app.id.length > 150 || app.name.length > 150)) throw new Error('The companion returned invalid application information.');
+        approvedDaws = result.apps.filter((app, index, apps) => app.id.toLowerCase().endsWith('.lnk') && dawName(app.name) && apps.findIndex(candidate => candidate.id === app.id) === index);
+        for (const app of approvedDaws) dawSelect.add(new Option(app.name, app.id));
+        dawStatus(approvedDaws.length ? `${approvedDaws.length} approved DAW shortcut(s) found. Select one to request a launch code.` : 'No approved DAW shortcuts found. Start the companion with an allowlisted DAW shortcut.');
+      } catch (error) { dawStatus(`DAW discovery failed: ${error.message}`); }
+    });
+    dawSelect?.addEventListener('change', () => { approvalFor = null; launchButton.disabled = true; $('#music-daw-code').value = ''; dawStatus('Selection changed. Request a fresh launch code.'); });
+    $('#music-daw-approval')?.addEventListener('click', async () => {
+      const app = approvedDaws.find(item => item.id === dawSelect.value);
+      if (!app) return dawStatus('Discover and select an approved DAW first.');
+      approvalFor = null; launchButton.disabled = true;
+      try {
+        const result = await companionRequest('/apps/approval', 'POST', { id: app.id });
+        if (result.approvalRequired !== true || result.app !== app.name) throw new Error('Launch approval could not be verified.');
+        approvalFor = app.id; launchButton.disabled = false;
+        dawStatus(`Enter the one-time code shown in the companion window for ${app.name}. It expires in 60 seconds.`);
+      } catch (error) { dawStatus(`Launch approval failed: ${error.message}`); }
+    });
+    $('#music-daw-launch')?.addEventListener('click', async () => {
+      const app = approvedDaws.find(item => item.id === dawSelect.value);
+      const code = $('#music-daw-code').value.trim();
+      if (!app || approvalFor !== app.id || !/^[0-9]{6}$/.test(code)) return dawStatus('Select the approved DAW and enter its six-digit companion code.');
+      if (!confirm(`Launch ${app.name} on this Windows PC?`)) return;
+      approvalFor = null; launchButton.disabled = true; $('#music-daw-code').value = '';
+      dawStatus(`Asking the companion to launch ${app.name}…`);
+      try {
+        const result = await companionRequest('/apps/launch', 'POST', { id: app.id, code });
+        if (result.launched !== true || result.app !== app.name || !Number.isFinite(Date.parse(result.verifiedAt))) throw new Error('The companion did not verify a launch.');
+        dawStatus(`${app.name} launch request verified at ${new Date(result.verifiedAt).toLocaleTimeString()}. Check the Windows desktop for its window.`);
+      } catch (error) { dawStatus(`DAW launch failed: ${error.message}. Request a new code to retry.`); }
+    });
     $('#music-browse')?.addEventListener('click', () => browse().catch(error => status(`Folder unavailable: ${error.message}`)));
     $('#music-browser')?.addEventListener('click', event => {
       const button = event.target.closest('button');

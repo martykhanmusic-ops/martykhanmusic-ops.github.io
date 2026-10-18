@@ -27,13 +27,13 @@ The prior cloud blocker was resolved by running Codex and the companion on the s
 
 The companion cannot be paired from the deployed domain or a remote/mobile browser. Windows audio endpoint `Status` can be `Unknown` and is never interpreted as a working audio stream. File checks reject traversal and symlink escapes, but a local process with write access to the granted folder could race a replacement between validation and open. The recent companion audit is in memory and resets on restart. User data was not migrated.
 
-## Master M4 limits
-
 ## Master M6 library limits
 
-The new library saves file references and metadata only. It cannot preserve the audio bytes in a Halo JSON backup; users must back up the approved music folder separately. Last verification is historical and recheck requires a currently paired companion with Files grant. A verified DAW launch needs the user's selected DAW shortcut and local project folder. Live Listen remains a later milestone.
+The new library saves file references and metadata only. It cannot preserve the audio bytes in a Halo JSON backup; users must back up the approved music folder separately. Last verification is historical and recheck requires a currently paired companion with Files grant. Verified DAW launch requires local one-time code entry, and a specific DAW project folder remains to be selected. Live Listen remains a later milestone.
 
 Approved-folder browsing reads one directory at a time and only the first 200 entries exposed by the companion. A larger directory may hide later files; a user can enter a relative path directly. Browsing does not index media contents or prove a file is linked until the separate stat and save succeed.
+
+Ableton Live 12 Suite and FL Studio 2026 shortcut targets exist on this PC, and authenticated companion discovery returned both. A launch without the one-time local code returned HTTP 403. Actual DAW launch has not been performed: the user must run the companion visibly, request a code in Halo, enter that code and confirm each launch. Launching a DAW also does not verify that any particular music project file opens in it. M6 remains in progress.
 
 ## Master M4 limits
 

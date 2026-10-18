@@ -38,3 +38,5 @@ Master M5 has begun by direct user request to fit the UI to Halo's visual langua
 Master M5 later completed and was remotely verified; see milestone status. M6 has started with the user-directed library-first slice: verified Windows file references, metadata/tags/notes and shared project review tasks. DAW selection, approved launch, and remaining music-hub acceptance are pending. Do not begin M7 until M6 is complete and remotely verified.
 
 M6 library follow-up adds one-directory-at-a-time selection from the companion's approved root. It keeps the explicit verify-and-link step. DAW launch remains gated on a selected shortcut and project folder.
+
+The user selected Ableton Live 12 Suite and FL Studio 2026. Both installed Windows shortcut targets were found, and the companion returned them when exactly allowlisted. The project DAW panel now uses the existing one-time approval protocol. Physical launch and opening a verified project file remain M6 acceptance work.
