@@ -12,8 +12,9 @@ historical and separate from the master milestone numbering.
   are implemented with the optional Windows companion.
 - Live Ableton launch with a user-selected `.als` template was accepted through
   Halo's one-time approval flow; the user confirmed its content loaded.
-- Complete the full regression, scoped commit/push, and exact remote SHA check
-  before marking M6 complete and beginning master M7.
+- The full regression passed and acceptance payload
+  `14ff409677e30a7cdd805a5122a8e9f59f8dcd0c` matched the remote. Verify
+  the status receipt before beginning master M7.
 
 ## M7 Live Listen entry gate
 

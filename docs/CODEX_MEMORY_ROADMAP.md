@@ -40,6 +40,13 @@ The updated local executable containing this draft integration is `dist/Halo-Loc
 
 ## Prompt for a new chat
 
+October 18 M6 acceptance: a user-selected Ableton `.als` template was linked
+through the live Windows companion, opened by the allowlisted Ableton Live 12
+Suite shortcut with a file-bound one-time code, and the user confirmed its
+content loaded. Full browser regression and 52 Node tests passed. Acceptance
+payload `14ff409677e30a7cdd805a5122a8e9f59f8dcd0c` matched the remote;
+check `docs/HALO_MILESTONE_STATUS.md` and verify the latest receipt before M7.
+
 October 18 Orbital reference refinement: user-supplied glass-planet image is
 stored at `halo/assets/halo-orbit-reference.png`; CSS is in
 `halo/visual-language.css`. Reproducible local desktop/mobile captures are in
