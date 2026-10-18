@@ -5,3 +5,5 @@
 .world-jarvis-target:hover,.world-jarvis-target:focus-visible{outline:2px solid #f0d79b;outline-offset:3px}
 .world-jarvis-target[data-state="waiting"],.world-jarvis-target[data-state="executing"]{border-color:#e7b76a}
 .world-jarvis-target[data-state="error"]{border-color:#ee968c}
+
+.world-destinations{margin-top:8px;max-height:215px;overflow:auto}.world-destinations summary{cursor:pointer;font-size:12px}.world-destinations div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding-top:8px}.world-destinations button{font-size:11px;min-height:36px;padding:4px}.world-hud>#world-controls{font-size:11px;min-height:44px}

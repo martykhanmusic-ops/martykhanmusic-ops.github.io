@@ -304,3 +304,8 @@ with the actual `music-hub-browser.cjs` and `music-daw-browser.cjs` files.
 
 - npm test: 56/56. Focused Windows Chrome journey passed Desktop Music Shelf → canonical project music library → World Music doorway → same saved project ID and notes, with real focus and active app record.
 - Broad browser regression passed master core/Jarvis, browser/integration, framework, World M1/lifecycle/lobby/Jarvis, Music/Saturn portals and accessibility at desktop/mobile widths. World M2/workstation also passed in the focused run. No page errors were reported.
+
+### Halo lobby directive F, first slice — October 18, 2026
+
+- Node tests 57/57, World syntax check and browser controls scenario passed. The browser changed interaction KeyE to KeyF, verified persisted local settings, reset it, used the semantic 2D destination list, saw a planned status and returned to Desktop.
+- Chrome regression passed desktop/mobile accessibility (axe, keyboard, forced colors, reduced motion), master core/Jarvis, Music/Saturn portals, lobby movement and World project continuity. Full F acceptance remains open for additional control modes and review.

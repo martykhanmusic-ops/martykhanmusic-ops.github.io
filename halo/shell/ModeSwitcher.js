@@ -2,12 +2,18 @@ import {connectApplicationSession} from '../shared/ApplicationSessionBridge.js';
 import {destinations,destinationRoute} from '../world/DestinationRegistry.js';
 import {createWorkstation} from '../world/WorldWorkstation.js';
 import {createPortalInteraction} from '../world/PortalInteraction.js';
+import {loadControls} from '../world/Controls.js';
+import {createWorldControlsPanel} from '../world/WorldControlsPanel.js';
 export function installModeSwitcher(){
   if(document.querySelector('#enter-world')||!document.querySelector('.shell'))return;
   const shell=document.querySelector('.shell'),dock=document.querySelector('.floating-dock');
   const button=document.createElement('button');button.id='enter-world';button.className='world-mode-entry';button.textContent='Enter Halo World';
   document.querySelector('.topbar').append(button);
   let instance=null,root=null,generation=0,position,previousFocus,session,portalMachine;
+  const controls=loadControls();
+  const settingsButton=document.createElement('button');settingsButton.type='button';settingsButton.className='world-settings-entry';settingsButton.textContent='Controls & Accessibility';document.querySelector('.topbar').append(settingsButton);
+  const settings=createWorldControlsPanel(()=>controls,next=>Object.assign(controls,next),()=>instance?.pause(),()=>{if(root&&instance){root.focus();instance.resume();}else settingsButton.focus();});
+  settingsButton.onclick=settings.show;
   const workstation=createWorkstation(shell);
   document.addEventListener('focusin',event=>{
     if(event.target!==button&&(shell.contains(event.target)||dock?.contains(event.target)))previousFocus=event.target;
@@ -46,8 +52,10 @@ export function installModeSwitcher(){
     if(matchMedia('(max-width: 699px), (pointer: coarse)').matches){desktop('Halo World currently requires a desktop keyboard. All features remain available in Desktop.');return;}
     if(!previousFocus)previousFocus=document.activeElement;const ticket=++generation;button.disabled=true;
     if(!document.querySelector('[data-world-styles]')){const style=document.createElement('link');style.rel='stylesheet';style.href=new URL('../world/world-mode.css',import.meta.url).href;style.dataset.worldStyles='';document.head.append(style);}
-    root=document.createElement('section');root.className='world-root';root.tabIndex=0;root.setAttribute('aria-label','Halo World');root.innerHTML='<div class="world-viewport"></div><div class="world-hud"><div class="world-info"><h1>Halo World</h1><p>Experimental central plaza · local session only</p><p>↑/↓ move · ←/→ turn · WASD strafe · Space jump · Shift run · E interact</p></div><button id="exit-world">Return to Desktop</button></div><div id="world-prompt" class="world-status" role="status">Loading the plaza…</div>';
-    document.body.append(root);root.querySelector('#exit-world').onclick=()=>desktop();
+    root=document.createElement('section');root.className='world-root';root.tabIndex=0;root.setAttribute('aria-label','Halo World');root.innerHTML='<div class="world-viewport"></div><div class="world-hud"><div class="world-info"><h1>Halo World</h1><p>Experimental central plaza · local session only</p><p>Use your saved controls · Space jump · Shift run · E interact by default</p><details class="world-destinations"><summary>Destinations without 3D movement</summary><div></div></details></div><button id="world-controls">Controls & Accessibility</button><button id="exit-world">Return to Desktop</button></div><div id="world-prompt" class="world-status" role="status">Loading the plaza…</div>';
+    document.body.append(root);root.querySelector('#exit-world').onclick=()=>desktop();root.querySelector('#world-controls').onclick=settings.show;
+    const destinationList=root.querySelector('.world-destinations div');
+    for(const destination of destinations){const entry=document.createElement('button');entry.type='button';entry.textContent=`${destination.label}${destination.availability==='planned'?' · Planned':''}`;entry.setAttribute('aria-label',destination.accessibilityLabel);entry.onclick=()=>interaction(destination);destinationList.append(entry);}
     portalMachine=createPortalInteraction(({state,portalId})=>{if(root){root.dataset.portalState=state;root.dataset.portalId=portalId||'';}});
     root.dataset.portalState='idle';
     root.addEventListener('keydown',event=>{
@@ -72,7 +80,7 @@ export function installModeSwitcher(){
       const {mountWorld}=await import('../world/HaloWorld.js');if(ticket!==generation)return;
       session=connectApplicationSession();
       const accessible=document.createElement('button');accessible.textContent='Projects destination';accessible.onclick=()=>interaction(destinations[0]);root.querySelector('.world-info').append(accessible);
-      instance=mountWorld(root,{position,onFailure:desktop,onInteract:interaction,onProximity:destination=>portalMachine.proximity(destination?.id==='jarvis'?null:destination?.id),
+      instance=mountWorld(root,{position,controls,onFailure:desktop,onInteract:interaction,onProximity:destination=>portalMachine.proximity(destination?.id==='jarvis'?null:destination?.id),
         onJarvis:()=>{desktop();session.openRoute({view:'jarvis'});},
         getJarvisState:()=>{
           const jobs=session.getState().jobs||[];

@@ -3,18 +3,17 @@ import { AvatarController, moveAvatar, SPAWN } from './AvatarController.js';
 import { nearestDestination } from './InteractionManager.js';
 import { WorldPerformanceManager } from './WorldPerformanceManager.js';
 import { destinations } from './DestinationRegistry.js';
-export function mountWorld(root,{onFailure,position=SPAWN,onInteract=()=>{},onJarvis=()=>{},getJarvisState=()=> 'idle',onProximity=()=>{}}){
+export function mountWorld(root,{onFailure,position=SPAWN,onInteract=()=>{},onJarvis=()=>{},getJarvisState=()=> 'idle',onProximity=()=>{},controls}){
   const viewport=root.querySelector('.world-viewport'),prompt=root.querySelector('#world-prompt');
   const openJarvis=()=>{if(paused||disposed)return;input.clear();onJarvis();};
-  const scene=createScene(viewport,destinations,openJarvis),input=new AvatarController(root),performance=new WorldPerformanceManager();
+  const scene=createScene(viewport,destinations,openJarvis),input=new AvatarController(root,controls),performance=new WorldPerformanceManager();
   prompt.textContent='Walk to Projects · ↑/↓ move, ←/→ turn · WASD strafe · Space jump · Shift run.';
   let current={...position},frame=0,last=0,paused=true,disposed=false,nearby=null,requestedRunning=false,orbit=0,dragging=false,lastStateCheck=0,jarvisState='idle',insidePortal=null;
-  const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
   function tick(time){
     if(paused||disposed)return;
     const elapsed=last?(time-last)/1000:0;last=time;
     if(elapsed>0 && performance.sample(elapsed*1000)){onFailure('World is running slowly. Returned to Desktop to protect responsiveness.');return;}
-    current=moveAvatar(current,input.keys,elapsed,scene.obstacles);scene.render(current,Math.min(elapsed,.05),reducedMotion,orbit);
+    current=moveAvatar(current,input.keys,elapsed,scene.obstacles,12.5,{walkSpeed:controls?.speed,turnSpeed:controls?.turnSpeed});scene.render(current,Math.min(elapsed,.05),controls?.reducedMotion||matchMedia('(prefers-reduced-motion: reduce)').matches,orbit);
     const closest=nearestDestination(current,destinations);
     const jarvisDistance=Math.hypot(current.x,current.z);
     const destination=jarvisDistance<=2.8&&(!closest||jarvisDistance<Math.hypot(current.x-closest.location.x,current.z-closest.location.z))?{id:'jarvis',label:'Jarvis'}:closest;
@@ -27,10 +26,10 @@ export function mountWorld(root,{onFailure,position=SPAWN,onInteract=()=>{},onJa
     else if(insidePortal!==crossed.id){insidePortal=crossed.id;input.clear();onInteract(crossed);}
     frame=requestAnimationFrame(tick);
   }
-  const interact=event=>{if(event.code==='KeyE'&&nearby&&event.target===root){event.preventDefault();input.clear();if(nearby.id==='jarvis')openJarvis();else onInteract(nearby);}};
+  const interact=event=>{if(event.code===(controls?.bindings?.interact||'KeyE')&&nearby&&event.target===root){event.preventDefault();input.clear();if(nearby.id==='jarvis')openJarvis();else onInteract(nearby);}};
   root.addEventListener('keydown',interact);
   const pointerDown=event=>{if(event.target===scene.canvas){dragging=true;scene.canvas.setPointerCapture(event.pointerId);}};
-  const pointerMove=event=>{if(dragging)orbit=Math.max(-1.2,Math.min(1.2,orbit-event.movementX*.004));};
+  const pointerMove=event=>{if(dragging)orbit=Math.max(-1.2,Math.min(1.2,orbit-event.movementX*(controls?.invertCamera?-1:1)*(controls?.sensitivity??.004)));};
   const pointerUp=()=>{dragging=false;};
   scene.canvas.addEventListener('pointerdown',pointerDown);scene.canvas.addEventListener('pointermove',pointerMove);scene.canvas.addEventListener('pointerup',pointerUp);scene.canvas.addEventListener('pointercancel',pointerUp);
   const contextLost=event=>{event.preventDefault();onFailure('World graphics context was lost. Your Desktop session is intact.');};

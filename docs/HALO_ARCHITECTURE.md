@@ -108,3 +108,5 @@ The same file-bound project flow now maps FL Studio 2026 to `.flp` and its `FL64
 Lobby portal layer: DestinationRegistry is the shared metadata/route source for DesktopRing and WorldScene. PortalInteraction tracks World interaction states, and ModeSwitcher alone crosses into the existing ApplicationSessionBridge. Planned entries have no executable route. The ring and scene own only presentation state; project/Jarvis data stays in the canonical store.
 
 Music Shelf is a registered application manifest with a project route. DestinationRegistry adds only a focus hint; app.js resolves it after successful project navigation and activates the original music section. The World bridge forwards the route to that same application session. No new project or music store is created.
+
+World control settings live under halo.world.controls.v1, separate from the canonical project store. Controls.js validates bindings and presets; AvatarController maps physical keys into the same movement actions. WorldControlsPanel writes this setting and ModeSwitcher exposes a semantic destination list that calls the existing interaction handler. Mobile retains Desktop fallback.

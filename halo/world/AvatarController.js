@@ -1,3 +1,4 @@
+import {mappedKeys,DEFAULT_BINDINGS} from './Controls.js';
 export const SPAWN = Object.freeze({x:0,z:7,heading:Math.PI});
 export function moveAvatar(position,keys,elapsed,obstacles=[],limit=12.5,settings={}) {
   const dt=Math.min(Math.max(elapsed,0),.05);
@@ -24,12 +25,13 @@ export function moveAvatar(position,keys,elapsed,obstacles=[],limit=12.5,setting
   return {...next,jumpHeld,moving:length>0||Math.hypot(next.vx,next.vz)>.05,turning:turn!==0,jumping:next.y>0};
 }
 export class AvatarController {
-  constructor(target) {
-    this.keys=new Set(); this.target=target;
-    this.down=event=>{if(/^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(event.target.tagName)) return;if(['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','ShiftLeft','ShiftRight','Space'].includes(event.code)){event.preventDefault();this.keys.add(event.code);}};
-    this.up=event=>this.keys.delete(event.code);this.blur=()=>this.keys.clear();
+  constructor(target,controls={bindings:DEFAULT_BINDINGS}) {
+    this.physical=new Set();this.target=target;this.controls=controls;
+    Object.defineProperty(this,'keys',{get:()=>mappedKeys(this.physical,this.controls.bindings)});
+    this.down=event=>{if(/^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(event.target.tagName)) return;if(Object.values(this.controls.bindings).includes(event.code)){event.preventDefault();this.physical.add(event.code);}};
+    this.up=event=>this.physical.delete(event.code);this.blur=()=>this.physical.clear();
     target.addEventListener('keydown',this.down);window.addEventListener('keyup',this.up);window.addEventListener('blur',this.blur);
   }
-  clear(){this.keys.clear();}
+  clear(){this.physical.clear();}
   dispose(){this.target.removeEventListener('keydown',this.down);window.removeEventListener('keyup',this.up);window.removeEventListener('blur',this.blur);this.clear();}
 }

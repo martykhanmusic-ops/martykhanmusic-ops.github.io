@@ -8,8 +8,8 @@ Updated October 18, 2026. This tracks the user-supplied Halo Lobby / Jarvis / Sa
 | B Playable Lobby | Complete after remote receipt below | Existing single controller gains the requested controls and movement/camera/collision behavior; desktop/mobile fallback and core regression pass |
 | C Jarvis Center | Complete after remote receipt below | Central World orb invokes the real Jarvis surface, with explicit interaction states and existing approvals |
 | D Saturn Doorways | Complete; remote SHA `cb53c1f754e39688ac137a6f03c6e677d28ad8e3` verified | One shared registry drives stationary walk-through World doorways and Desktop ring, with truthful route states |
-| E Application Integration | Implemented; remote receipt pending | Available portals reach real registered Halo applications; unavailable entries remain visibly unavailable |
-| F Accessibility | Not started | Remappable persisted controls, presets, semantic destination alternative, keyboard/focus and applicable WCAG 2.2 AA checks |
+| E Application Integration | Complete; remote SHA `26803e3137c506f730ad7d7fe356afccb058a1ba` verified | Available portals reach real registered Halo applications; unavailable entries remain visibly unavailable |
+| F Accessibility | In progress; first controls/list slice implemented | Remappable persisted controls, presets, semantic destination alternative, keyboard/focus and applicable WCAG 2.2 AA checks |
 | G Visual System | Not started | Nostalgic, warm, calm visual pass with saved token-based variants and measured performance |
 | H Validation and Delivery | Not started | Full regression, measured performance, desktop/mobile/accessibility evidence, reviewed branch and remote receipt |
 
@@ -52,3 +52,10 @@ Milestone protocol: complete each row's work, run focused and ecosystem tests, r
 - Music Shelf is now an available, registered Halo application whose route opens the existing active project's music library and approved DAW links. Desktop ring and World doorway resolve through the same destination and route. With no active project the route opens the existing project overview so the user can create or choose one. No music data is copied to an app store.
 - The application session bridge retains dirty navigation guards, active project identity, and the canonical `halo.workspace.v1` notes/music data. Music Shelf's application registry lifecycle records its open event after successful navigation. The other six unbuilt destinations remain visibly planned with no app opened.
 - A new browser journey verifies Desktop ring → music library → World → Music doorway → music library with the same saved project ID and notes, focus on the real music browse control, and an active application record. Node framework tests verify the registered app count. Broad regression and remote receipt are pending in this entry.
+
+## F — controls and destination access, first slice
+
+- World controls now have a separate validated local settings record, with unique-key conflict detection, Standard/Arrow/One-Handed presets, individual remapping, speed/turn/camera sensitivity, horizontal camera inversion, reduced-motion setting and reset. The same controller maps physical keys to its existing movement actions; no second avatar controller or project store was added.
+- Controls & Accessibility opens from Desktop and World. World provides a semantic, keyboard-operable eight-destination list that opens the same real or planned interaction panels without requiring 3D movement. The modal closes with focus restored to World or its Desktop launcher.
+- Node tests are 57/57. Focused Chrome tests passed remap/save/reset, 2D list, truthful planned status, World movement, project continuity, Desktop return, plus desktop/mobile axe/keyboard/forced-colors/reduced-motion checks and core/Jarvis/portal regressions.
+- F remains open: toggle/automatic movement, click-to-move, gamepad, mobile virtual joystick, touchscreen placement, broader visual/hearing/cognitive controls and a full WCAG 2.2 AA review have not been implemented or verified. Mobile continues to use the tested Desktop fallback. Do not begin G based on this slice.

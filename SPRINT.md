@@ -34,3 +34,5 @@ stability. Do not present simulated audio or a browser-only microphone demo as
 VST3 capture.
 
 Lobby directive E: Music Shelf portal uses the real registered project music panel from Desktop and World, with the same project store and no duplicate data. Browser journey and regression passed on Windows Chrome. F accessibility/control remapping is next. The separate master M7 Live Listen gate remains open and is not claimed by this lobby work.
+
+Lobby directive F is in progress: persistent remappable keyboard controls and a 2D destination list passed Windows Chrome and Node checks. Remaining F work includes alternate movement inputs and broader accessibility settings; G/H have not started.
