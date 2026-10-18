@@ -4,6 +4,8 @@ Audit: October 16, 2026, /workspace/halo, branch feature/halo-jarvis-foundation.
 
 ## Runtime and dependency map
 
+M7 adds a separate Windows VST3 plugin source under `live-listen/`. It builds against a local external Steinberg VST3 SDK checkout and currently passes stereo audio through the host. It has no connection to the browser workspace, Windows companion, Halo World, transport or room service. The SDK build produces an ignored local artifact and does not install a plugin globally. Audio capture and room transport remain architectural work.
+
 Master M3 adds an optional Windows Node companion under `companion/`. It is a
 separate loopback process with no workspace database. `halo/companion.js`
 renders an additive sidebar panel and is not imported by the project store,

@@ -237,3 +237,10 @@ application framework, appearance preview/rollback and accessibility checks.
 The first attempted focused command named
 a nonexistent `tests/music-browser.cjs`; it made no app change and was rerun
 with the actual `music-hub-browser.cjs` and `music-daw-browser.cjs` files.
+
+# M7 Windows VST3 foundation — October 18, 2026
+
+- Steinberg VST3 SDK 3.8.1 cloned recursively to `C:\Users\owner\_Code\vst3sdk` as an external local build dependency. The editable Halo plugin source is under `live-listen/`.
+- CMake configured for Visual Studio 2022 x64 with MSVC 19.44.35229 and Windows SDK 10.0.26100. The build disables global plugin links and produces a local `HaloLiveListen.vst3` bundle under ignored `dist/live-listen-build/VST3/Release/`.
+- Steinberg's built-in plugin validator finished with **47 passed, 0 failed**. This validates the VST3 foundation, not live capture, transport or DAW loading.
+- Halo regression: `npm test` 52/52, `npm run check` passed, and `node scripts/check-world.mjs` passed. Existing runtime code was unchanged in this increment.

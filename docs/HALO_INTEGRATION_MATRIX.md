@@ -24,3 +24,6 @@ Implemented means code exists; tested means named executed evidence in HALO_TEST
 | Jarvis chat | Same loopback Ollama service, exact `/local-llm/chat` route | Bounded `chat` history in canonical workspace backup | Plain-text replies, no tool definitions or automatic effects; explicit clear confirmation | Two-turn desktop/mobile, offline retry and real qwen3:0.6b browser journey passed |
 | Local reminders | Jarvis reminder form and due badge | Bounded `reminders` array in canonical workspace backup | Explicit notification request; no Jarvis job or OS tool action | Due list persists across reload; optional browser alerts only while Halo is open; desktop/mobile controlled tests |
 | Public music reference | Overview artist, recording and release-group searches through three fixed MusicBrainz routes | Transient results; no workspace or application metadata write | Read-only lookup, bounded query and output, shared local rate limit; no Jarvis/World tool access | Live packaged Windows/browser tests for all three; fixture desktop/mobile and offline states; requires network and Windows system curl |
+# M7 foundation note
+
+The Windows-built VST3 pass-through is source-owned in `live-listen/` and has no connection to Halo or World yet. Companion pairing, room grants and audio transport must be integrated and tested before this matrix can mark Live Listen connected.

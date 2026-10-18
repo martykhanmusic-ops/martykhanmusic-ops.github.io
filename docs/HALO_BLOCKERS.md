@@ -9,7 +9,7 @@
 | R5 | World hardware validation limited to Chromium/software WebGL | Default off, low-performance/context-loss fallback; test real GPUs before broader release |
 | R6 | Historical SPRINT.md has old no-push statements | Historical records describe then-current authorization; master remote receipts supersede them |
 | R7 | Windows companion is restricted to the local development origin | Keep this scope explicit; a deployed or remote bridge needs its own security design and approval |
-| R8 | No actual DAW, plugin build environment or real mobile audio target | Required at M7; no simulated latency accepted |
+| R8 | Actual Ableton and a Windows VST3 build toolchain are verified; real mobile audio target and DAW-to-device transport/latency remain open | Required at M7; no simulated latency accepted |
 | R9 | M5 appearance package and targeted accessibility review are implemented; expanded World art is separate future work | Keep World expansion behind its own design review; do not treat automated axe checks as a screen-reader certification |
 | R10 | No lint/build scripts, other-browser or assistive-technology validation | Report unavailable checks explicitly; syntax/Chromium are limited evidence |
 | R11 | Local Voicebox models are stored outside Halo and can take time to download on a new PC; this PC completed Whisper base and Kokoro checks | Start the local Voicebox backend and verify model readiness on each new machine; report failures honestly |
