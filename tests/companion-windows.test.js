@@ -3,7 +3,29 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { approvedPath, listFiles, readFile, processes, audioDevices, discoverApps } from '../companion/windows.mjs';
+import { approvedPath, listFiles, readFile, statMusicFile, processes, audioDevices, discoverApps } from '../companion/windows.mjs';
+
+test('music references use actual approved file metadata and reject escapes', async () => {
+  const sandbox = await fs.mkdtemp(path.join(os.tmpdir(), 'halo-music-'));
+  const root = path.join(sandbox, 'grant');
+  await fs.mkdir(root);
+  await fs.writeFile(path.join(root, 'take.wav'), Buffer.from([0, 1, 2, 3]));
+  await fs.writeFile(path.join(root, 'notes.txt'), 'notes');
+  await fs.writeFile(path.join(sandbox, 'outside.wav'), Buffer.from([1]));
+  try {
+    const result = await statMusicFile(root, 'take.wav');
+    assert.equal(result.kind, 'audio');
+    assert.equal(result.bytes, 4);
+    assert.equal(result.relative, 'take.wav');
+    assert.ok(Date.now() - Date.parse(result.verifiedAt) < 10000);
+    await assert.rejects(statMusicFile(root, '../outside.wav'), /leaves approved root/);
+    await assert.rejects(statMusicFile(root, 'notes.txt'), /Unsupported music file extension/);
+  } finally {
+    // The freshly created, named temp directory is the only recursive cleanup target.
+    assert.equal(path.dirname(sandbox), await fs.realpath(os.tmpdir()));
+    await fs.rm(sandbox, { recursive: true, force: true });
+  }
+});
 
 test('approved file reads reject traversal, absolute paths, symlink escapes and binary content', async () => {
   const sandbox = await fs.mkdtemp(path.join(os.tmpdir(), 'halo-companion-'));

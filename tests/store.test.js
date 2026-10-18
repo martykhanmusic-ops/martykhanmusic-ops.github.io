@@ -41,6 +41,24 @@ test('backup restores data; invalid backup leaves state untouched', () => {
 test('empty project names and tasks are rejected', () => {
   const s = createStore(memory()); assert.throws(()=>s.createProject(' ')); const id=s.createProject('Valid'); assert.throws(()=>s.addTask(id,' '));
 });
+test('music links share the project store and backup without storing audio bytes', () => {
+  const disk = memory(), store = createStore(disk), projectId = store.createProject('Album');
+  store.saveProject(projectId, { notes: 'Vocal draft' });
+  const taskId = store.addTask(projectId, 'Mix chorus');
+  const verified = { kind: 'audio', root: 'C:\\Music', relative: 'demo.wav', name: 'demo.wav', bytes: 1234, modifiedAt: new Date().toISOString(), verifiedAt: new Date().toISOString() };
+  const resourceId = store.addMusicResource(projectId, verified, { tags: ['demo'], notes: 'Take one' });
+  assert.throws(() => store.addMusicResource(projectId, verified), /already linked/);
+  store.updateMusicResource(projectId, resourceId, { name: 'Chorus demo', tags: ['vocals'], notes: 'Take two' });
+  const reopened = createStore(disk), project = reopened.get().projects[0];
+  assert.equal(project.notes, 'Vocal draft');
+  assert.equal(project.tasks[0].id, taskId);
+  assert.equal(project.musicResources[0].name, 'Chorus demo');
+  assert.equal(project.musicResources[0].notes, 'Take two');
+  assert.equal(JSON.stringify(reopened.get()).includes('audioBytes'), false);
+  reopened.removeMusicResource(projectId, resourceId);
+  assert.equal(reopened.get().projects[0].musicResources.length, 0);
+  assert.equal(reopened.get().projects[0].tasks[0].id, taskId);
+});
 test('Jarvis chat stays in the canonical backup and cannot alter tasks or jobs', () => {
   const disk = memory(), store = createStore(disk); const projectId = store.createProject('Chat project');
   store.addChatExchange('How should I start?', 'Sketch the chorus.');

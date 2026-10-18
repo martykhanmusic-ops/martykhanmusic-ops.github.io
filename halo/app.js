@@ -4,12 +4,13 @@ import { createJarvisVoice } from './voicebox.js';
 import { createLocalLlm } from './local-llm.js';
 import { createReminders } from './reminders.js';
 import { createMusicReference } from './music-reference.js';
+import { createMusicHub } from './music-hub.js';
 import { projectJobs } from './project-state.js';
 import { createApplicationRegistry, coreApplications } from './framework.js';
 const $ = selector => document.querySelector(selector);
 const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const date = value => new Date(value).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
-let store, jarvis, voice, localLlm, reminders, search = '', dirty = false, jobFilter = 'all', jobScope = 'all', editorBase = null;
+let store, jarvis, voice, localLlm, reminders, musicHub, search = '', dirty = false, jobFilter = 'all', jobScope = 'all', editorBase = null;
 const musicReference = createMusicReference();
 let applications, applicationWarning = '';
 try {
@@ -78,6 +79,7 @@ function syncView() {
     $('#project-tasks').innerHTML = projectTaskList(p);
     $('#task-count').textContent = `${p.tasks.filter(t=>t.done).length} of ${p.tasks.length} tasks complete`;
     $('#project-jobs').innerHTML = projectExecutionList(s,p);
+    musicHub?.render(s);
     if(!dirty) {
       for(const key of ['name','description','notes']) $('#edit-project').elements[key].value = p[key];
       editorBase = structuredClone(p);
@@ -99,7 +101,7 @@ function projectView(s) {
   const p = s.projects.find(p => p.id === s.activeProjectId);
   if (!p) return '<div class="empty"><h1>Choose your next project.</h1><button data-view="dashboard">Back to overview</button></div>';
   editorBase = structuredClone(p);
-  return `<button class="quiet" data-view="dashboard">← All projects</button><div class="section-heading"><div><p class="eyebrow">PROJECT WORKSPACE</p><h1 id="project-title">${escape(p.name)}</h1><p class="muted" id="project-saved">Last saved ${date(p.updatedAt)}</p></div><button data-view="jarvis">✧ Open Jarvis</button></div><div class="editor-grid"><section class="card"><h2>Make it yours.</h2><form id="edit-project"><label>Project name<input name="name" required maxlength="120" value="${escape(p.name)}"></label><label>Description<textarea name="description" rows="2" maxlength="2000">${escape(p.description)}</textarea></label><label>Working notes<textarea name="notes" rows="10" placeholder="Ideas, next steps, the spark of something…">${escape(p.notes)}</textarea></label><div class="section-heading"><button class="primary">Save project</button><span class="muted" id="save-state">All changes saved</span><button type="button" class="quiet" data-reload-project>Reload saved project</button></div></form></section><section class="card"><h2>A little forward motion.</h2><p class="muted" id="task-count">${p.tasks.filter(t => t.done).length} of ${p.tasks.length} tasks complete</p><form id="add-task" class="inline-form"><label>New task<input name="title" required maxlength="300" placeholder="What's the next step?"></label><button>Add</button></form><div id="project-tasks">${projectTaskList(p)}</div></section></div><section id="project-jobs">${projectExecutionList(s,p)}</section>`;
+  return `<button class="quiet" data-view="dashboard">← All projects</button><div class="section-heading"><div><p class="eyebrow">PROJECT WORKSPACE</p><h1 id="project-title">${escape(p.name)}</h1><p class="muted" id="project-saved">Last saved ${date(p.updatedAt)}</p></div><button data-view="jarvis">✧ Open Jarvis</button></div><div class="editor-grid"><section class="card"><h2>Make it yours.</h2><form id="edit-project"><label>Project name<input name="name" required maxlength="120" value="${escape(p.name)}"></label><label>Description<textarea name="description" rows="2" maxlength="2000">${escape(p.description)}</textarea></label><label>Working notes<textarea name="notes" rows="10" placeholder="Ideas, next steps, the spark of something…">${escape(p.notes)}</textarea></label><div class="section-heading"><button class="primary">Save project</button><span class="muted" id="save-state">All changes saved</span><button type="button" class="quiet" data-reload-project>Reload saved project</button></div></form></section><section class="card"><h2>A little forward motion.</h2><p class="muted" id="task-count">${p.tasks.filter(t => t.done).length} of ${p.tasks.length} tasks complete</p><form id="add-task" class="inline-form"><label>New task<input name="title" required maxlength="300" placeholder="What's the next step?"></label><button>Add</button></form><div id="project-tasks">${projectTaskList(p)}</div></section></div><section class="card music-hub" aria-label="Project music library"><p class="eyebrow">LOCAL MUSIC LIBRARY</p><h2>Files in this project’s orbit.</h2><p class="muted">Pair the Windows companion with an approved folder first. Halo verifies each file before linking it. Audio stays on disk; backup includes links and notes only.</p><form id="music-hub-form"><label>Path under approved folder<input name="relative" required maxlength="500" placeholder="Sessions/demo.wav"></label><label>Display title<input name="title" maxlength="120" placeholder="Optional"></label><label>Tags<input name="tags" maxlength="300" placeholder="demo, vocals"></label><label>Notes<input name="notes" maxlength="1000" placeholder="Optional"></label><button class="primary">Verify and link file</button></form><p id="music-hub-status" role="status" aria-live="polite">No file checked yet.</p><div id="music-hub-list"></div></section><section id="project-jobs">${projectExecutionList(s,p)}</section>`;
 }
 function jarvisView(s) {
   const statuses = ['all','awaiting_approval','pending','running','completed','failed','cancelled'];
@@ -121,6 +123,7 @@ function render() {
   document.querySelectorAll('nav [data-view]').forEach(b => { if (b.dataset.view === s.view) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
   $('#main').innerHTML = s.view === 'dashboard' ? dashboard(s) : s.view === 'project' ? projectView(s) : jarvisView(s);
   bindMain();
+  if (s.view === 'project') { musicHub.bind(); musicHub.render(s); }
   if (s.view === 'dashboard') musicReference.bind();
   if (s.view === 'jarvis') { voice.bind(() => store.get().jobs.find(job => job.status === 'completed')?.result || ''); localLlm.bind(); localLlm.renderChat(s.chat || []); reminders.bind(); }
   reminders.render(s);
@@ -160,6 +163,7 @@ if (store) {
   voice = createJarvisVoice();
   localLlm = createLocalLlm(store);
   reminders = createReminders(store);
+  musicHub = createMusicHub(store);
   run(() => jarvis.recover());
   store.subscribe(syncView);
   document.addEventListener('click', async event => {

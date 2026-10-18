@@ -17,6 +17,14 @@ export function validate(state) {
       if (!isText(t.id) || taskIds.has(t.id) || !isText(t.title) || !t.title.trim() || typeof t.done !== 'boolean') throw new Error('Invalid task data.');
       taskIds.add(t.id);
     }
+    if (p.musicResources !== undefined) {
+      if (!Array.isArray(p.musicResources) || p.musicResources.length > 100) throw new Error('Invalid music resources.');
+      const resourceIds = new Set();
+      for (const resource of p.musicResources) {
+        if (!resource || !isText(resource.id) || resourceIds.has(resource.id) || !['audio', 'sample', 'daw-project'].includes(resource.kind) || !isText(resource.name) || !resource.name.trim() || resource.name.length > 160 || !isText(resource.root) || !resource.root || resource.root.length > 500 || !isText(resource.relative) || !resource.relative || resource.relative.length > 500 || !Number.isSafeInteger(resource.bytes) || resource.bytes < 0 || !isDate(resource.modifiedAt) || !isDate(resource.verifiedAt) || !isDate(resource.createdAt) || !Array.isArray(resource.tags) || resource.tags.length > 10 || resource.tags.some(tag => !isText(tag) || !tag.trim() || tag.length > 30) || !isText(resource.notes) || resource.notes.length > 2000) throw new Error('Invalid music resource.');
+        resourceIds.add(resource.id);
+      }
+    }
   }
   if (state.activeProjectId !== null && !ids.has(state.activeProjectId)) throw new Error('The saved project could not be found.');
   if (state.chat !== undefined && (!Array.isArray(state.chat) || state.chat.length > 60 || state.chat.some(message => !message || !isText(message.id) || !['user','assistant'].includes(message.role) || !isText(message.text) || !message.text.trim() || message.text.length > 4000 || !isDate(message.at)))) throw new Error('Invalid Jarvis chat data.');
@@ -69,7 +77,7 @@ export function createStore(storage) {
       if (!name || name.length > 120) throw new Error('Enter a project name of 1–120 characters.');
       const projectId = id();
       transact(s => {
-        s.projects.unshift({ id: projectId, name, description: description.trim(), notes: '', tasks: [], createdAt: stamp(), updatedAt: stamp() });
+        s.projects.unshift({ id: projectId, name, description: description.trim(), notes: '', tasks: [], musicResources: [], createdAt: stamp(), updatedAt: stamp() });
         s.activeProjectId = projectId; s.view = 'project'; activity(s, `Created ${name}`);
       });
       return projectId;
@@ -92,6 +100,40 @@ export function createStore(storage) {
     },
     toggleTask(projectId, taskId) {
       transact(s => { const p = project(s, projectId); setTaskDone(p, taskId, !getTask(p, taskId).done); activity(s, `Updated task in ${p.name}`); });
+    },
+    addMusicResource(projectId, verified, details = {}) {
+      if (!verified || !['audio', 'sample', 'daw-project'].includes(verified.kind) || !isText(verified.root) || !isText(verified.relative) || !Number.isSafeInteger(verified.bytes) || verified.bytes < 0 || !isDate(verified.modifiedAt) || !isDate(verified.verifiedAt)) throw new Error('A verified local music file is required.');
+      const name = (details.name || verified.name || '').trim();
+      const notes = (details.notes || '').trim();
+      const tags = (details.tags || []).map(tag => tag.trim()).filter(Boolean);
+      if (!name || name.length > 160 || notes.length > 2000 || tags.length > 10 || tags.some(tag => tag.length > 30)) throw new Error('Check the music title, notes and tags.');
+      const resourceId = id();
+      transact(s => {
+        const p = project(s, projectId);
+        p.musicResources ||= [];
+        if (p.musicResources.length >= 100) throw new Error('Music resource limit reached.');
+        if (p.musicResources.some(item => item.root === verified.root && item.relative === verified.relative)) throw new Error('This file is already linked to the project.');
+        p.musicResources.push({ id: resourceId, kind: verified.kind, name, root: verified.root, relative: verified.relative, bytes: verified.bytes, modifiedAt: verified.modifiedAt, verifiedAt: verified.verifiedAt, createdAt: stamp(), tags, notes });
+        p.updatedAt = stamp(); activity(s, `Linked music file to ${p.name}`);
+      });
+      return resourceId;
+    },
+    updateMusicResource(projectId, resourceId, details) {
+      const name = (details.name || '').trim(), notes = (details.notes || '').trim();
+      const tags = (details.tags || []).map(tag => tag.trim()).filter(Boolean);
+      if (!name || name.length > 160 || notes.length > 2000 || tags.length > 10 || tags.some(tag => tag.length > 30)) throw new Error('Check the music title, notes and tags.');
+      transact(s => {
+        const p = project(s, projectId), resource = (p.musicResources || []).find(item => item.id === resourceId);
+        if (!resource) throw new Error('Music resource not found.');
+        Object.assign(resource, { name, notes, tags }); p.updatedAt = stamp();
+      });
+    },
+    removeMusicResource(projectId, resourceId) {
+      transact(s => {
+        const p = project(s, projectId), index = (p.musicResources || []).findIndex(item => item.id === resourceId);
+        if (index < 0) throw new Error('Music resource not found.');
+        p.musicResources.splice(index, 1); p.updatedAt = stamp();
+      });
     },
     setTheme(theme) { transact(s => { s.theme = theme; }); },
     addChatExchange(user, assistant) {

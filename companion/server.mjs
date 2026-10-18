@@ -2,7 +2,7 @@ import http from 'node:http';
 import os from 'node:os';
 import crypto from 'node:crypto';
 import path from 'node:path';
-import { processes, audioDevices, listFiles, readFile, discoverApps, launchApp } from './windows.mjs';
+import { processes, audioDevices, listFiles, readFile, statMusicFile, discoverApps, launchApp } from './windows.mjs';
 
 const HOST = '127.0.0.1';
 const PORT = 4174;
@@ -117,6 +117,11 @@ export function createCompanionServer() {
       if (req.url === '/files/read' && req.method === 'POST') {
         if (!grants.files) return reply(res, 403, { error: 'File grant denied' });
         const result = await readFile(root, (await readJson(req)).relative); record('files:read', 'success'); return reply(res, 200, result);
+      }
+      if (req.url === '/files/music-stat' && req.method === 'POST') {
+        if (!grants.files) return reply(res, 403, { error: 'File grant denied' });
+        const result = await statMusicFile(root, (await readJson(req)).relative);
+        record('files:music-stat', 'success'); return reply(res, 200, result);
       }
       if (req.url === '/apps' && req.method === 'GET') {
         const apps = grants.apps ? await discoverApps(allowedApps) : [];

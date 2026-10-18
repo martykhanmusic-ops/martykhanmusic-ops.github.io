@@ -29,4 +29,10 @@ The companion cannot be paired from the deployed domain or a remote/mobile brows
 
 ## Master M4 limits
 
+## Master M6 library limits
+
+The new library saves file references and metadata only. It cannot preserve the audio bytes in a Halo JSON backup; users must back up the approved music folder separately. Last verification is historical and recheck requires a currently paired companion with Files grant. A verified DAW launch needs the user's selected DAW shortcut and local project folder. Live Listen remains a later milestone.
+
+## Master M4 limits
+
 The framework catalog contains trusted local modules only. Its in-page grants are UI authorization, not an OS security boundary or third-party isolation. Extension code runs on the Halo origin; adding untrusted modules requires a sandbox design. Version incompatibility blocks opening until an explicit migration is built. Application metadata is browser-local and quota-limited; a corrupt value is preserved and Halo continues with transient registry state. No visual redesign, production deployment or external app provider is included.

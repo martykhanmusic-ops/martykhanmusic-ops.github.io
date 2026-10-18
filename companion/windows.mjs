@@ -54,6 +54,30 @@ export async function readFile(root, relative) {
   } finally { await handle.close(); }
 }
 
+const musicExtensions = new Map([
+  ['.wav', 'audio'], ['.mp3', 'audio'], ['.flac', 'audio'], ['.aiff', 'audio'], ['.aif', 'audio'], ['.ogg', 'audio'], ['.m4a', 'audio'],
+  ['.mid', 'sample'], ['.midi', 'sample'],
+  ['.als', 'daw-project'], ['.flp', 'daw-project'], ['.rpp', 'daw-project'], ['.ptx', 'daw-project'], ['.cpr', 'daw-project'], ['.npr', 'daw-project']
+]);
+
+export async function statMusicFile(root, relative) {
+  const target = await approvedPath(root, relative);
+  const kind = musicExtensions.get(path.extname(target).toLowerCase());
+  if (!kind) throw new Error('Unsupported music file extension');
+  const metadata = await fs.stat(target);
+  if (!metadata.isFile()) throw new Error('Music reference must be a file');
+  const realRoot = await fs.realpath(root);
+  return {
+    verifiedAt: new Date().toISOString(),
+    root: realRoot,
+    relative: path.relative(realRoot, target),
+    name: path.basename(target),
+    kind,
+    bytes: metadata.size,
+    modifiedAt: metadata.mtime.toISOString()
+  };
+}
+
 const startMenus = [
   path.join(process.env.APPDATA || '', 'Microsoft', 'Windows', 'Start Menu', 'Programs'),
   path.join(process.env.PROGRAMDATA || '', 'Microsoft', 'Windows', 'Start Menu', 'Programs')
