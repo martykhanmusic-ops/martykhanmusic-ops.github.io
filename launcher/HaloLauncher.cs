@@ -6,16 +6,19 @@ using System.IO.Compression;
 using System.Net;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 
 internal static class HaloLauncher
 {
-    private const string Url = "http://localhost:4173/halo/";
     private static readonly Dictionary<string, byte[]> Files = new Dictionary<string, byte[]>(StringComparer.Ordinal);
+    private static readonly Regex VoiceId = new Regex("^/voicebox/(history|audio)/[a-f0-9-]{36}$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     private static int Main(string[] args)
     {
         try
         {
+            int port = Array.IndexOf(args, "--port=4174") >= 0 ? 4174 : 4173;
+            string url = "http://localhost:" + port + "/halo/";
             using (Stream resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("HaloSite"))
             using (ZipArchive archive = new ZipArchive(resource, ZipArchiveMode.Read))
             {
@@ -31,17 +34,17 @@ internal static class HaloLauncher
                 }
             }
             HttpListener listener = new HttpListener();
-            listener.Prefixes.Add("http://localhost:4173/");
+            listener.Prefixes.Add("http://localhost:" + port + "/");
             listener.Start();
-            Console.WriteLine("Halo is running at " + Url);
+            Console.WriteLine("Halo is running at " + url);
             Console.WriteLine("Keep this window open. Press Ctrl+C to stop Halo.");
-            if (args.Length == 0 || args[0] != "--no-browser")
-                Process.Start(new ProcessStartInfo(Url) { UseShellExecute = true });
+            if (Array.IndexOf(args, "--no-browser") < 0)
+                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
             while (true) Handle(listener.GetContext());
         }
         catch (HttpListenerException error)
         {
-            Console.Error.WriteLine("Halo could not open localhost:4173. Close the other server using that address and try again. " + error.Message);
+            Console.Error.WriteLine("Halo could not open its local port. Close the other server using that address and try again. " + error.Message);
             return 1;
         }
         catch (Exception error)
@@ -57,9 +60,15 @@ internal static class HaloLauncher
         try
         {
             string host = context.Request.Headers["Host"] ?? "";
-            if (host != "localhost:4173" || !IPAddress.IsLoopback(context.Request.RemoteEndPoint.Address))
+            if (host != "localhost:" + context.Request.LocalEndPoint.Port || !IPAddress.IsLoopback(context.Request.RemoteEndPoint.Address))
             {
                 response.StatusCode = 403;
+                return;
+            }
+            string path = context.Request.Url.AbsolutePath;
+            if (path.StartsWith("/voicebox/", StringComparison.Ordinal))
+            {
+                ProxyVoicebox(context, path);
                 return;
             }
             if (context.Request.HttpMethod != "GET" && context.Request.HttpMethod != "HEAD")
@@ -67,7 +76,6 @@ internal static class HaloLauncher
                 response.StatusCode = 405;
                 return;
             }
-            string path = context.Request.Url.AbsolutePath;
             if (path == "/") path = "/index.html";
             if (path == "/halo" || path == "/halo/") path = "/halo/index.html";
             byte[] body;
@@ -87,6 +95,53 @@ internal static class HaloLauncher
             Console.Error.WriteLine("Request failed: " + error.Message);
         }
         finally { response.Close(); }
+    }
+
+    private static void ProxyVoicebox(HttpListenerContext context, string path)
+    {
+        string method = context.Request.HttpMethod;
+        bool allowed = (method == "GET" && (path == "/voicebox/health" || VoiceId.IsMatch(path)))
+            || (method == "POST" && (path == "/voicebox/transcribe" || path == "/voicebox/speak"));
+        if (!allowed) { context.Response.StatusCode = 404; return; }
+        HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://127.0.0.1:17493" + path.Substring(9));
+        request.Method = method;
+        request.Timeout = 600000;
+        request.ReadWriteTimeout = 600000;
+        request.Proxy = null;
+        if (method == "POST")
+        {
+            if (context.Request.ContentLength64 < 0 || context.Request.ContentLength64 > 12000000)
+            { context.Response.StatusCode = 413; return; }
+            request.ContentType = context.Request.ContentType;
+            request.ContentLength = context.Request.ContentLength64;
+            using (Stream input = context.Request.InputStream)
+            using (Stream output = request.GetRequestStream()) input.CopyTo(output);
+        }
+        try
+        {
+            using (HttpWebResponse upstream = (HttpWebResponse)request.GetResponse()) CopyVoiceResponse(upstream, context.Response);
+        }
+        catch (WebException error)
+        {
+            HttpWebResponse upstream = error.Response as HttpWebResponse;
+            if (upstream != null) using (upstream) CopyVoiceResponse(upstream, context.Response);
+            else
+            {
+                context.Response.StatusCode = 503;
+                byte[] body = Encoding.UTF8.GetBytes("Local Voicebox is unavailable.");
+                context.Response.ContentType = "text/plain; charset=utf-8";
+                context.Response.OutputStream.Write(body, 0, body.Length);
+            }
+        }
+    }
+
+    private static void CopyVoiceResponse(HttpWebResponse upstream, HttpListenerResponse downstream)
+    {
+        downstream.StatusCode = (int)upstream.StatusCode;
+        downstream.ContentType = upstream.ContentType;
+        downstream.Headers["Cache-Control"] = "no-store";
+        downstream.Headers["X-Content-Type-Options"] = "nosniff";
+        using (Stream input = upstream.GetResponseStream()) input.CopyTo(downstream.OutputStream);
     }
 
     private static string ContentType(string path)

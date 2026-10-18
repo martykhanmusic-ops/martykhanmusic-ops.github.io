@@ -23,6 +23,8 @@ Master M4 application framework was completed and pushed on the development bran
 
 The Windows launcher source is `launcher/HaloLauncher.cs`, the build command is `scripts/build-launcher.ps1`, and the local generated executable is `dist/Halo.exe`. The executable is ignored by Git; rebuild it from the source after checkout. Verify its presence locally before promising it in another chat.
 
+Jarvis voice box source is `halo/voicebox.js`. Its updated local executable is `dist/Halo-Voice.exe` on the owner's PC. It uses the sibling local Voicebox backend and a `Jarvis` preset profile created on that PC. Kokoro speech and Whisper base transcription of generated WAV audio were verified on October 17, 2026; physical microphone input still needs a user-device check. Close an older Halo.exe before launching Halo-Voice.exe on the same localhost port.
+
 ## Prompt for a new chat
 
 > Resume my build. First read this repository's `docs/CODEX_MEMORY_ROADMAP.md`. If you can access my Windows PC, also read `%USERPROFILE%\_Code\CODEX_MEMORY_ROADMAP.md` and open the canonical project folder. Verify Git branch, remote, commits, uncommitted changes, and current status files before editing. Preserve existing work. If you cannot access the PC, say so and use the verified remote branch or files I provide.

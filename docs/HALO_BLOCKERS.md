@@ -12,6 +12,7 @@
 | R8 | No actual DAW, plugin build environment or real mobile audio target | Required at M7; no simulated latency accepted |
 | R9 | User requested the Halo visual language for the UI; the initial style pass is implemented, but a full design package and expanded World art remain | Review the M5 package/rollback and accessibility before milestone completion; separately approve expanded World art |
 | R10 | No lint/build scripts, other-browser or assistive-technology validation | Report unavailable checks explicitly; syntax/Chromium are limited evidence |
+| R11 | Local Voicebox models are stored outside Halo and can take time to download on a new PC; this PC completed Whisper base and Kokoro checks | Start the local Voicebox backend and verify model readiness on each new machine; report failures honestly |
 
 No credential contents are recorded. No production deployment, protected-main merge, account creation, paid service or AI provider is authorized. Blocked milestones must stop sequencing; upcoming risks are not evidence their milestones passed.
 

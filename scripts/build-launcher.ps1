@@ -1,9 +1,11 @@
+param([string]$OutputName = 'Halo.exe')
+if ($OutputName -notmatch '^[A-Za-z0-9-]+\.exe$') { throw 'OutputName must be a simple .exe filename.' }
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $out = Join-Path $root 'dist'
 New-Item -ItemType Directory -Force -Path $out | Out-Null
 $archivePath = Join-Path $out 'halo-site.zip'
-$exePath = Join-Path $out 'Halo.exe'
+$exePath = Join-Path $out $OutputName
 Add-Type -AssemblyName System.IO.Compression
 $tracked = git -C $root ls-files -- 'index.html' 'halo/**'
 if ($LASTEXITCODE -ne 0 -or -not $tracked) { throw 'Could not find tracked Halo site files.' }

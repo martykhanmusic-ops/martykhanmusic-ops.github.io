@@ -102,6 +102,12 @@ footer { color: var(--muted); }
 #application-panel { max-width: 1000px; }
 #application-panel .card { min-height: 260px; }
 .world-workstation { box-shadow: var(--elevation); }
+.voice-box { margin-top: 22px; }
+.voice-box h2 { margin: 0; }
+.voice-actions { display: flex; flex-wrap: wrap; gap: 9px; }
+.voice-actions button { margin: 0; }
+.voice-box #voice-status { color: var(--accent); font-size: 13px; margin-bottom: 0; }
+.voice-box textarea { min-height: 90px; }
 @media (max-width: 950px) {
   .companion-panel, #application-directory { padding: 12px; }
   .topbar { align-items: flex-start; }
@@ -119,4 +125,5 @@ footer { color: var(--muted); }
   .topbar { gap: 6px; }
   .topbar>div { gap: 2px; }
   .quiet { min-height: 40px; }
+  .voice-actions button { flex: 1 1 145px; }
 }

@@ -20,6 +20,28 @@ It requires Windows .NET Framework 4.x and a browser, but not Node.js or Python
 at runtime. The optional Windows companion still starts separately with Node.js.
 Halo data remains in the browser profile for the `localhost:4173` origin.
 
+### Jarvis voice box
+
+Open Jarvis to find the voice box. **Record** and **Stop recording** send a short
+microphone clip to the local Voicebox service for transcription. Read or edit
+the transcript, then choose **Use as task title** and **Generate plan**. Speaking
+does not create or execute a job. **Speak with Voicebox** and **Speak latest verified
+result** generate audio with the selected Voicebox profile; **Browser voice
+fallback** uses your browser's installed speech voice while a Voicebox model
+loads. **Stop playback** ends either voice. Voice use is optional and does not change Jarvis tool permissions or
+deletion approvals.
+
+Voicebox source is in the sibling `C:\Users\owner\_Code\voicebox` folder on
+this computer. Start its backend before using voice with
+`powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start-voicebox-for-halo.ps1`.
+The current PC has a local Voicebox preset profile named `Jarvis`. On another
+computer, create that profile in Voicebox or change the profile name in Halo.
+Models may download on first use and speech generation may take several minutes
+on a CPU. The launcher exposes only the Voicebox health, transcription, speech,
+generation status and audio routes on its loopback origin. A regular static
+development server does not provide this bridge; use the Windows launcher for
+Voicebox integration. No recording is made until you press Record.
+
 Rebuild after changing site files with
 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-launcher.ps1`.
 The generated `dist/` folder is local output and is excluded from Git. If

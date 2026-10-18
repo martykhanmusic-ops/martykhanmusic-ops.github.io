@@ -210,3 +210,5 @@ The trusted module registry and sample Workspace Status app are integrated with 
 M4 payload f5a93fbcc39511ca002c33493544e155caad6ccc matched the remote feature branch. Master M5 has not begun.
 
 Master M5 visual-language increment: the user requested Halo's orbital UI treatment. The CSS layer is integrated and visually inspected at desktop/mobile/light sizes; regression passes. Full package preview/rollback and accessibility review remain. M6 has not begun.
+
+Jarvis voice box increment: local Voicebox speech output and limited launcher bridge are implemented. Browser microphone-to-plan and speech controls pass desktop/mobile tests. Actual TTS produced WAV audio; after Whisper base completed, that audio was transcribed accurately through the launcher proxy. A physical microphone has not been tested. This does not advance M6 or bypass the M5 design-system gate.
