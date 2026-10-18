@@ -45,4 +45,12 @@ Jarvis review form. Job creation and execution still follow the original
 approval path. Desktop/mobile controlled tests cover file rejection, model
 selection, backup boundary, draft-only state, and no automatic task effect.
 
+Streamlined Jarvis: inline proposal review is transient until it submits the
+existing plan form; the resulting job stays pending under normal permissions.
+The local launcher flushes Ollama chat chunks for the orb preview. Stop aborts
+without saving a partial exchange. The visible project selector updates the
+canonical active project, and the connection indicator checks the Ollama model
+list plus Voicebox health. Controlled desktop/mobile tests cover switch,
+stream, stop, disconnection, recovery and no automatic effect.
+
 The Windows-built VST3 pass-through is source-owned in `live-listen/` and has no connection to Halo or World yet. Companion pairing, room grants and audio transport must be integrated and tested before this matrix can mark Live Listen connected.

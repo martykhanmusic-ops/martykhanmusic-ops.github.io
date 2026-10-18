@@ -274,3 +274,10 @@ with the actual `music-hub-browser.cjs` and `music-daw-browser.cjs` files.
 - `tests/jarvis-capabilities-browser.cjs` passed at 1440px and 390px: preferred 4B model, small text attachment sent only to local model request, file contents absent from backup, unsafe attachment denied before request, model reasoning omitted, chat-to-plan draft filled the existing form, and no task effect occurred before explicit plan flow.
 - The first broad browser run stopped at a stale assertion in `tests/framework-browser.cjs` for the old Jarvis heading. The actual UI has shown `Talk to Jarvis.` since the orb increment; the test expectation was updated and rerun.
 - The corrected broad run passed master core/Jarvis, browser/integration, framework, World M1–M4, music library/DAW, creative orbit, Jarvis capability/chat/orb/Voicebox, reminders and accessibility at supported desktop/mobile widths. `dist/Halo-Jarvis-Local.exe` compiled from current source. Live execution of that exact executable remains unverified because the prior launcher attempt was blocked by automatic command policy; direct Ollama runtime inference was verified independently.
+
+### Streamlined Jarvis follow-up — October 18, 2026
+
+- `npm test`: 54/54; `npm run check` and `node scripts/check-world.mjs` passed.
+- Controlled desktop/mobile Jarvis tests passed for inline draft review, pending-only plan creation, project selection, local stream parsing, Stop with no partial save, connection loss/retry, Voicebox health, orb, chat persistence and safe rendering.
+- Full desktop/mobile regression passed master core/Jarvis, browser/integration, framework, World M1–M4, music library/DAW, creative orbit, reminders and accessibility.
+- Direct Windows Ollama `qwen3:0.6b` live stream returned `application/x-ndjson`, ten parsed chunks and a final `done:true`. The launcher compiled into `dist/Halo-Jarvis-Streamlined.exe` (2,674,688 bytes). Live execution of this exact EXE remains unverified because the earlier launch attempt was rejected by automatic command policy.

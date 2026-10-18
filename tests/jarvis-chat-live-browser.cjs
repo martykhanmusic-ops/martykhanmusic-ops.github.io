@@ -11,7 +11,7 @@ const { existsSync } = require('node:fs');
     page.on('pageerror', error => errors.push(error.message));
     await page.goto((process.env.HALO_TEST_URL || 'http://localhost:4174') + '/halo/');
     await page.getByRole('button', { name: '✧ Jarvis' }).click();
-    if (await page.getByRole('button', { name: 'Find chat models' }).isVisible()) await page.getByRole('button', { name: 'Find chat models' }).click();
+    if (await page.getByRole('button', { name: 'Retry connection' }).isVisible()) await page.getByRole('button', { name: 'Retry connection' }).click();
     await page.waitForFunction(() => document.querySelector('#chat-model')?.value === 'qwen3:0.6b');
     await page.getByLabel('Your message').fill('In one sentence, suggest how to start writing a song.');
     await page.getByRole('button', { name: 'Send message' }).click();

@@ -22,6 +22,9 @@ The local Jarvis capability follow-up gives the orb a bounded text-file input,
 prefers a stronger installed Ollama model, and lets a chat exchange prepare a
 reviewed Jarvis plan. This is interface/model work during M7 and does not
 satisfy the real audio capture, transport, room, or latency gates below.
+The next Jarvis usability pass places proposal review beside chat, streams
+replies with Stop, shows checked local-service states, and makes the active
+project context explicit. These changes stay within the same M7 scope.
 
 After M6 is remotely verified, inspect the DAW/plugin toolchain and define a
 small actual capture-to-local-player vertical slice. Required M7 acceptance

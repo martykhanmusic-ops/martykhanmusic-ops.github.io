@@ -31,3 +31,6 @@ node scripts/test-world.cjs tests/master-core-browser.cjs tests/master-jarvis-br
 ```
 
 Expected committed Node tests: 31, not 35. Four extra tests belonged to an uncommitted cloud Desktop design preview; they are not prerequisites for the committed app and were deliberately not pushed. Browser checks were executed under Linux Chromium; Windows results must be recorded afresh. No build/lint scripts currently exist.
+# Jarvis conversation streamline — October 18, 2026
+
+The canonical checkout adds inline proposal review, stream/Stop, checked local-service states and a visible project selector. Build the local launcher with `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-launcher.ps1 -OutputName Halo-Jarvis-Streamlined.exe`. Ollama `qwen3:4b` and `qwen3:0.6b` are installed on this PC; Voicebox remains optional. The source and branch status in this handoff must always be verified with Git on resume. This interface increment does not satisfy M7 Live Listen audio acceptance.

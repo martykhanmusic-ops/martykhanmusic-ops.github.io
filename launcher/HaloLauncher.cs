@@ -172,7 +172,11 @@ internal static class HaloLauncher
                 using (Stream input = context.Request.InputStream)
                 using (Stream output = request.GetRequestStream()) input.CopyTo(output);
             }
-            using (HttpWebResponse upstream = (HttpWebResponse)request.GetResponse()) CopyVoiceResponse(upstream, context.Response);
+            using (HttpWebResponse upstream = (HttpWebResponse)request.GetResponse())
+            {
+                if (path == "/local-llm/chat") CopyStreamingResponse(upstream, context.Response);
+                else CopyVoiceResponse(upstream, context.Response);
+            }
         }
         catch (WebException error)
         {
@@ -195,6 +199,25 @@ internal static class HaloLauncher
         downstream.Headers["Cache-Control"] = "no-store";
         downstream.Headers["X-Content-Type-Options"] = "nosniff";
         using (Stream input = upstream.GetResponseStream()) input.CopyTo(downstream.OutputStream);
+    }
+
+    private static void CopyStreamingResponse(HttpWebResponse upstream, HttpListenerResponse downstream)
+    {
+        downstream.StatusCode = (int)upstream.StatusCode;
+        downstream.ContentType = upstream.ContentType;
+        downstream.SendChunked = true;
+        downstream.Headers["Cache-Control"] = "no-store";
+        downstream.Headers["X-Content-Type-Options"] = "nosniff";
+        byte[] buffer = new byte[2048];
+        using (Stream input = upstream.GetResponseStream())
+        {
+            int read;
+            while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                downstream.OutputStream.Write(buffer, 0, read);
+                downstream.OutputStream.Flush();
+            }
+        }
     }
 
     private static void SearchMusic(HttpListenerContext context, string path)

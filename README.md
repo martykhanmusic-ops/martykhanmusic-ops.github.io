@@ -31,8 +31,12 @@ permissions remain lower on the same page; chat and speech do not run them.
 Chat can include one small `.txt`, `.md`, `.csv`, or `.json` file. Only a bounded
 excerpt goes to local Ollama for that reply; the file contents are not saved in
 Halo's workspace or backup. A Jarvis reply offers **Draft a reviewed plan**;
-that fills the existing task, note, or summary form for review and still needs
-the normal Generate plan and permission steps. Jarvis does not gain general
+that now opens an inline proposal. You can edit or cancel it; creating a plan
+still leaves execution behind the normal Jarvis permission and review steps.
+The conversation streams local replies and has a Stop button. Stopped replies
+are not saved. The orb indicator reports Ollama/model and Voicebox health, and
+the visible project selector controls which project's bounded context Jarvis
+receives. Jarvis does not gain general
 computer control, web browsing, image understanding, or ChatGPT model parity.
 
 ## Run locally

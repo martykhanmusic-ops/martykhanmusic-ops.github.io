@@ -328,3 +328,15 @@ body[data-view=jarvis] #application-directory,body[data-view=jarvis] .companion-
 .jarvis-surface #chat-attachment-status{order:4;margin:0;font-size:11px}
 .jarvis-surface #chat-form label:has(#chat-model){order:5}
 .jarvis-surface #chat-log [data-chat-plan]{font-size:11px;padding:6px 10px;margin:4px 0 0;border-radius:999px}
+.jarvis-connection{margin:0 0 8px;padding:7px 11px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:12px;max-width:max-content}
+.jarvis-connection[data-state="ready"]{border-color:#64bb9a;color:#82d2b4}
+.jarvis-connection[data-state="loading"],.jarvis-connection[data-state="streaming"]{border-color:#e2bd72;color:#e2bd72}
+.jarvis-connection[data-state="offline"]{border-color:#d88379;color:#ecaaa2}
+.jarvis-orb[data-connection="offline"]{filter:grayscale(.7);opacity:.7}
+.chat-project-label{display:flex;align-items:center;gap:8px;font-size:12px;max-width:420px}
+.chat-project-label select{flex:1;min-width:0}
+.chat-proposal:not([hidden]){display:grid;gap:8px;padding:15px;margin:12px 0;border:1px solid var(--line);border-radius:18px;background:var(--panel)}
+.chat-proposal h3,.chat-proposal p{margin:0}
+.chat-proposal textarea{min-height:72px}
+.chat-proposal button{justify-self:start}
+#chat-stream{white-space:pre-wrap}
