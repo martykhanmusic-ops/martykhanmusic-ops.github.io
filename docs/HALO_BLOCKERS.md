@@ -13,7 +13,7 @@
 | R9 | User requested the Halo visual language for the UI; the initial style pass is implemented, but a full design package and expanded World art remain | Review the M5 package/rollback and accessibility before milestone completion; separately approve expanded World art |
 | R10 | No lint/build scripts, other-browser or assistive-technology validation | Report unavailable checks explicitly; syntax/Chromium are limited evidence |
 | R11 | Local Voicebox models are stored outside Halo and can take time to download on a new PC; this PC completed Whisper base and Kokoro checks | Start the local Voicebox backend and verify model readiness on each new machine; report failures honestly |
-| R12 | Local Ollama service and model are not installed on this PC; actual LLM inference remains unverified | Install Ollama and one local model, then run a real suggestion and denial/recovery check; Jarvis remains usable without it |
+| R12 | Ollama 0.40.6 is installed and its loopback service is healthy on this PC; model download is still in progress, so actual LLM inference remains unverified | Finish one local model download, then run a real suggestion and denial/recovery check; Jarvis remains usable without it |
 
 No credential contents are recorded. No production deployment, protected-main merge, account creation, paid service or AI provider is authorized. Blocked milestones must stop sequencing; upcoming risks are not evidence their milestones passed.
 

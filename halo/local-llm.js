@@ -17,7 +17,7 @@ export function createLocalLlm(fetcher = fetch) {
       const response = await fetcher('/local-llm/models');
       if (!response.ok) throw new Error();
       const data = await response.json();
-      const names = (Array.isArray(data.models) ? data.models : []).map(model => model.name).filter(name => typeof name === 'string' && /^[\w.:-]{1,120}$/.test(name));
+      const names = (Array.isArray(data.models) ? data.models : []).map(model => model.name).filter(name => typeof name === 'string' && /^[\w.:-]{1,120}$/.test(name) && !/cloud/i.test(name));
       const select = document.querySelector('#llm-model');
       select.replaceChildren(...names.map(name => new Option(name, name)));
       status(names.length ? `${names.length} local model(s) available. Choose one to draft a plan.` : 'The local service is running, but no model is installed.');
@@ -32,7 +32,7 @@ export function createLocalLlm(fetcher = fetch) {
     document.querySelector('#llm-suggest').disabled = true;
     status('Asking the local model for a draft. No Jarvis plan or action has been created.');
     try {
-      const response = await fetcher('/local-llm/draft', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model, stream: false, messages: [
+      const response = await fetcher('/local-llm/draft', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model, stream: false, format: 'json', messages: [
         { role: 'system', content: 'Return only a JSON object with action and input. Allowed actions: add_task (task title, max 300 characters), append_note (note text), summarize (empty input). Do not execute actions. If the request is outside these actions, return {"action":"summarize","input":""}.' },
         { role: 'user', content: prompt.slice(0, 2000) }
       ] }) });

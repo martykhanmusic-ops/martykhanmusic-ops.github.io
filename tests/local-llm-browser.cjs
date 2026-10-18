@@ -13,6 +13,7 @@ const assert = require('node:assert/strict');
       await page.route('**/local-llm/draft', async route => {
         const body = route.request().postDataJSON();
         assert.equal(body.stream, false);
+        assert.equal(body.format, 'json');
         assert.equal(body.model, 'fixture:local');
         await route.fulfill({ json: { message: { content: '{"action":"add_task","input":"Record vocals"}' } } });
       });

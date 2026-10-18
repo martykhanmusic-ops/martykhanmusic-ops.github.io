@@ -28,6 +28,7 @@ Jarvis voice box source is `halo/voicebox.js`. Its updated local executable is `
 M5 appearance package preview is in `halo/visual-preview.js` and the Halo index dialog. Orbital/Classic preview, cancel/Escape rollback and apply/reload passed desktop/mobile browser tests October 17, 2026. Full accessibility review is still the M5 gate.
 The latest locally packaged executable for this increment is `dist/Halo-Appearance.exe`. It includes the Voicebox integration. The previous `Halo-Voice.exe` was in use when packaging and was preserved. The newer executable served `visual-preview.js` successfully on the test port; close an older Halo launcher before using its default localhost:4173 port.
 Optional local LLM draft source is `halo/local-llm.js` and the limited launcher proxy. No Ollama installation or model was found on this PC on October 17, 2026; browser fixture and parser tests do not establish real inference. The Jarvis form remains the only path to a plan, permission and execution.
+October 18 update: Ollama 0.40.6 is installed and answers on 127.0.0.1:11434. `qwen3:0.6b` download is in progress; real inference still needs verification. Halo now requests JSON output and hides cloud-tagged models. Preserve the unrelated mock image.
 The updated local executable containing this draft integration is `dist/Halo-Local-LLM.exe`. It was smoke-tested on localhost:4174; close an older Halo executable before opening the new one on the default localhost:4173 origin.
 
 ## Prompt for a new chat
