@@ -116,6 +116,11 @@ export function createLocalLlm(store, fetcher = fetch) {
     document.querySelector('#llm-refresh')?.addEventListener('click', models);
     document.querySelector('#chat-models')?.addEventListener('click', models);
     document.querySelector('#chat-form')?.addEventListener('submit', sendChat);
+    document.querySelector('#chat-input')?.addEventListener('keydown', event => {
+      if (event.key !== 'Enter' || event.shiftKey || event.isComposing || event.keyCode === 229) return;
+      event.preventDefault();
+      if (!busy) event.currentTarget.form?.requestSubmit();
+    });
     document.querySelector('#chat-use-voice')?.addEventListener('click', () => {
       const text = document.querySelector('#voice-text')?.value.trim() || '';
       if (!text) { chatStatus('Record or type voice text first.'); return; }

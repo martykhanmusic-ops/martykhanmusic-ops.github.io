@@ -252,3 +252,10 @@ with the actual `music-hub-browser.cjs` and `music-daw-browser.cjs` files.
 - `tests/creative-orbit-browser.cjs`: desktop 1440px and mobile 390px passed session start, reload, recap, Home resume, one store, no overflow or page errors.
 - Full browser run passed master core/Jarvis, browser/integration, music library/DAW, and World M1–M4 scenarios at their supported widths.
 - `dist/Halo-Creative-Orbit.exe` built from the current tracked Halo site files on Windows; it is a local ignored artifact.
+
+### Jarvis chat keyboard follow-up
+
+- Enter submits the message; Shift+Enter inserts a line break; Enter during IME composition does not submit.
+- `tests/jarvis-chat-browser.cjs` passed at 1440px and 390px with the keyboard path, safe rendering, reload, offline retry, and no tool effects.
+- `npm test` passed 54/54; `npm run check` and `git diff --check` passed.
+- `dist/Halo-Chat-Enter.exe` built locally. The earlier `Halo-Creative-Orbit.exe` was open, so this follow-up did not overwrite the running executable.

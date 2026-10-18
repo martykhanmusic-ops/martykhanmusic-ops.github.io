@@ -19,6 +19,8 @@ to the session. Jarvis local chat receives a short selected-project summary
 (name, description, open tasks, music link names, latest session); it receives
 no file paths or full notes, and still has no tool access. Actions continue
 through the separate Jarvis permission and approval flow.
+In Jarvis chat, press Enter to send or Shift+Enter for a new line. The Send
+message button remains available for touch and pointer use.
 
 ## Run locally
 
