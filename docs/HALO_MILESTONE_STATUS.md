@@ -22,6 +22,7 @@ Current master milestone: M7 is in progress. M6 acceptance and status receipt ma
 
 The user-directed creative-orbit pass adds Home continuity, project sessions and bounded project-aware Jarvis chat during M7. It does not satisfy Live Listen capture, transport, rooms, mobile playback or measured latency acceptance.
 The follow-up Jarvis orb view and automatic local-model discovery are interface work within M7; no Live Listen acceptance criterion changed. Controlled desktop/mobile browser checks passed. Runtime verification of the newly compiled launcher was blocked by automatic command policy.
+The local-model capability increment adds one-message bounded text attachments and chat-to-reviewed-plan drafting through the existing Jarvis form. Model discovery prefers installed qwen3:4b and falls back to qwen3:0.6b. It does not grant autonomous actions or complete M7 Live Listen.
 
 Jarvis voice box is a scoped feature increment under the current M5 work: local Voicebox TTS and generated-WAV transcription were verified October 17, 2026. Physical microphone capture remains to check on the user's device; this does not mark M5 complete.
 

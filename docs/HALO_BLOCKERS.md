@@ -52,3 +52,7 @@ Python 3.13 and a WSL distribution were not found. The ZIP supplies no finished
 The supplied Node lockfile reports 10 npm advisories. A live Halo integration
 needs an M10 asset-loading design, reviewed dependencies and visual/performance
 tests after the master milestone gate. See `3DCODEVERSE_EVALUATION.md`.
+
+# Local Jarvis capability limit (October 18, 2026)
+
+Local qwen3:4b adds a stronger conversational model, bounded text input and reviewed plan drafting. It does not provide ChatGPT model parity, image interpretation, live web research, autonomous coding, or general computer control. The approved direction remains local Ollama. Existing permission and review boundaries apply to all Jarvis actions.

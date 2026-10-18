@@ -38,4 +38,11 @@ audit controls are retained below the conversation. Controlled browser checks
 passed at desktop/mobile widths; live execution of the newly built launcher
 was blocked by command policy.
 
+Local chat capability: user-selected small text files are sent as bounded,
+untrusted excerpts for a single Ollama reply and are excluded from canonical
+backup. A saved chat exchange can request a narrow draft in the original
+Jarvis review form. Job creation and execution still follow the original
+approval path. Desktop/mobile controlled tests cover file rejection, model
+selection, backup boundary, draft-only state, and no automatic task effect.
+
 The Windows-built VST3 pass-through is source-owned in `live-listen/` and has no connection to Halo or World yet. Companion pairing, room grants and audio transport must be integrated and tested before this matrix can mark Live Listen connected.

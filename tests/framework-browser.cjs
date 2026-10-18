@@ -48,7 +48,7 @@ const { existsSync } = require('node:fs');
       assert.equal(await page.locator('#application-panel').isHidden(), true);
       assert.equal(await page.locator('#main').isVisible(), true);
       await page.getByRole('button', { name: '✧ Jarvis' }).click();
-      await page.getByRole('heading', { name: 'Your command center.' }).waitFor();
+      await page.getByRole('heading', { name: 'Talk to Jarvis.' }).waitFor();
       assert.deepEqual(await page.evaluate(() => JSON.parse(localStorage.getItem('halo.workspace.v1')).projects), workspaceBefore);
       assert.ok(await page.evaluate(() => localStorage.getItem('halo.applications.v1')));
       assert.equal(errors.length, 0, errors.join('\n'));

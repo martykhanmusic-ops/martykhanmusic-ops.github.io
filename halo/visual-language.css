@@ -322,3 +322,9 @@ body[data-view=jarvis] #application-directory,body[data-view=jarvis] .companion-
 .jarvis-surface #chat-model{padding:6px 8px}
 @media(max-width:600px){.jarvis-surface .jarvis-intro{min-height:285px;padding:8px 0}.jarvis-orb{transform:scale(.9);margin:-4px 0}.jarvis-surface .jarvis-intro h1{font-size:30px}.jarvis-surface #chat-log{min-height:70px;max-height:26vh}.jarvis-surface #chat-form .voice-actions button{flex:1 1 125px}}
 .jarvis-surface #chat-use-voice{display:none}
+/* Optional local text context stays secondary to the composer. */
+.jarvis-surface #chat-form .chat-attachment-label{order:3;font-size:11px;color:var(--muted);max-width:520px}
+.jarvis-surface #chat-attachment{font-size:11px;padding:7px 9px;background:transparent}
+.jarvis-surface #chat-attachment-status{order:4;margin:0;font-size:11px}
+.jarvis-surface #chat-form label:has(#chat-model){order:5}
+.jarvis-surface #chat-log [data-chat-plan]{font-size:11px;padding:6px 10px;margin:4px 0 0;border-radius:999px}
