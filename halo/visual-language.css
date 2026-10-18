@@ -1,37 +1,39 @@
-/* Halo visual language: orbital light, quiet surfaces, and clear controls. */
+/* Halo visual language: warm stone, glass orbit, gold light, and clear controls. */
 :root {
-  --bg: #0b1114;
-  --panel: #151e20;
-  --panel-hover: #1e2b2b;
-  --text: #eff5ec;
-  --muted: #a8bab4;
-  --line: #30433f;
-  --accent: #d4f4ae;
-  --ink: #142016;
+  --bg: #121714;
+  --panel: #1b211d;
+  --panel-hover: #293027;
+  --text: #f3efe4;
+  --muted: #b4b7a9;
+  --line: #4b5044;
+  --accent: #e9cb91;
+  --ink: #292319;
   --danger: #ffc5be;
-  --surface-raised: #1c2828;
-  --surface-glow: #c7efaa1a;
-  --elevation: 0 24px 70px #020c0c70;
+  --surface-raised: #272e27;
+  --surface-glow: #e9cb911c;
+  --hero-shade: linear-gradient(90deg, #171d19 0%, #171d19f2 31%, #171d19b0 53%, #171d1940 78%);
+  --elevation: 0 24px 70px #080a0870;
   --radius: 22px;
 }
 :root[data-theme=light] {
-  --bg: #edf2e9;
-  --panel: #fbfdf8;
-  --panel-hover: #e9f1e3;
-  --text: #1b302d;
-  --muted: #566d65;
-  --line: #bfd0c4;
-  --accent: #345b39;
+  --bg: #eee9dc;
+  --panel: #fffaf0;
+  --panel-hover: #eee6d6;
+  --text: #302e24;
+  --muted: #605e50;
+  --line: #c4bca8;
+  --accent: #67512d;
   --ink: #fff;
   --danger: #a53027;
-  --surface-raised: #f4f8f0;
-  --surface-glow: #6ba76d1b;
-  --elevation: 0 24px 70px #38574421;
+  --surface-raised: #f5eedf;
+  --surface-glow: #ad844426;
+  --hero-shade: linear-gradient(90deg, #fffaf0 0%, #fffaf0f2 31%, #fffaf0af 54%, #fffaf01f 82%);
+  --elevation: 0 24px 70px #51432d2e;
 }
 body {
   background:
     radial-gradient(circle at 78% 5%, var(--surface-glow), transparent 31rem),
-    radial-gradient(circle at 12% 74%, #7ba9970b, transparent 32rem),
+    radial-gradient(circle at 12% 74%, #9a92741a, transparent 32rem),
     var(--bg);
 }
 aside {
@@ -42,8 +44,8 @@ aside {
 .brand { margin-bottom: 37px; font-size: 23px; font-weight: 650; letter-spacing: .22em; }
 .brand-orb {
   width: 28px; height: 28px; flex: 0 0 28px;
-  background: radial-gradient(circle at 36% 29%, #e5f6d5 0, #a3c78c 33%, #344f45 75%);
-  box-shadow: 0 0 0 5px var(--surface-glow), 0 0 28px #b8e99c69, inset -5px -5px 11px #132d2888;
+  background: radial-gradient(circle at 36% 29%, #fff8da 0, #d7bb83 31%, #777760 61%, #293830 83%);
+  box-shadow: 0 0 0 5px var(--surface-glow), 0 0 28px #eed49b65, inset -5px -5px 11px #1c241b88;
 }
 .brand-os { letter-spacing: .13em; }
 .eyebrow { color: var(--accent); letter-spacing: .2em; }
@@ -64,11 +66,19 @@ button:hover { border-color: var(--accent); }
 .primary { box-shadow: 0 9px 30px var(--surface-glow); }
 .hero {
   border-color: var(--line);
-  background:
-    radial-gradient(ellipse at 78% 48%, #c9efa826, transparent 52%),
-    linear-gradient(135deg, var(--panel), var(--surface-raised));
+  background: var(--hero-shade), url('./assets/halo-orbit-reference.png') 62% 53% / cover;
   box-shadow: var(--elevation);
   min-height: 305px;
+}
+.hero > div:first-child { position: relative; z-index: 1; }
+.hero .orbit { width: min(100%, 340px); height: 225px; }
+.hero .orbit::before, .hero .planet, .hero .ring { display: none; }
+.hero .orbit button { border-radius: 48%; }
+.hero .portal-label {
+  bottom: 0;
+  color: var(--text);
+  text-shadow: 0 1px 6px #111a16;
+  font-weight: 700;
 }
 .hero h2 { font-size: clamp(26px, 3vw, 38px); line-height: 1.17; }
 .orbit { isolation: isolate; }
@@ -133,6 +143,83 @@ footer { color: var(--muted); }
 .music-resource small { display: block; overflow-wrap: anywhere; color: var(--muted); margin-bottom: 12px; }
 .music-resource-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .music-resource-actions button { margin: 0; }
+.shell { grid-template-columns: 260px minmax(0, 1fr); }
+aside { isolation: isolate; }
+#application-directory, .companion-panel {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(155deg, var(--surface-raised), var(--panel));
+  box-shadow: inset 0 1px var(--surface-glow), 0 12px 28px #020b0b18;
+}
+#application-directory::before, .companion-panel::before {
+  content: "";
+  position: absolute;
+  width: 92px;
+  height: 34px;
+  right: -29px;
+  top: -13px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  transform: rotate(-26deg);
+  pointer-events: none;
+}
+#application-directory h2, .companion-panel h2 {
+  color: var(--text);
+  font-size: 14px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.companion-panel #companion-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 3px 9px;
+  background: var(--panel);
+  color: var(--muted);
+}
+.companion-panel #companion-state::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.application-row button, .companion-panel button { min-height: 38px; text-align: left; }
+.jarvis-intro {
+  position: relative;
+  isolation: isolate;
+  min-height: 192px;
+  align-items: center;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 28px 32px;
+  background: var(--hero-shade), url('./assets/halo-orbit-reference.png') 62% 53% / cover;
+  box-shadow: var(--elevation);
+}
+.jarvis-intro::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  right: 12%;
+  top: 50%;
+  width: 190px;
+  height: 70px;
+  transform: translateY(-50%) rotate(-25deg);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  box-shadow: 0 0 0 16px var(--surface-glow), 0 0 0 32px var(--surface-glow);
+  pointer-events: none;
+}
+.jarvis-intro .badge { background: var(--panel); }
+.reminder-panel, .voice-box, .jarvis-chat {
+  border-top: 2px solid var(--accent);
+}
+.reminder-panel h2, .voice-box h2, .jarvis-chat h2 { color: var(--text); }
+.jarvis-chat #chat-log { background: var(--panel); }
+.jarvis-chat .chat-user { background: var(--surface-glow); }
 @media (max-width: 600px) { .music-hub form, .music-resource-fields { grid-template-columns: minmax(0, 1fr); } }
 .artist-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
 .artist-row small { color: var(--muted); }
@@ -153,10 +240,14 @@ footer { color: var(--muted); }
   nav button[aria-current=page], .filters [aria-pressed=true] { border: 2px solid Highlight; }
 }
 @media (max-width: 950px) {
+  .shell { grid-template-columns: 200px minmax(0, 1fr); }
   .companion-panel, #application-directory { padding: 12px; }
   .topbar { align-items: flex-start; }
+  .hero { background: linear-gradient(90deg, var(--panel) 0%, #171d19d9 100%), url('./assets/halo-orbit-reference.png') 70% center / cover; }
+  :root[data-theme=light] .hero { background: linear-gradient(90deg, var(--panel) 0%, #fffaf0cc 100%), url('./assets/halo-orbit-reference.png') 70% center / cover; }
 }
 @media (max-width: 600px) {
+  .shell { display: block; }
   aside { padding: 16px 18px; }
   .brand { margin-bottom: 12px; }
   nav button { min-height: 44px; }
@@ -170,4 +261,6 @@ footer { color: var(--muted); }
   .topbar>div { gap: 2px; }
   .quiet { min-height: 40px; }
   .voice-actions button { flex: 1 1 145px; }
+  .jarvis-intro { min-height: 0; padding: 22px; }
+  .jarvis-intro::after { right: -60px; opacity: .5; }
 }

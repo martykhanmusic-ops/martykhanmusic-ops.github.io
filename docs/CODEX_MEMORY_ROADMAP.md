@@ -40,6 +40,13 @@ The updated local executable containing this draft integration is `dist/Halo-Loc
 
 ## Prompt for a new chat
 
+October 18 Orbital reference refinement: user-supplied glass-planet image is
+stored at `halo/assets/halo-orbit-reference.png`; CSS is in
+`halo/visual-language.css`. Reproducible local desktop/mobile captures are in
+`docs/previews/current/` with `scripts/capture-halo-current.cjs`. Classic
+appearance and existing stores/permissions remain intact. Verify the latest
+Git and launcher state before claiming delivery.
+
 October 18 local 3DCodeVerse evaluation: source from the user ZIP is under
 `C:\Users\owner\_Code\3dcodeverse`; Node runtime installed and an offline
 music kiosk GLB exported under `halo-experiments/`. See

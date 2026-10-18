@@ -193,3 +193,21 @@ full Python harness and browser renderer were not run; see
 Halo regression after the documentation-only link: `npm test` passed 52/52,
 `npm run check` passed, `node scripts/check-world.mjs` passed, and
 `git diff --check` passed. No Halo runtime code or asset was changed.
+
+## Orbital visual refinement — October 18, 2026
+
+The current UI was captured from an isolated Windows Chrome session at
+1440px and 390px; see `docs/previews/current/`. The user-supplied glass-planet
+image is a local Orbital hero asset. The stylesheet uses its warm stone, olive,
+and gold palette in the dashboard, Jarvis intro, application and companion
+panels, reminders, voice and chat. The Classic package still disables this
+stylesheet. No store, permission, route or companion behavior changed.
+`npm test` passed 52/52, `npm run check` and `node scripts/check-world.mjs`
+passed. Browser suites passed for visual preview/rollback, axe accessibility
+plus keyboard/forced colors/reduced motion, core/Jarvis workflows at both
+desktop and mobile widths, and World default-off/switching using installed
+Windows Chrome. This is visual regression evidence, not a screen-reader
+certification.
+The staged source built `dist/Halo-Orbital.exe`; a local run on port 4174 served
+the reference image (HTTP 200, 2,421,609 bytes) and updated stylesheet (HTTP
+200). The executable remains a local generated build.
