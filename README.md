@@ -145,3 +145,6 @@ function listed in `halo/apps/catalog.js`.
 See [the sprint audit and delivery report](docs/SPRINT.md) for validation,
 architectural limitations and next milestones. No production deployment or push
 is part of this local implementation.
+# Appearance preview
+
+Open **Appearance** in Halo to preview the Orbital or Classic visual package. **Cancel preview** or Escape restores the saved appearance; **Apply appearance** saves the choice for this browser. Appearance is stored separately from projects, tasks, notes, and Jarvis history. The color theme control remains independent.

@@ -212,3 +212,5 @@ M4 payload f5a93fbcc39511ca002c33493544e155caad6ccc matched the remote feature b
 Master M5 visual-language increment: the user requested Halo's orbital UI treatment. The CSS layer is integrated and visually inspected at desktop/mobile/light sizes; regression passes. Full package preview/rollback and accessibility review remain. M6 has not begun.
 
 Jarvis voice box increment: local Voicebox speech output and limited launcher bridge are implemented. Browser microphone-to-plan and speech controls pass desktop/mobile tests. Actual TTS produced WAV audio; after Whisper base completed, that audio was transcribed accurately through the launcher proxy. A physical microphone has not been tested. This does not advance M6 or bypass the M5 design-system gate.
+
+M5 package increment: Appearance now previews Orbital and Classic, cancels or Escape-rolls back, and saves only an independent visual preference on Apply. Desktop/mobile appearance and full existing browser regression pass. Accessibility review remains before M5 completion; M6 has not begun.

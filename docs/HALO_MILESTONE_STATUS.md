@@ -18,7 +18,7 @@ Updated October 16, 2026. Branch feature/halo-jarvis-foundation. Starting remote
 | 11 Automation | NOT_STARTED | Scheduler/integrations absent | None | None |
 | 12 Hardening | NOT_STARTED | Full ecosystem not available | None | None |
 
-Next action: finish M5 package preview/rollback and accessibility review before declaring the milestone complete or starting M6.
+Next action: finish the M5 accessibility review before declaring the milestone complete or starting M6. Orbital/Classic package preview, Escape/cancel rollback, apply/reload and workspace preservation passed desktop/mobile browser tests on October 17, 2026.
 
 Jarvis voice box is a scoped feature increment under the current M5 work: local Voicebox TTS and generated-WAV transcription were verified October 17, 2026. Physical microphone capture remains to check on the user's device; this does not mark M5 complete.
 

@@ -25,6 +25,9 @@ The Windows launcher source is `launcher/HaloLauncher.cs`, the build command is 
 
 Jarvis voice box source is `halo/voicebox.js`. Its updated local executable is `dist/Halo-Voice.exe` on the owner's PC. It uses the sibling local Voicebox backend and a `Jarvis` preset profile created on that PC. Kokoro speech and Whisper base transcription of generated WAV audio were verified on October 17, 2026; physical microphone input still needs a user-device check. Close an older Halo.exe before launching Halo-Voice.exe on the same localhost port.
 
+M5 appearance package preview is in `halo/visual-preview.js` and the Halo index dialog. Orbital/Classic preview, cancel/Escape rollback and apply/reload passed desktop/mobile browser tests October 17, 2026. Full accessibility review is still the M5 gate.
+The latest locally packaged executable for this increment is `dist/Halo-Appearance.exe`. It includes the Voicebox integration. The previous `Halo-Voice.exe` was in use when packaging and was preserved. The newer executable served `visual-preview.js` successfully on the test port; close an older Halo launcher before using its default localhost:4173 port.
+
 ## Prompt for a new chat
 
 > Resume my build. First read this repository's `docs/CODEX_MEMORY_ROADMAP.md`. If you can access my Windows PC, also read `%USERPROFILE%\_Code\CODEX_MEMORY_ROADMAP.md` and open the canonical project folder. Verify Git branch, remote, commits, uncommitted changes, and current status files before editing. Preserve existing work. If you cannot access the PC, say so and use the verified remote branch or files I provide.

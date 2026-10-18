@@ -108,6 +108,14 @@ footer { color: var(--muted); }
 .voice-actions button { margin: 0; }
 .voice-box #voice-status { color: var(--accent); font-size: 13px; margin-bottom: 0; }
 .voice-box textarea { min-height: 90px; }
+.visual-dialog-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
+#visual-dialog fieldset { border: 1px solid var(--line); border-radius: 12px; margin: 20px 0; }
+#visual-dialog fieldset label { display: flex; align-items: center; gap: 8px; font-size: 15px; color: var(--text); }
+#visual-dialog input[type=radio] { width: 18px; height: 18px; margin: 0; accent-color: var(--accent); }
+@media (forced-colors: active) {
+  .brand-orb, .planet { border: 2px solid ButtonText; }
+  nav button[aria-current=page], .filters [aria-pressed=true] { border: 2px solid Highlight; }
+}
 @media (max-width: 950px) {
   .companion-panel, #application-directory { padding: 12px; }
   .topbar { align-items: flex-start; }
