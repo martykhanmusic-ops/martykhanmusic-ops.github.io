@@ -26,4 +26,6 @@ Optional local LLM draft integration is a separate scoped increment: Ollama 0.40
 
 Jarvis chat is another scoped increment: local Ollama replies, two-turn context, bounded canonical-store history, backup/reload, confirmed clearing, offline retry and no-tool behavior were verified October 18, 2026. M5 accessibility review remains open; M6 has not begun.
 
+Local reminders are a scoped Jarvis increment under the current M5 work: create, due badge, optional while-open browser alerts, denial, reload, done and removal passed desktop/mobile controlled tests October 18, 2026. This does not deliver background automation or advance M11. M5 accessibility review remains open.
+
 The M3 completion claim follows the observed `git ls-remote` match for payload 6202829284d9d089ac2c24697ea6c1139d0778e9. This tracking receipt commit necessarily has its own later SHA. The untracked preview image remains untouched and uncommitted.

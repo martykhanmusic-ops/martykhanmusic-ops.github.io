@@ -3,7 +3,7 @@ export const STORAGE_KEY = 'halo.workspace.v1';
 const stamp = () => new Date().toISOString();
 const id = () => crypto.randomUUID();
 export const defaultPermissions = () => ({ add_task: true, complete_task: false, append_note: true, summarize: true, delete_completed: false });
-export const emptyState = () => ({ version: 1, projects: [], activeProjectId: null, view: 'dashboard', theme: 'dark', activity: [], jobs: [], chat: [], permissions: defaultPermissions() });
+export const emptyState = () => ({ version: 1, projects: [], activeProjectId: null, view: 'dashboard', theme: 'dark', activity: [], jobs: [], chat: [], reminders: [], permissions: defaultPermissions() });
 const isText = value => typeof value === 'string';
 const isDate = value => isText(value) && Number.isFinite(Date.parse(value));
 export function validate(state) {
@@ -20,6 +20,7 @@ export function validate(state) {
   }
   if (state.activeProjectId !== null && !ids.has(state.activeProjectId)) throw new Error('The saved project could not be found.');
   if (state.chat !== undefined && (!Array.isArray(state.chat) || state.chat.length > 60 || state.chat.some(message => !message || !isText(message.id) || !['user','assistant'].includes(message.role) || !isText(message.text) || !message.text.trim() || message.text.length > 4000 || !isDate(message.at)))) throw new Error('Invalid Jarvis chat data.');
+  if (state.reminders !== undefined && (!Array.isArray(state.reminders) || state.reminders.length > 200 || state.reminders.some(reminder => !reminder || !isText(reminder.id) || !isText(reminder.title) || !reminder.title.trim() || reminder.title.length > 200 || !isDate(reminder.dueAt) || !isDate(reminder.createdAt) || !['pending','done','cancelled'].includes(reminder.status) || (reminder.alertedAt !== null && !isDate(reminder.alertedAt))))) throw new Error('Invalid reminder data.');
   for (const a of state.activity) if (!a || !isText(a.id) || !isText(a.message) || !isDate(a.at)) throw new Error('Invalid activity data.');
   if (state.permissions !== undefined) {
     const required = ['add_task', 'append_note', 'summarize', 'delete_completed'];
@@ -40,6 +41,7 @@ export function createStore(storage) {
     lastSaved = raw;
     state = raw === null ? emptyState() : validate(JSON.parse(raw));
     state.chat = state.chat || [];
+    state.reminders = state.reminders || [];
     state.permissions = { ...defaultPermissions(), ...state.permissions };
   } catch (error) { throw new Error(`Halo could not read saved data. Your stored data has not been changed. ${error.message}`); }
   const listeners = new Set();
@@ -100,9 +102,41 @@ export function createStore(storage) {
       });
     },
     clearChat() { transact(s => { s.chat = []; }); },
+    addReminder(title, dueAt) {
+      if (!isText(title) || !title.trim() || title.length > 200 || !isDate(dueAt) || Date.parse(dueAt) <= Date.now()) throw new Error('Enter a reminder and a future date and time.');
+      const reminderId = id();
+      transact(s => {
+        if (s.reminders.length >= 200) throw new Error('Reminder limit reached. Remove an old reminder before adding another.');
+        s.reminders.push({ id: reminderId, title: title.trim(), dueAt: new Date(dueAt).toISOString(), createdAt: stamp(), status: 'pending', alertedAt: null });
+      });
+      return reminderId;
+    },
+    setReminderStatus(reminderId, status) {
+      if (!['done','cancelled'].includes(status)) throw new Error('Unsupported reminder status.');
+      transact(s => {
+        const reminder = s.reminders.find(item => item.id === reminderId);
+        if (!reminder || reminder.status !== 'pending') throw new Error('Pending reminder not found.');
+        reminder.status = status;
+      });
+    },
+    markReminderAlerted(reminderId) {
+      transact(s => {
+        const reminder = s.reminders.find(item => item.id === reminderId);
+        if (!reminder || reminder.status !== 'pending' || reminder.alertedAt || Date.parse(reminder.dueAt) > Date.now()) throw new Error('Reminder is not ready for an alert.');
+        reminder.alertedAt = stamp();
+      });
+    },
+    removeReminder(reminderId) {
+      transact(s => {
+        const index = s.reminders.findIndex(item => item.id === reminderId);
+        if (index < 0) throw new Error('Reminder not found.');
+        s.reminders.splice(index, 1);
+      });
+    },
     restore(raw) {
       const imported = validate(JSON.parse(raw));
       imported.chat = imported.chat || [];
+      imported.reminders = imported.reminders || [];
       imported.permissions = defaultPermissions();
       for (const job of imported.jobs) {
         if (['running', 'pending', 'awaiting_approval'].includes(job.status)) {

@@ -219,3 +219,5 @@ Local LLM draft increment: optional loopback Ollama bridge and three-action vali
 October 18 live follow-up: Ollama 0.40.6 and qwen3:0.6b are installed. Real launcher and browser requests returned a task draft while leaving Jarvis job/task counts unchanged until explicit plan generation. M5 accessibility gate remains.
 
 Jarvis chat increment: local Ollama conversation is available in the command center, using bounded history in the existing Halo workspace/backup. Two-turn context, reload, cancellation of clear, offline retry and real qwen3:0.6b response passed. Chat has no tool execution. M5 accessibility gate remains.
+
+Local reminder increment: Jarvis has manual reminders in the same workspace backup, a due top bar badge, explicit browser alert permission, and done/cancel/remove controls. Desktop/mobile tests cover permission denial, due state, controlled alert creation, persistence and no job effects. Closed-app/background notification is outside this increment. M5 accessibility gate remains.

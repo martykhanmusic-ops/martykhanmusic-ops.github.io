@@ -17,6 +17,8 @@
 
 No credential contents are recorded. No production deployment, protected-main merge, account creation, paid service or AI provider is authorized. Blocked milestones must stop sequencing; upcoming risks are not evidence their milestones passed.
 
+Local reminder limit: the page must stay open for its 15-second due check and optional browser notification. Notification permission may be denied, and there is no Windows background scheduler or closed-app delivery. Due items remain visible when Halo is reopened. This is not M11 automation completion.
+
 ## Master M3 blocker resolution
 
 The prior cloud blocker was resolved by running Codex and the companion on the selected Windows computer. Node reported `win32`, Windows release `10.0.26200`, x64 and hostname `MKLAPTOP`. Live Windows queries returned process and audio endpoint entries. A folder grant listed and read a documentation file while rejecting `../README.md`; the explicitly allowlisted `File Explorer.lnk` was discovered and launched after the local one-time approval code. These are local observations, not simulated telemetry. No M4 work has started.

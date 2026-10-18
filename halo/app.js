@@ -2,12 +2,13 @@ import { createStore, STORAGE_KEY } from './store.js';
 import { createJarvis, adapters } from './jarvis.js';
 import { createJarvisVoice } from './voicebox.js';
 import { createLocalLlm } from './local-llm.js';
+import { createReminders } from './reminders.js';
 import { projectJobs } from './project-state.js';
 import { createApplicationRegistry, coreApplications } from './framework.js';
 const $ = selector => document.querySelector(selector);
 const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const date = value => new Date(value).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
-let store, jarvis, voice, localLlm, search = '', dirty = false, jobFilter = 'all', jobScope = 'all', editorBase = null;
+let store, jarvis, voice, localLlm, reminders, search = '', dirty = false, jobFilter = 'all', jobScope = 'all', editorBase = null;
 let applications, applicationWarning = '';
 try {
   applications = createApplicationRegistry({ storage: localStorage, platform: matchMedia('(max-width: 699px)').matches ? 'mobile' : 'desktop' });
@@ -66,6 +67,7 @@ function bindTaskInputs() {
 }
 function syncView() {
   const s = store.get();
+  reminders?.render(s);
   const p = s.projects.find(p=>p.id===s.activeProjectId);
   if(s.view === 'project' && p && editorBase?.id === p.id && $('#project-tasks')) {
     $('#project-title').textContent=p.name;
@@ -101,6 +103,7 @@ function jarvisView(s) {
   const jobs = filteredJobs(s);
   return `<div class="section-heading"><div><p class="eyebrow">A LITTLE HELP. A CLEARER PATH.</p><h1>Your command center.</h1><p class="muted">Plan it. Review it. Make it happen.</p></div><span class="badge">LOCAL TOOLS / YOU'RE IN CONTROL</span></div>
   <div class="metrics" id="job-metrics"><div class="metric"><strong>${s.jobs.filter(j=>['pending','awaiting_approval'].includes(j.status)).length}</strong><span>IN THE QUEUE</span></div><div class="metric"><strong>${s.jobs.filter(j=>j.status==='running').length}</strong><span>RUNNING</span></div><div class="metric"><strong>${s.jobs.filter(j=>j.status==='completed').length}</strong><span>VERIFIED & COMPLETE</span></div></div>
+  <section class="card reminder-panel" aria-label="Reminders"><div class="section-heading"><div><p class="eyebrow">LOCAL REMINDERS / YOU DECIDE</p><h2>Reminders.</h2></div><button type="button" id="reminder-alerts">Enable browser alerts</button></div><p class="muted">Halo checks reminders while this page is open. Due items stay visible here and in the top bar. Browser alerts need permission; Halo cannot alert you while it is closed.</p><form id="reminder-form"><div class="reminder-form-grid"><label>Remind me to<input name="title" maxlength="200" required placeholder="Record the chorus"></label><label>Date and time<input name="due" type="datetime-local" required></label></div><button class="primary">Save reminder</button></form><p id="reminder-status" role="status" aria-live="polite">Reminders are saved in your Halo backup.</p><div id="reminder-list" aria-label="Saved reminders"></div></section>
   <section class="card voice-box" aria-label="Jarvis voice box"><div class="section-heading"><div><p class="eyebrow">LOCAL VOICE / YOU DECIDE</p><h2>Talk with Jarvis.</h2></div><button type="button" id="voice-check">Check Voicebox</button></div><p class="muted">Record through local Voicebox, review the transcript, then copy it into a task plan. Jarvis never runs a spoken command automatically.</p><div class="voice-actions"><button type="button" id="voice-record">● Record</button><button type="button" id="voice-stop" disabled>■ Stop recording</button><button type="button" id="voice-use">Use as task title</button></div><label>Voice text<textarea id="voice-text" rows="3" maxlength="10000" placeholder="Your transcript or words for Jarvis to speak"></textarea></label><label>Voicebox profile<input id="voice-profile" value="Jarvis" autocomplete="off" placeholder="Voicebox profile name"></label><div class="voice-actions"><button type="button" id="voice-speak">Speak with Voicebox</button><button type="button" id="voice-browser">Browser voice fallback</button><button type="button" id="voice-result">Speak latest verified result</button><button type="button" id="voice-stop-playback">Stop playback</button></div><p id="voice-status" role="status" aria-live="polite">Voicebox is optional. Start its local backend to use microphone transcription or speech.</p></section>
   <section class="card jarvis-chat" aria-label="Jarvis chat"><div class="section-heading"><div><p class="eyebrow">LOCAL CONVERSATION / NO TOOL ACCESS</p><h2>Chat with Jarvis.</h2></div><button type="button" id="chat-clear">Clear chat</button></div><p class="muted">Ask questions or brainstorm with the local model. Chat replies cannot create plans, change projects, or run tools. The latest 30 exchanges are saved in your Halo backup.</p><div id="chat-log" role="log" aria-label="Jarvis conversation" aria-live="polite"></div><form id="chat-form"><label>Chat model<select id="chat-model" required><option value="">Find models first</option></select></label><label>Your message<textarea id="chat-input" rows="3" maxlength="2000" required placeholder="What should I work on next?"></textarea></label><div class="voice-actions"><button type="button" id="chat-models">Find chat models</button><button type="button" id="chat-use-voice">Use voice text</button><button class="primary" id="chat-send" type="submit">Send message</button></div></form><button type="button" id="chat-to-voice">Copy latest reply to voice box</button><p id="chat-status" role="status" aria-live="polite">Find a local model to start chatting.</p></section>
   <section class="card local-llm" aria-label="Local model draft"><div class="section-heading"><div><p class="eyebrow">OPTIONAL LOCAL MODEL / DRAFT ONLY</p><h2>Draft with a local model.</h2></div><button type="button" id="llm-refresh">Find models</button></div><p class="muted">A local model may suggest one supported Jarvis form entry. Review it before creating a plan. Jarvis permissions and approval still apply.</p><label>Installed model<select id="llm-model"><option value="">Find models first</option></select></label><label>Request<textarea id="llm-request" rows="2" maxlength="2000" placeholder="Add a task to record a vocal take"></textarea></label><div class="voice-actions"><button type="button" id="llm-use-voice">Use voice text as request</button><button type="button" id="llm-suggest" ${s.projects.length ? '' : 'disabled'}>Suggest draft</button></div><p id="llm-status" role="status" aria-live="polite">${s.projects.length ? 'Local model is optional and disconnected until checked.' : 'Create a project before asking for a Jarvis draft.'}</p></section>
@@ -115,7 +118,8 @@ function render() {
   document.querySelectorAll('nav [data-view]').forEach(b => { if (b.dataset.view === s.view) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
   $('#main').innerHTML = s.view === 'dashboard' ? dashboard(s) : s.view === 'project' ? projectView(s) : jarvisView(s);
   bindMain();
-  if (s.view === 'jarvis') { voice.bind(() => store.get().jobs.find(job => job.status === 'completed')?.result || ''); localLlm.bind(); localLlm.renderChat(s.chat || []); }
+  if (s.view === 'jarvis') { voice.bind(() => store.get().jobs.find(job => job.status === 'completed')?.result || ''); localLlm.bind(); localLlm.renderChat(s.chat || []); reminders.bind(); }
+  reminders.render(s);
 }
 function taskChoices() {
   const p = store.get().projects.find(p=>p.id === $('#plan-form select[name="projectId"]').value);
@@ -151,6 +155,7 @@ if (store) {
   jarvis = createJarvis(store);
   voice = createJarvisVoice();
   localLlm = createLocalLlm(store);
+  reminders = createReminders(store);
   run(() => jarvis.recover());
   store.subscribe(syncView);
   document.addEventListener('click', async event => {
@@ -185,6 +190,7 @@ if (store) {
   window.addEventListener('beforeunload', event => { if(dirty) { event.preventDefault(); event.returnValue = ''; } });
   window.addEventListener('storage', event => { if(event.key === STORAGE_KEY) notify('Workspace changed in another tab. Reload before saving.',true); });
   render();
+  reminders.start();
   if (applicationWarning) notify(`${applicationWarning} Application settings will not be saved until the metadata is repaired.`, true);
 }
 

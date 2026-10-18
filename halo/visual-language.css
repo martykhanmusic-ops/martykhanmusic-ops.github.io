@@ -115,6 +115,15 @@ footer { color: var(--muted); }
 .chat-message strong { font-size: 12px; color: var(--accent); }
 .chat-message p { margin: 4px 0 0; white-space: pre-wrap; }
 .jarvis-chat .voice-actions button { margin: 0; }
+.reminder-panel { margin-top: 22px; }
+.reminder-form-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; }
+.reminder-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); }
+.reminder-row strong, .reminder-row small { display: block; overflow-wrap: anywhere; }
+.reminder-row small { color: var(--muted); }
+.reminder-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.reminder-actions button { margin: 0; }
+#reminder-badge { border-color: var(--accent); color: var(--accent); }
+@media (max-width: 600px) { .reminder-form-grid { grid-template-columns: 1fr; } .reminder-row { align-items: flex-start; flex-direction: column; } }
 .visual-dialog-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
 #visual-dialog fieldset { border: 1px solid var(--line); border-radius: 12px; margin: 20px 0; }
 #visual-dialog fieldset label { display: flex; align-items: center; gap: 8px; font-size: 15px; color: var(--text); }

@@ -31,6 +31,7 @@ Optional local LLM draft source is `halo/local-llm.js` and the limited launcher 
 October 18 update: Ollama 0.40.6 is installed and answers on 127.0.0.1:11434. `qwen3:0.6b` download is in progress; real inference still needs verification. Halo now requests JSON output and hides cloud-tagged models. Preserve the unrelated mock image.
 Later October 18 verification: `qwen3:0.6b` completed and returned a real JSON task draft through `dist/Halo-Ollama.exe`; `tests/local-llm-live-browser.cjs` verified browser review without automatic plan/task creation. M5 accessibility remains open.
 Jarvis chat source is in `halo/local-llm.js`, the shared workspace store and Halo launcher. `dist/Halo-Chat.exe` is the newer local build. It uses qwen3:0.6b, saves bounded conversation in the canonical backup, and was verified with a real local-model browser reply on October 18. M5 accessibility remains open.
+Local reminders source is `halo/reminders.js` and the shared workspace store. They appear in Jarvis and the top bar, persist in backups, and can alert through browser notifications only while Halo is open. Check the live build and test report for packaging and push status before claiming completion.
 The updated local executable containing this draft integration is `dist/Halo-Local-LLM.exe`. It was smoke-tested on localhost:4174; close an older Halo executable before opening the new one on the default localhost:4173 origin.
 
 ## Prompt for a new chat

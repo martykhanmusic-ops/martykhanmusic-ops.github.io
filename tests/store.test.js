@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createStore, STORAGE_KEY } from '../halo/store.js';
+import { dueReminders } from '../halo/reminders.js';
 export function memory() { const data = new Map(); return { getItem: k => data.get(k) ?? null, setItem: (k,v) => data.set(k,v) }; }
 test('create → save → reopen → resume retains notes, tasks, route and theme', () => {
   const disk = memory(), first = createStore(disk);
@@ -55,4 +56,36 @@ test('Jarvis chat stays in the canonical backup and cannot alter tasks or jobs',
   assert.equal(restored.get().chat.length, 0);
   assert.equal(restored.get().projects[0].id, projectId);
   assert.throws(() => restored.addChatExchange('', 'reply'), /Invalid/);
+});
+test('reminders persist with workspace backups and preserve project and Jarvis state', () => {
+  const disk = memory(), store = createStore(disk);
+  const projectId = store.createProject('Album');
+  const dueAt = new Date(Date.now() + 120000).toISOString();
+  const id = store.addReminder('Record chorus', dueAt);
+  assert.equal(store.get().reminders[0].id, id);
+  assert.equal(dueReminders(store.get().reminders, Date.parse(dueAt) - 1).length, 0);
+  assert.equal(dueReminders(store.get().reminders, Date.parse(dueAt)).length, 1);
+  assert.equal(createStore(disk).get().reminders[0].title, 'Record chorus');
+  const restored = createStore(memory());
+  restored.restore(JSON.stringify(store.get()));
+  assert.equal(restored.get().reminders.length, 1);
+  restored.setReminderStatus(id, 'done');
+  assert.equal(dueReminders(restored.get().reminders, Date.parse(dueAt)).length, 0);
+  assert.equal(restored.get().projects[0].id, projectId);
+  assert.equal(restored.get().jobs.length, 0);
+  restored.removeReminder(id);
+  assert.equal(restored.get().reminders.length, 0);
+});
+test('reminder dates and status are validated; older backups gain an empty list', () => {
+  const store = createStore(memory());
+  assert.throws(() => store.addReminder('Late', new Date(Date.now() - 1000).toISOString()), /future/);
+  assert.throws(() => store.addReminder('', new Date(Date.now() + 60000).toISOString()), /future/);
+  const id = store.addReminder('Future', new Date(Date.now() + 60000).toISOString());
+  assert.throws(() => store.setReminderStatus(id, 'pending'), /Unsupported/);
+  assert.throws(() => store.markReminderAlerted(id), /not ready/);
+  store.setReminderStatus(id, 'cancelled');
+  assert.throws(() => store.setReminderStatus(id, 'done'), /Pending/);
+  const legacy = store.get(); delete legacy.reminders;
+  const restored = createStore(memory()); restored.restore(JSON.stringify(legacy));
+  assert.deepEqual(restored.get().reminders, []);
 });

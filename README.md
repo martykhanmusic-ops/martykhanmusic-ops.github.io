@@ -158,3 +158,7 @@ On this Windows PC, Ollama 0.40.6 with `qwen3:0.6b` has been verified through th
 
 Open **Jarvis → Chat with Jarvis**, select **Find chat models**, and choose the installed local model. Messages and replies are saved in Halo's existing workspace data and included in JSON backups. The recent 30 exchanges are kept; **Clear chat** asks before removing them. Chat has no tool access: it cannot create a Jarvis plan, change a project, or run an OS action. To act on an idea, use the separate Jarvis plan and approval controls. If Ollama is unavailable, the unsent message remains in the input box for retry.
 You can copy voice text into chat, or copy the latest chat reply to the voice box and explicitly choose **Speak with Voicebox**.
+
+## Local reminders
+
+Open **Jarvis → Reminders**, enter a title and future date/time, then choose **Save reminder**. Due reminders appear in the Halo top bar. **Enable browser alerts** requests notification permission explicitly; these alerts work only while Halo is open. The reminder list remains available if permission is denied. Mark an item done, cancel it, or remove it from the list. Reminders use the existing Halo workspace and JSON backup; they do not create Jarvis jobs or run OS actions. This is an in-app reminder feature, not a background Windows scheduler.

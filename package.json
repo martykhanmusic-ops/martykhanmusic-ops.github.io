@@ -5,7 +5,7 @@
   "scripts": {
     "test": "node --test --test-isolation=none tests/*.test.js",
     "test:browser": "node tests/browser.cjs && node tests/integration-browser.cjs",
-    "check": "node --check halo/app.js && node --check halo/store.js && node --check halo/jarvis.js && node --check halo/voicebox.js && node --check halo/local-llm.js && node --check halo/visual-preview.js && node --check halo/project-state.js && node --check halo/companion.js && node --check halo/framework.js && node --check halo/app-host.js && node --check halo/apps/catalog.js && node --check halo/apps/workspace-status.js && node --check companion/server.mjs && node --check companion/windows.mjs",
+    "check": "node --check halo/app.js && node --check halo/store.js && node --check halo/jarvis.js && node --check halo/voicebox.js && node --check halo/local-llm.js && node --check halo/reminders.js && node --check halo/visual-preview.js && node --check halo/project-state.js && node --check halo/companion.js && node --check halo/framework.js && node --check halo/app-host.js && node --check halo/apps/catalog.js && node --check halo/apps/workspace-status.js && node --check companion/server.mjs && node --check companion/windows.mjs",
     "test:framework:browser": "node scripts/test-world.cjs tests/framework-browser.cjs",
     "test:voicebox:browser": "node scripts/test-world.cjs tests/voicebox-browser.cjs",
     "test:chat:browser": "node scripts/test-world.cjs tests/jarvis-chat-browser.cjs",
