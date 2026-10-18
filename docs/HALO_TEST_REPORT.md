@@ -211,3 +211,29 @@ certification.
 The staged source built `dist/Halo-Orbital.exe`; a local run on port 4174 served
 the reference image (HTTP 200, 2,421,609 bytes) and updated stylesheet (HTTP
 200). The executable remains a local generated build.
+
+## Master M6 live Ableton acceptance — October 18, 2026
+
+On the actual Windows computer, the packaged Halo launcher served the app on
+localhost:4173 and the optional companion served loopback 127.0.0.1:4174 with
+one approved Ableton Documents root and only the Ableton Live 12 Suite shortcut
+allowlisted. A fresh isolated Chrome context paired with the companion code,
+created a test Halo project, linked the user-selected `.als` template through
+the real `/files/music-stat` route, discovered the approved shortcut, requested
+a separate file-bound code, accepted the explicit browser confirmation, and
+received a real project-open request acceptance. Windows then showed a newly
+started Ableton Live 12 Suite process whose command-line argument was the
+selected approved `.als` path. Its main window became responsive and displayed
+`Untitled*`; the user inspected the desktop and confirmed the selected
+template's tracks/content loaded. This user confirmation is the content-load
+evidence; the window title alone would not prove it. No personal project file
+was copied into Halo or its repository. The companion was stopped after the
+check, revoking its in-memory session and grants; Ableton was left open.
+
+`npm test` passed 52/52, `npm run check` and `node scripts/check-world.mjs`
+passed. The full browser run passed desktop/mobile music library, DAW and
+project-open flows, core/Jarvis/integration workflows, World M1–M4,
+application framework, appearance preview/rollback and accessibility checks.
+The first attempted focused command named
+a nonexistent `tests/music-browser.cjs`; it made no app change and was rerun
+with the actual `music-hub-browser.cjs` and `music-daw-browser.cjs` files.
