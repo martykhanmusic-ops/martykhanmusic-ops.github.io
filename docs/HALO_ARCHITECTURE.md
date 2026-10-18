@@ -4,6 +4,14 @@ Audit: October 16, 2026, /workspace/halo, branch feature/halo-jarvis-foundation.
 
 ## Runtime and dependency map
 
+The creative-orbit flow composes the existing dashboard, project workspace,
+music hub and Jarvis view. Optional `project.sessions` records are validated
+inside `halo.workspace.v1`; no separate session database is created. Home
+derives the next task, music link and reminder from this store. Jarvis chat
+sends a bounded selected-project summary to the local model only; filesystem
+paths, complete notes and tool authority are excluded. Voice and DAW actions
+remain behind their existing explicit controls.
+
 M7 adds a separate Windows VST3 plugin source under `live-listen/`. It builds against a local external Steinberg VST3 SDK checkout and currently passes stereo audio through the host. It has no connection to the browser workspace, Windows companion, Halo World, transport or room service. The SDK build produces an ignored local artifact and does not install a plugin globally. Audio capture and room transport remain architectural work.
 
 Master M3 adds an optional Windows Node companion under `companion/`. It is a

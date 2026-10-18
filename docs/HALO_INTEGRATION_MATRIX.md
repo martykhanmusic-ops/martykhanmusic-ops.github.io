@@ -26,4 +26,9 @@ Implemented means code exists; tested means named executed evidence in HALO_TEST
 | Public music reference | Overview artist, recording and release-group searches through three fixed MusicBrainz routes | Transient results; no workspace or application metadata write | Read-only lookup, bounded query and output, shared local rate limit; no Jarvis/World tool access | Live packaged Windows/browser tests for all three; fixture desktop/mobile and offline states; requires network and Windows system curl |
 # M7 foundation note
 
+Creative orbit integration: Home reads the canonical project, task, reminder,
+music-link and session data; project session start/finish writes the same
+workspace; Jarvis local chat reads a bounded selected-project summary. Desktop
+and mobile journeys return from project to Home and back without another store.
+
 The Windows-built VST3 pass-through is source-owned in `live-listen/` and has no connection to Halo or World yet. Companion pairing, room grants and audio transport must be integrated and tested before this matrix can mark Live Listen connected.

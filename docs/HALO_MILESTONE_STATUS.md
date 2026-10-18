@@ -20,6 +20,8 @@ Updated October 16, 2026. Branch feature/halo-jarvis-foundation. Starting remote
 
 Current master milestone: M7 is in progress. M6 acceptance and status receipt matched the remote feature branch. The project library stores links and metadata in the canonical workspace; audio bytes stay on disk. The user-selected Ableton template was linked, launched with a one-time file-bound code, and its loaded content confirmed by the user.
 
+The user-directed creative-orbit pass adds Home continuity, project sessions and bounded project-aware Jarvis chat during M7. It does not satisfy Live Listen capture, transport, rooms, mobile playback or measured latency acceptance.
+
 Jarvis voice box is a scoped feature increment under the current M5 work: local Voicebox TTS and generated-WAV transcription were verified October 17, 2026. Physical microphone capture remains to check on the user's device; this does not mark M5 complete.
 
 Optional local LLM draft integration is a separate scoped increment: Ollama 0.40.6 and qwen3:0.6b returned a real draft through Halo's launcher on October 18, 2026. A live browser test verified that it filled the Jarvis review form without automatically creating a plan or task. It does not mark M5 complete or start M6.

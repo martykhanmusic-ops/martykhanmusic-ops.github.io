@@ -240,4 +240,8 @@ M6 Ableton project increment: approved `.als` links can request a separate code 
 M6 FL Studio project increment: matching `.flp` links use the same file-bound one-time code path, with exact FL Studio 2026 shortcut and `FL64.exe` target checks. Cross-DAW and extension mismatches fail. Desktop/mobile paths and Windows security tests pass; physical project load still needs visible code entry and DAW inspection.
 # Master M7 · Live Listen (in progress)
 
+User-directed creative-orbit pass: Home, selected-project session continuity,
+and project-aware Jarvis chat are integrated with the canonical store. This
+supports the user's visual/workflow vision while M7 streaming remains open.
+
 First increment: local Windows VST3 pass-through source under `live-listen/`, built with Visual Studio 2022 and validated by Steinberg's plugin validator. Remaining: real-time-safe capture, authenticated local relay, revocable QR rooms, mobile player and producer controls, Halo/World access, and measured Ableton-to-device latency and stability. Do not report Live Listen complete from a pass-through build.

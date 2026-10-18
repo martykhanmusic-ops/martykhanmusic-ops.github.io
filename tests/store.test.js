@@ -59,6 +59,18 @@ test('music links share the project store and backup without storing audio bytes
   assert.equal(reopened.get().projects[0].musicResources.length, 0);
   assert.equal(reopened.get().projects[0].tasks[0].id, taskId);
 });
+test('creative sessions resume in the canonical project backup', () => {
+  const disk = memory(), store = createStore(disk), projectId = store.createProject('My album');
+  store.startSession(projectId, 'Arrange the chorus');
+  assert.throws(() => store.startSession(projectId, 'Second'), /Finish the current session/);
+  assert.equal(createStore(disk).get().projects[0].sessions[0].focus, 'Arrange the chorus');
+  store.finishSession(projectId, 'Drums arranged; record vocals next.');
+  const restored = createStore(memory()); restored.restore(JSON.stringify(store.get()));
+  assert.equal(restored.get().projects[0].sessions[0].recap, 'Drums arranged; record vocals next.');
+  assert.ok(restored.get().projects[0].sessions[0].endedAt);
+  assert.throws(() => restored.finishSession(projectId, ''), /No active session/);
+  assert.throws(() => restored.startSession(projectId, 'x'.repeat(301)), /under 300/);
+});
 test('Jarvis chat stays in the canonical backup and cannot alter tasks or jobs', () => {
   const disk = memory(), store = createStore(disk); const projectId = store.createProject('Chat project');
   store.addChatExchange('How should I start?', 'Sketch the chorus.');

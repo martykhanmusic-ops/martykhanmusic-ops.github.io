@@ -243,4 +243,12 @@ with the actual `music-hub-browser.cjs` and `music-daw-browser.cjs` files.
 - Steinberg VST3 SDK 3.8.1 cloned recursively to `C:\Users\owner\_Code\vst3sdk` as an external local build dependency. The editable Halo plugin source is under `live-listen/`.
 - CMake configured for Visual Studio 2022 x64 with MSVC 19.44.35229 and Windows SDK 10.0.26100. The build disables global plugin links and produces a local `HaloLiveListen.vst3` bundle under ignored `dist/live-listen-build/VST3/Release/`.
 - Steinberg's built-in plugin validator finished with **47 passed, 0 failed**. This validates the VST3 foundation, not live capture, transport or DAW loading.
-- Halo regression: `npm test` 52/52, `npm run check` passed, and `node scripts/check-world.mjs` passed. Existing runtime code was unchanged in this increment.
+- Halo regression for the VST3 increment: `npm test` 52/52, `npm run check` passed, and `node scripts/check-world.mjs` passed.
+
+## Creative orbit flow — October 18, 2026
+
+- `npm test`: 54/54 passed, including canonical session backup/restore and bounded Jarvis project context.
+- `npm run check` and `node scripts/check-world.mjs`: passed.
+- `tests/creative-orbit-browser.cjs`: desktop 1440px and mobile 390px passed session start, reload, recap, Home resume, one store, no overflow or page errors.
+- Full browser run passed master core/Jarvis, browser/integration, music library/DAW, and World M1–M4 scenarios at their supported widths.
+- `dist/Halo-Creative-Orbit.exe` built from the current tracked Halo site files on Windows; it is a local ignored artifact.

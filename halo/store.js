@@ -25,6 +25,7 @@ export function validate(state) {
         resourceIds.add(resource.id);
       }
     }
+    if (p.sessions !== undefined && (!Array.isArray(p.sessions) || p.sessions.length > 100 || p.sessions.some(session => !session || !isText(session.id) || !isDate(session.startedAt) || (session.endedAt !== null && !isDate(session.endedAt)) || !isText(session.focus) || session.focus.length > 300 || !isText(session.recap) || session.recap.length > 2000))) throw new Error('Invalid project session data.');
   }
   if (state.activeProjectId !== null && !ids.has(state.activeProjectId)) throw new Error('The saved project could not be found.');
   if (state.chat !== undefined && (!Array.isArray(state.chat) || state.chat.length > 60 || state.chat.some(message => !message || !isText(message.id) || !['user','assistant'].includes(message.role) || !isText(message.text) || !message.text.trim() || message.text.length > 4000 || !isDate(message.at)))) throw new Error('Invalid Jarvis chat data.');
@@ -100,6 +101,26 @@ export function createStore(storage) {
     },
     toggleTask(projectId, taskId) {
       transact(s => { const p = project(s, projectId); setTaskDone(p, taskId, !getTask(p, taskId).done); activity(s, `Updated task in ${p.name}`); });
+    },
+    startSession(projectId, focus = '') {
+      if (!isText(focus) || focus.length > 300) throw new Error('Session focus must be under 300 characters.');
+      transact(s => {
+        const p = project(s, projectId);
+        p.sessions ||= [];
+        if (p.sessions.some(session => session.endedAt === null)) throw new Error('Finish the current session before starting another.');
+        p.sessions.unshift({ id: id(), startedAt: stamp(), endedAt: null, focus: focus.trim(), recap: '' });
+        p.sessions = p.sessions.slice(0, 100);
+        p.updatedAt = stamp(); activity(s, `Started a session in ${p.name}`);
+      });
+    },
+    finishSession(projectId, recap = '') {
+      if (!isText(recap) || recap.length > 2000) throw new Error('Session recap must be under 2000 characters.');
+      transact(s => {
+        const p = project(s, projectId), current = (p.sessions || []).find(session => session.endedAt === null);
+        if (!current) throw new Error('No active session to finish.');
+        current.endedAt = stamp(); current.recap = recap.trim();
+        p.updatedAt = stamp(); activity(s, `Finished a session in ${p.name}`);
+      });
     },
     addMusicResource(projectId, verified, details = {}) {
       if (!verified || !['audio', 'sample', 'daw-project'].includes(verified.kind) || !isText(verified.root) || !isText(verified.relative) || !Number.isSafeInteger(verified.bytes) || verified.bytes < 0 || !isDate(verified.modifiedAt) || !isDate(verified.verifiedAt)) throw new Error('A verified local music file is required.');

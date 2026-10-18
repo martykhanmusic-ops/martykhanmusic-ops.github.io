@@ -8,6 +8,18 @@ dependency. An optional local Windows companion is described below. Visual
 styling follows Halo's orbital dark/light language. Its theme remains saved in
 the existing workspace data.
 
+## Creative orbit
+
+Orbital Home now shows the selected project's next task, music-session state,
+linked DAW project name, and nearest pending reminder. A project can start a
+working session with a focus and finish it with a recap. Sessions live in the
+same versioned workspace and backup as projects, notes, tasks, music links,
+and Jarvis history. A return visit shows the latest recap and a route back
+to the session. Jarvis local chat receives a short selected-project summary
+(name, description, open tasks, music link names, latest session); it receives
+no file paths or full notes, and still has no tool access. Actions continue
+through the separate Jarvis permission and approval flow.
+
 ## Run locally
 
 ### Windows launcher
