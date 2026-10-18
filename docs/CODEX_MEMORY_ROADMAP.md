@@ -33,6 +33,7 @@ Later October 18 verification: `qwen3:0.6b` completed and returned a real JSON t
 Jarvis chat source is in `halo/local-llm.js`, the shared workspace store and Halo launcher. `dist/Halo-Chat.exe` is the newer local build. It uses qwen3:0.6b, saves bounded conversation in the canonical backup, and was verified with a real local-model browser reply on October 18. M5 accessibility remains open.
 Local reminders source is `halo/reminders.js` and the shared workspace store. They appear in Jarvis and the top bar, persist in backups, and can alert through browser notifications only while Halo is open. Check the live build and test report for packaging and push status before claiming completion.
 Public music reference source is `halo/music-reference.js` and the fixed `/public-data/artists` launcher route. The supplied public-apis ZIP lacked a catalog; see `docs/PUBLIC_APIS_AUDIT.md`. Verify the current packaged executable and remote SHA before reporting completion.
+The next public music reference increment adds fixed `/public-data/recordings` and `/public-data/releases` routes and a shared Overview selector. Live packaged Windows/browser searches returned all three resource types. The complete catalog is still missing; this does not start or complete master M6.
 The updated local executable containing this draft integration is `dist/Halo-Local-LLM.exe`. It was smoke-tested on localhost:4174; close an older Halo executable before opening the new one on the default localhost:4173 origin.
 
 ## Prompt for a new chat

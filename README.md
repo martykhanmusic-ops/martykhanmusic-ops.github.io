@@ -165,6 +165,6 @@ Open **Jarvis → Reminders**, enter a title and future date/time, then choose *
 
 ## Public music reference
 
-The Overview page can search MusicBrainz artists through the local Windows launcher. Enter an artist name and choose **Search artists**. Results link to MusicBrainz and do not alter projects, notes, tasks, or Jarvis plans. The launcher uses a fixed read-only lookup, a 1.2-second request spacing, a descriptive User-Agent, and Windows' system `curl.exe` for HTTPS. A static site server or unavailable network shows an error rather than a simulated result. [MusicBrainz](https://musicbrainz.org) supplies the reference data.
+The Overview page can search MusicBrainz artists, recordings and releases through the local Windows launcher. Select a search type, enter a name or title, and choose **Search music**. Results link to MusicBrainz and do not alter projects, notes, tasks, or Jarvis plans. The launcher uses three fixed read-only lookup routes, shared 1.2-second request spacing, a descriptive User-Agent, and Windows' system `curl.exe` for HTTPS. A static site server or unavailable network shows an error rather than a simulated result. [MusicBrainz](https://musicbrainz.org) supplies the reference data.
 
 The supplied `public-apis-master.zip` contains validation scripts but no catalog of API entries. It was not imported as a list of live Halo integrations; see [the archive audit](docs/PUBLIC_APIS_AUDIT.md).

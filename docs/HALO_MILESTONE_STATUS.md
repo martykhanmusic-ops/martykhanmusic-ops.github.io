@@ -30,4 +30,6 @@ Local reminders are a scoped Jarvis increment under the current M5 work: create,
 
 Public music reference is a scoped read-only integration under current M5 work: Overview artist search uses the local launcher's fixed MusicBrainz route. The supplied public-apis ZIP has no catalog, so bulk API integration is unavailable. This does not complete the M6 music hub; M5 accessibility review remains open.
 
+Next public music reference increment: recording and release-group lookup joined the existing artist search on October 18, 2026. All three fixed routes returned real results through the packaged Windows executable and browser, with no workspace writes. This is still reference search, not M6 completion; M5 accessibility review remains open.
+
 The M3 completion claim follows the observed `git ls-remote` match for payload 6202829284d9d089ac2c24697ea6c1139d0778e9. This tracking receipt commit necessarily has its own later SHA. The untracked preview image remains untouched and uncommitted.

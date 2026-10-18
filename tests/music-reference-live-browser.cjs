@@ -9,12 +9,16 @@ const assert = require('node:assert/strict');
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
     await page.goto((process.env.HALO_TEST_URL || 'http://localhost:4174') + '/halo/');
-    await page.getByLabel('Artist name').fill('Prince');
-    await page.getByRole('button', { name: 'Search artists' }).click();
-    await page.getByText(/artist matches\. Reference only/).waitFor({ timeout: 20000 });
-    assert.ok(await page.locator('#artist-results .artist-row').count() > 0);
+    await page.getByLabel('Search term').fill('Prince');
+    for (const kind of ['artists', 'recordings', 'releases']) {
+      await page.getByLabel('Search type').selectOption(kind);
+      await page.getByRole('button', { name: 'Search music' }).click();
+      await page.getByText(new RegExp(`${kind} found\\. Reference only`)).waitFor({ timeout: 20000 });
+      assert.ok(await page.locator('#music-results .artist-row').count() > 0);
+      await page.waitForTimeout(1300);
+    }
     assert.equal(await page.evaluate(() => localStorage.getItem('halo.workspace.v1')), null);
     assert.deepEqual(errors, []);
-    console.log('PASS live MusicBrainz artist lookup through packaged Halo launcher');
+    console.log('PASS live MusicBrainz artist, recording and release lookup through packaged Halo launcher');
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exit(1); });

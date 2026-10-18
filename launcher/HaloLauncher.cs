@@ -80,7 +80,7 @@ internal static class HaloLauncher
             }
             if (path.StartsWith("/public-data/", StringComparison.Ordinal))
             {
-                SearchArtists(context, path);
+                SearchMusic(context, path);
                 return;
             }
             if (context.Request.HttpMethod != "GET" && context.Request.HttpMethod != "HEAD")
@@ -197,10 +197,11 @@ internal static class HaloLauncher
         using (Stream input = upstream.GetResponseStream()) input.CopyTo(downstream.OutputStream);
     }
 
-    private static void SearchArtists(HttpListenerContext context, string path)
+    private static void SearchMusic(HttpListenerContext context, string path)
     {
         HttpListenerResponse response = context.Response;
-        if (path != "/public-data/artists" || context.Request.HttpMethod != "GET") { response.StatusCode = 404; return; }
+        string resource = path == "/public-data/artists" ? "artist" : path == "/public-data/recordings" ? "recording" : path == "/public-data/releases" ? "release-group" : null;
+        if (resource == null || context.Request.HttpMethod != "GET") { response.StatusCode = 404; return; }
         string origin = context.Request.Headers["Origin"] ?? "";
         if (origin.Length > 0 && origin != "http://localhost:" + context.Request.LocalEndPoint.Port) { response.StatusCode = 403; return; }
         string name = (context.Request.QueryString["name"] ?? "").Trim();
@@ -211,7 +212,7 @@ internal static class HaloLauncher
             if ((DateTime.UtcNow - LastMusicRequest).TotalMilliseconds < 1200) { response.StatusCode = 429; return; }
             LastMusicRequest = DateTime.UtcNow;
         }
-        string target = "https://musicbrainz.org/ws/2/artist/?query=" + Uri.EscapeDataString(name) + "&fmt=json&limit=8";
+        string target = "https://musicbrainz.org/ws/2/" + resource + "/?query=" + Uri.EscapeDataString(name) + "&fmt=json&limit=8";
         string curl = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "curl.exe");
         if (!File.Exists(curl)) { response.StatusCode = 503; return; }
         try
