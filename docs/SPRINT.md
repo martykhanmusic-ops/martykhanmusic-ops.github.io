@@ -214,3 +214,5 @@ Master M5 visual-language increment: the user requested Halo's orbital UI treatm
 Jarvis voice box increment: local Voicebox speech output and limited launcher bridge are implemented. Browser microphone-to-plan and speech controls pass desktop/mobile tests. Actual TTS produced WAV audio; after Whisper base completed, that audio was transcribed accurately through the launcher proxy. A physical microphone has not been tested. This does not advance M6 or bypass the M5 design-system gate.
 
 M5 package increment: Appearance now previews Orbital and Classic, cancels or Escape-rolls back, and saves only an independent visual preference on Apply. Desktop/mobile appearance and full existing browser regression pass. Accessibility review remains before M5 completion; M6 has not begun.
+
+Local LLM draft increment: optional loopback Ollama bridge and three-action validated suggestion fill the existing Jarvis form; voice text can be copied into the request. No automatic planning or execution. Controlled tests pass; live Ollama is not installed on this PC. M5 accessibility gate remains.

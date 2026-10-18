@@ -71,6 +71,11 @@ internal static class HaloLauncher
                 ProxyVoicebox(context, path);
                 return;
             }
+            if (path.StartsWith("/local-llm/", StringComparison.Ordinal))
+            {
+                ProxyLocalLlm(context, path);
+                return;
+            }
             if (context.Request.HttpMethod != "GET" && context.Request.HttpMethod != "HEAD")
             {
                 response.StatusCode = 405;
@@ -129,6 +134,47 @@ internal static class HaloLauncher
             {
                 context.Response.StatusCode = 503;
                 byte[] body = Encoding.UTF8.GetBytes("Local Voicebox is unavailable.");
+                context.Response.ContentType = "text/plain; charset=utf-8";
+                context.Response.OutputStream.Write(body, 0, body.Length);
+            }
+        }
+    }
+
+    private static void ProxyLocalLlm(HttpListenerContext context, string path)
+    {
+        string method = context.Request.HttpMethod;
+        if (!((method == "GET" && path == "/local-llm/models") || (method == "POST" && path == "/local-llm/draft")))
+        { context.Response.StatusCode = 404; return; }
+        string origin = context.Request.Headers["Origin"] ?? "";
+        if (method == "POST" && origin != "http://localhost:" + context.Request.LocalEndPoint.Port)
+        { context.Response.StatusCode = 403; return; }
+        if (method == "POST" && (context.Request.ContentLength64 < 1 || context.Request.ContentLength64 > 12000 || !(context.Request.ContentType ?? "").StartsWith("application/json", StringComparison.OrdinalIgnoreCase)))
+        { context.Response.StatusCode = 413; return; }
+        string upstreamPath = method == "GET" ? "/api/tags" : "/api/chat";
+        HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://127.0.0.1:11434" + upstreamPath);
+        request.Method = method;
+        request.Timeout = 120000;
+        request.ReadWriteTimeout = 120000;
+        request.Proxy = null;
+        try
+        {
+            if (method == "POST")
+            {
+                request.ContentType = "application/json";
+                request.ContentLength = context.Request.ContentLength64;
+                using (Stream input = context.Request.InputStream)
+                using (Stream output = request.GetRequestStream()) input.CopyTo(output);
+            }
+            using (HttpWebResponse upstream = (HttpWebResponse)request.GetResponse()) CopyVoiceResponse(upstream, context.Response);
+        }
+        catch (WebException error)
+        {
+            HttpWebResponse upstream = error.Response as HttpWebResponse;
+            if (upstream != null) using (upstream) CopyVoiceResponse(upstream, context.Response);
+            else
+            {
+                context.Response.StatusCode = 503;
+                byte[] body = Encoding.UTF8.GetBytes("Local LLM service is unavailable.");
                 context.Response.ContentType = "text/plain; charset=utf-8";
                 context.Response.OutputStream.Write(body, 0, body.Length);
             }

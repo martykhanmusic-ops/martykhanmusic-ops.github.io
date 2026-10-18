@@ -1,12 +1,13 @@
 import { createStore, STORAGE_KEY } from './store.js';
 import { createJarvis, adapters } from './jarvis.js';
 import { createJarvisVoice } from './voicebox.js';
+import { createLocalLlm } from './local-llm.js';
 import { projectJobs } from './project-state.js';
 import { createApplicationRegistry, coreApplications } from './framework.js';
 const $ = selector => document.querySelector(selector);
 const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const date = value => new Date(value).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
-let store, jarvis, voice, search = '', dirty = false, jobFilter = 'all', jobScope = 'all', editorBase = null;
+let store, jarvis, voice, localLlm, search = '', dirty = false, jobFilter = 'all', jobScope = 'all', editorBase = null;
 let applications, applicationWarning = '';
 try {
   applications = createApplicationRegistry({ storage: localStorage, platform: matchMedia('(max-width: 699px)').matches ? 'mobile' : 'desktop' });
@@ -100,8 +101,9 @@ function jarvisView(s) {
   return `<div class="section-heading"><div><p class="eyebrow">A LITTLE HELP. A CLEARER PATH.</p><h1>Your command center.</h1><p class="muted">Plan it. Review it. Make it happen.</p></div><span class="badge">LOCAL TOOLS / YOU'RE IN CONTROL</span></div>
   <div class="metrics" id="job-metrics"><div class="metric"><strong>${s.jobs.filter(j=>['pending','awaiting_approval'].includes(j.status)).length}</strong><span>IN THE QUEUE</span></div><div class="metric"><strong>${s.jobs.filter(j=>j.status==='running').length}</strong><span>RUNNING</span></div><div class="metric"><strong>${s.jobs.filter(j=>j.status==='completed').length}</strong><span>VERIFIED & COMPLETE</span></div></div>
   <section class="card voice-box" aria-label="Jarvis voice box"><div class="section-heading"><div><p class="eyebrow">LOCAL VOICE / YOU DECIDE</p><h2>Talk with Jarvis.</h2></div><button type="button" id="voice-check">Check Voicebox</button></div><p class="muted">Record through local Voicebox, review the transcript, then copy it into a task plan. Jarvis never runs a spoken command automatically.</p><div class="voice-actions"><button type="button" id="voice-record">● Record</button><button type="button" id="voice-stop" disabled>■ Stop recording</button><button type="button" id="voice-use">Use as task title</button></div><label>Voice text<textarea id="voice-text" rows="3" maxlength="10000" placeholder="Your transcript or words for Jarvis to speak"></textarea></label><label>Voicebox profile<input id="voice-profile" value="Jarvis" autocomplete="off" placeholder="Voicebox profile name"></label><div class="voice-actions"><button type="button" id="voice-speak">Speak with Voicebox</button><button type="button" id="voice-browser">Browser voice fallback</button><button type="button" id="voice-result">Speak latest verified result</button><button type="button" id="voice-stop-playback">Stop playback</button></div><p id="voice-status" role="status" aria-live="polite">Voicebox is optional. Start its local backend to use microphone transcription or speech.</p></section>
+  <section class="card local-llm" aria-label="Local model draft"><div class="section-heading"><div><p class="eyebrow">OPTIONAL LOCAL MODEL / DRAFT ONLY</p><h2>Draft with a local model.</h2></div><button type="button" id="llm-refresh">Find models</button></div><p class="muted">A local model may suggest one supported Jarvis form entry. Review it before creating a plan. Jarvis permissions and approval still apply.</p><label>Installed model<select id="llm-model"><option value="">Find models first</option></select></label><label>Request<textarea id="llm-request" rows="2" maxlength="2000" placeholder="Add a task to record a vocal take"></textarea></label><div class="voice-actions"><button type="button" id="llm-use-voice">Use voice text as request</button><button type="button" id="llm-suggest" ${s.projects.length ? '' : 'disabled'}>Suggest draft</button></div><p id="llm-status" role="status" aria-live="polite">${s.projects.length ? 'Local model is optional and disconnected until checked.' : 'Create a project before asking for a Jarvis draft.'}</p></section>
   <div class="editor-grid"><section class="card"><h2>What's the next move?</h2><p class="muted">Choose a supported action. Jarvis builds a fixed execution plan for your review; creating a plan does not run it.</p>${s.projects.length ? `<form id="plan-form"><label>Project<select name="projectId">${s.projects.map(p=>`<option value="${escape(p.id)}" ${p.id===s.activeProjectId?'selected':''}>${escape(p.name)}</option>`).join('')}</select></label><label>Action<select name="action" id="plan-action">${Object.entries(adapters).map(([key,a])=>`<option value="${key}">${escape(a.label)}</option>`).join('')}</select></label><label id="task-target-label" hidden>Existing task<select name="taskId" id="plan-task"></select></label><label id="instruction-label">Task title<textarea name="input" id="plan-input" rows="3" maxlength="300" required placeholder="Record the final vocal take"></textarea></label><p id="action-help" class="muted">Adds one task with exactly the title you enter.</p><button class="primary">Generate plan ↗</button></form>` : '<div class="empty"><p>Create a project before planning a job.</p><button data-new>Create project ↗</button></div>'}</section>
-  <section class="card"><h2>Permission, by design.</h2><p class="muted">Grant access to each local tool. Deletions also require approval of the specific plan.</p>${Object.entries(adapters).map(([key,a])=>`<label class="task"><input type="checkbox" data-permission="${key}" ${s.permissions[key]?'checked':''}><span>${escape(a.permission)}<br><small class="muted">${escape(a.impact)}</small></span></label>`).join('')}<p class="muted">No AI provider, external integrations, messages, shell execution, or filesystem tools are connected. Status summaries use recorded data only.</p></section></div>
+  <section class="card"><h2>Permission, by design.</h2><p class="muted">Grant access to each local tool. Deletions also require approval of the specific plan.</p>${Object.entries(adapters).map(([key,a])=>`<label class="task"><input type="checkbox" data-permission="${key}" ${s.permissions[key]?'checked':''}><span>${escape(a.permission)}<br><small class="muted">${escape(a.impact)}</small></span></label>`).join('')}<p class="muted">The optional local model only fills this draft form. No external AI provider, messages, shell execution, or filesystem tools are connected. Status summaries use recorded data only.</p></section></div>
   <section><div class="section-heading"><h2>Execution history</h2><small class="muted">Plans and results are saved on this device.</small></div><label>Filter by project<select id="job-project-filter"><option value="all">All projects</option>${s.projects.map(p=>`<option value="${escape(p.id)}" ${jobScope===p.id?'selected':''}>${escape(p.name)}</option>`).join('')}</select></label><div class="filters" aria-label="Filter jobs">${statuses.map(status=>`<button data-filter="${status}" aria-pressed="${status===jobFilter}">${status.replaceAll('_',' ')}</button>`).join('')}</div><div id="job-results">${jobCards(s,jobs)}</div></section>`;
 }
 function render() {
@@ -111,7 +113,7 @@ function render() {
   document.querySelectorAll('nav [data-view]').forEach(b => { if (b.dataset.view === s.view) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
   $('#main').innerHTML = s.view === 'dashboard' ? dashboard(s) : s.view === 'project' ? projectView(s) : jarvisView(s);
   bindMain();
-  if (s.view === 'jarvis') voice.bind(() => store.get().jobs.find(job => job.status === 'completed')?.result || '');
+  if (s.view === 'jarvis') { voice.bind(() => store.get().jobs.find(job => job.status === 'completed')?.result || ''); localLlm.bind(); }
 }
 function taskChoices() {
   const p = store.get().projects.find(p=>p.id === $('#plan-form select[name="projectId"]').value);
@@ -146,6 +148,7 @@ function bindMain() {
 if (store) {
   jarvis = createJarvis(store);
   voice = createJarvisVoice();
+  localLlm = createLocalLlm();
   run(() => jarvis.recover());
   store.subscribe(syncView);
   document.addEventListener('click', async event => {

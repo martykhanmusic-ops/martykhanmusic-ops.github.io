@@ -148,3 +148,7 @@ is part of this local implementation.
 # Appearance preview
 
 Open **Appearance** in Halo to preview the Orbital or Classic visual package. **Cancel preview** or Escape restores the saved appearance; **Apply appearance** saves the choice for this browser. Appearance is stored separately from projects, tasks, notes, and Jarvis history. The color theme control remains independent.
+
+## Optional local model drafts
+
+The Windows launcher can connect Jarvis to an Ollama service on `127.0.0.1:11434`. Install Ollama and a model separately; Halo does not download a model or create an account. In Jarvis, choose **Find models**, enter or copy a voice request, then choose **Suggest draft**. The returned suggestion can only fill a supported Jarvis form action (`add_task`, `append_note`, or `summarize`). Review/edit the form, generate a plan, and use the existing permission and Run controls. A model response never executes an action by itself. If the local service is unavailable, ordinary Jarvis remains usable.
