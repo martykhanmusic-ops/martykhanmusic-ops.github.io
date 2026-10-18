@@ -35,6 +35,8 @@ Approved-folder browsing reads one directory at a time and only the first 200 en
 
 Ableton Live 12 Suite and FL Studio 2026 shortcut targets exist on this PC, and authenticated companion discovery returned both. A launch without the one-time local code returned HTTP 403. Actual DAW launch has not been performed: the user must run the companion visibly, request a code in Halo, enter that code and confirm each launch. Launching a DAW also does not verify that any particular music project file opens in it. M6 remains in progress.
 
+Ableton `.als` project opening now has a file-bound approval path, but a physical Ableton project load has not been observed. The approved root must be the user's selected Ableton folder; the existing link must match its current file size and modification time. If files move or change, re-link them. A local process with write access to the approved folder could race a file replacement between final validation and DAW opening; the companion cannot make another application's file open atomic. FL Studio `.flp` project opening has not been implemented. M6 remains open.
+
 ## Master M4 limits
 
 The framework catalog contains trusted local modules only. Its in-page grants are UI authorization, not an OS security boundary or third-party isolation. Extension code runs on the Halo origin; adding untrusted modules requires a sandbox design. Version incompatibility blocks opening until an explicit migration is built. Application metadata is browser-local and quota-limited; a corrupt value is preserved and Halo continues with transient registry state. No visual redesign, production deployment or external app provider is included.

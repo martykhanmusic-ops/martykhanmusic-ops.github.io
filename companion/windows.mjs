@@ -106,3 +106,14 @@ export async function launchApp(app) {
   await run(powershell, ['-NoProfile', '-NonInteractive', '-File', fileURLToPath(new URL('./launch.ps1', import.meta.url)), '-ShortcutPath', real], { windowsHide: true, timeout: 5000 });
   return { launched: true, app: app.name, verifiedAt: new Date().toISOString() };
 }
+
+export async function launchAbletonProject(app, root, relative) {
+  if (app.id !== 'ableton live 12 suite.lnk') throw new Error('Only the approved Ableton Live 12 Suite shortcut may open this project');
+  const file = await statMusicFile(root, relative);
+  if (path.extname(file.relative).toLowerCase() !== '.als') throw new Error('Only verified Ableton .als projects may be opened');
+  const shortcut = await fs.realpath(app.path);
+  if (shortcut !== app.path || !(await fs.stat(shortcut)).isFile()) throw new Error('Application shortcut changed');
+  const projectPath = await approvedPath(root, file.relative);
+  await run(powershell, ['-NoProfile', '-NonInteractive', '-File', fileURLToPath(new URL('./launch.ps1', import.meta.url)), '-ShortcutPath', shortcut, '-ProjectPath', projectPath], { windowsHide: true, timeout: 5000 });
+  return { launchRequested: true, app: app.name, relative: file.relative, verifiedAt: new Date().toISOString() };
+}

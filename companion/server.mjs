@@ -2,7 +2,7 @@ import http from 'node:http';
 import os from 'node:os';
 import crypto from 'node:crypto';
 import path from 'node:path';
-import { processes, audioDevices, listFiles, readFile, statMusicFile, discoverApps, launchApp } from './windows.mjs';
+import { processes, audioDevices, listFiles, readFile, statMusicFile, discoverApps, launchApp, launchAbletonProject } from './windows.mjs';
 
 const HOST = '127.0.0.1';
 const PORT = 4174;
@@ -98,7 +98,7 @@ export function createCompanionServer() {
         const { scope } = await readJson(req);
         if (!Object.hasOwn(grants, scope)) return reply(res, 400, { error: 'Unknown grant' });
         grants[scope] = false;
-        if (scope === 'apps') launchApproval = null;
+        if (scope === 'apps' || scope === 'files') launchApproval = null;
         record(`revoke:${scope}`, 'approved');
         return reply(res, 200, { grants: { ...grants, apps: grants.apps ? [...allowedApps] : [] } });
       }
@@ -132,7 +132,7 @@ export function createCompanionServer() {
         const { id } = await readJson(req);
         const app = (await discoverApps(allowedApps)).find(item => item.id === id);
         if (!app) return reply(res, 404, { error: 'Application not allowlisted or not found' });
-        launchApproval = { code: String(crypto.randomInt(100000, 1000000)), id, expires: Date.now() + 60_000 };
+        launchApproval = { kind: 'app', code: String(crypto.randomInt(100000, 1000000)), id, expires: Date.now() + 60_000 };
         console.log(`Approve launch of ${app.name}: ${launchApproval.code} (valid 60 seconds)`);
         return reply(res, 200, { approvalRequired: true, app: app.name });
       }
@@ -141,10 +141,37 @@ export function createCompanionServer() {
         const { id, code } = await readJson(req);
         const approval = launchApproval;
         launchApproval = null;
-        if (!approval || approval.id !== id || approval.code !== code || Date.now() > approval.expires) { record('apps:launch', 'denied'); return reply(res, 403, { error: 'Local launch approval denied' }); }
+        if (!approval || approval.kind !== 'app' || approval.id !== id || approval.code !== code || Date.now() > approval.expires) { record('apps:launch', 'denied'); return reply(res, 403, { error: 'Local launch approval denied' }); }
         const app = (await discoverApps(allowedApps)).find(item => item.id === id);
         if (!app) return reply(res, 404, { error: 'Application not allowlisted or not found' });
         const result = await launchApp(app); record(`apps:launch:${id}`, 'success'); return reply(res, 200, result);
+      }
+      if (req.url === '/apps/project-approval' && req.method === 'POST') {
+        if (!grants.apps || !grants.files) return reply(res, 403, { error: 'Application and Files grants are required' });
+        const { id, relative, expected } = await readJson(req);
+        if (id !== 'ableton live 12 suite.lnk') return reply(res, 400, { error: 'Unsupported DAW project association' });
+        const app = (await discoverApps(allowedApps)).find(item => item.id === id);
+        if (!app) return reply(res, 404, { error: 'Ableton shortcut is not allowlisted or not found' });
+        const file = await statMusicFile(root, relative);
+        if (!file.relative.toLowerCase().endsWith('.als')) return reply(res, 400, { error: 'Only Ableton .als projects are supported' });
+        if (!expected || expected.root !== file.root || expected.relative !== file.relative || expected.bytes !== file.bytes || expected.modifiedAt !== file.modifiedAt) return reply(res, 409, { error: 'Linked project file changed; re-link it before opening' });
+        launchApproval = { kind: 'project', code: String(crypto.randomInt(100000, 1000000)), id, relative: file.relative, root: file.root, bytes: file.bytes, modifiedAt: file.modifiedAt, expires: Date.now() + 60_000 };
+        console.log(`Approve opening ${file.relative} in ${app.name}: ${launchApproval.code} (valid 60 seconds)`);
+        record('apps:project-approval', 'requested');
+        return reply(res, 200, { approvalRequired: true, app: app.name, relative: file.relative, verifiedAt: file.verifiedAt });
+      }
+      if (req.url === '/apps/project-open' && req.method === 'POST') {
+        if (!grants.apps || !grants.files) return reply(res, 403, { error: 'Application and Files grants are required' });
+        const { id, relative, code } = await readJson(req);
+        const approval = launchApproval;
+        launchApproval = null;
+        if (!approval || approval.kind !== 'project' || approval.id !== id || approval.relative !== relative || approval.code !== code || Date.now() > approval.expires) { record('apps:project-open', 'denied'); return reply(res, 403, { error: 'Local project-open approval denied' }); }
+        const file = await statMusicFile(root, relative);
+        if (file.root !== approval.root || file.relative !== approval.relative || file.bytes !== approval.bytes || file.modifiedAt !== approval.modifiedAt) { record('apps:project-open', 'changed'); return reply(res, 409, { error: 'Project file changed since approval' }); }
+        const app = (await discoverApps(allowedApps)).find(item => item.id === id);
+        if (!app) return reply(res, 404, { error: 'Ableton shortcut is not allowlisted or not found' });
+        const result = await launchAbletonProject(app, root, relative);
+        record('apps:project-open', 'success'); return reply(res, 200, result);
       }
       if (req.url === '/revoke' && req.method === 'POST') {
         token = null;

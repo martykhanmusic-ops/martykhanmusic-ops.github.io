@@ -40,3 +40,5 @@ Master M5 later completed and was remotely verified; see milestone status. M6 ha
 M6 library follow-up adds one-directory-at-a-time selection from the companion's approved root. It keeps the explicit verify-and-link step. DAW launch remains gated on a selected shortcut and project folder.
 
 The user selected Ableton Live 12 Suite and FL Studio 2026. Both installed Windows shortcut targets were found, and the companion returned them when exactly allowlisted. The project DAW panel now uses the existing one-time approval protocol. Physical launch and opening a verified project file remain M6 acceptance work.
+
+The next M6 slice binds a linked Ableton `.als` reference to a separate one-time code and rechecks the approved Windows file before asking Ableton to open it. The first approved root is the user's Ableton projects folder. Physical load verification and FL Studio `.flp` support remain open; M7 is still gated.

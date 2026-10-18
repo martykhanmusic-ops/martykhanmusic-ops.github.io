@@ -183,6 +183,14 @@ node companion/server.mjs --root "C:\Users\owner\Music" --app "Ableton Live 12 S
 
 Pair it from Halo on `http://localhost:4173/halo/`. In a project, choose **Discover approved DAWs**, select one, and choose **Request launch code**. The code appears in the companion window and expires after 60 seconds. Enter it in Halo, choose **Launch selected DAW**, and confirm. A new code is needed for every launch. Halo opens the approved application shortcut only; it does not open a project file or run a shell command. Removing Apps access or stopping the companion prevents another launch.
 
+To work with an **Ableton Live 12 Suite** project file, restart the companion with the Ableton project folder as its approved Files root. On this PC, an example is:
+
+```powershell
+node companion/server.mjs --root "C:\Users\owner\Documents\Ableton" --app "Ableton Live 12 Suite.lnk"
+```
+
+Pair again, browse to a `.als` file, and **Verify and link file** in the Halo project. Select the linked file under **Open a linked Ableton project**, request its separate project-open code, enter the code from the companion window, and confirm. The companion checks the exact approved path, size and modification time against the saved link before issuing a code, and checks them again before starting Ableton with the file path. Halo reports an accepted open request; confirm inside Ableton that the project actually loaded. Changing the file requires re-linking it. FL Studio `.flp` project opening is not connected yet.
+
 ## Public music reference
 
 The Overview page can search MusicBrainz artists, recordings and releases through the local Windows launcher. Select a search type, enter a name or title, and choose **Search music**. Results link to MusicBrainz and do not alter projects, notes, tasks, or Jarvis plans. The launcher uses three fixed read-only lookup routes, shared 1.2-second request spacing, a descriptive User-Agent, and Windows' system `curl.exe` for HTTPS. A static site server or unavailable network shows an error rather than a simulated result. [MusicBrainz](https://musicbrainz.org) supplies the reference data.
