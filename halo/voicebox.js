@@ -39,9 +39,12 @@ export function createJarvisVoice({ fetcher = fetch, mediaDevices = navigator.me
   }
   async function check() {
     try {
-      await json(await fetcher(`${API}/health`, { mode: 'cors' }));
+      const response = await fetcher(`${API}/health`, { mode: 'cors', signal: AbortSignal.timeout(8000) });
+      if (response.status === 404) { status('Voicebox bridge is unavailable here. Open Halo with its Windows launcher.'); return; }
+      if (response.status === 503) { status('Voicebox backend is stopped. Run scripts/start-voicebox-for-halo.ps1 on this PC, then check again.'); return; }
+      await json(response);
       status('Voicebox is connected on this computer.');
-    } catch { status('Voicebox is unavailable. Start the local Voicebox backend for microphone transcription and speech.'); }
+    } catch { status('Voicebox did not respond. Start its local backend, then check again.'); }
   }
   async function record() {
     if (recorder) return;
@@ -144,6 +147,7 @@ export function createJarvisVoice({ fetcher = fetch, mediaDevices = navigator.me
         const text = document.querySelector('#voice-text'); text.value = result; controls(); speak();
       });
       controls();
+      check();
     },
     stopPlayback,
     cancelRecording

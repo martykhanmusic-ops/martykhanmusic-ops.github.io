@@ -115,6 +115,12 @@ internal static class HaloLauncher
         bool allowed = (method == "GET" && (path == "/voicebox/health" || VoiceId.IsMatch(path)))
             || (method == "POST" && (path == "/voicebox/transcribe" || path == "/voicebox/speak"));
         if (!allowed) { context.Response.StatusCode = 404; return; }
+        string origin = context.Request.Headers["Origin"] ?? "";
+        if (method == "POST" && origin != "http://localhost:" + context.Request.LocalEndPoint.Port)
+        { context.Response.StatusCode = 403; return; }
+        if (method == "POST" && ((path == "/voicebox/speak" && !(context.Request.ContentType ?? "").StartsWith("application/json", StringComparison.OrdinalIgnoreCase))
+            || (path == "/voicebox/transcribe" && !(context.Request.ContentType ?? "").StartsWith("multipart/form-data;", StringComparison.OrdinalIgnoreCase))))
+        { context.Response.StatusCode = 415; return; }
         HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://127.0.0.1:17493" + path.Substring(9));
         request.Method = method;
         request.Timeout = 600000;
