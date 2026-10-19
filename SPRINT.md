@@ -44,3 +44,5 @@ Lobby delivery: F and G are implemented; G payload 60b223edc6719cfe18a6d688155a8
 M7 next increment: capture control is default-off, host-enabled at block boundaries, disabled at processing restart/setup, and supplies sequence/rate/drop metadata. Windows validator and native tests pass. Consumer/relay, revocation, rooms and physical end-to-end playback remain unfinished.
 
 October 19 M7 relay increment: native WinHTTP consumer now sends accepted PCM with explicit producer identity; authenticated loopback relay, revocable rooms and browser playback pass generated-tone desktop/mobile integration. Physical Ableton-to-iPhone playback, certificate trust and latency/stability measurement remain open; M7 is not complete. See `docs/HALO_LIVE_LISTEN_STATUS.md`.
+
+October 19 M7 TLS preparation: local CA/server certificate generation works on this Windows installation; owner-only ACL, chain/IP SAN and live HTTPS listener were verified. The newer setup deletes its CA signing key. Next: explicit iPhone trust, real VST3 audio in Ableton, and measured playback/latency. Do not count local HTTPS as mobile acceptance.
