@@ -38,3 +38,5 @@ Lobby directive E: Music Shelf portal uses the real registered project music pan
 Lobby directive F is in progress: persistent remappable keyboard controls and a 2D destination list passed Windows Chrome and Node checks. Remaining F work includes alternate movement inputs and broader accessibility settings; G/H have not started.
 
 Lobby directive F implementation and automated desktop/mobile acceptance passed: keyboard remapping/presets, alternative movement, touch opt-in, gamepad wiring, 2D destinations, visual settings and Jarvis voice levels. Physical controller/touchscreen and manual assistive-technology verification remain unclaimed and are tracked for delivery review. Proceed to G visual-system architecture under the user's latest request.
+
+Lobby delivery: F and G are implemented; G payload 60b223edc6719cfe18a6d688155a809d4c10bbb8 is remotely verified. H runs full regression and records measured software-renderer budgets plus the source-matched Halo-Lobby.exe. Manual exact-EXE startup and physical assistive-device checks remain explicit delivery limits. Do not confuse Lobby A–H with master M7 Live Listen, whose separate changes are preserved.

@@ -10,8 +10,8 @@ Updated October 18, 2026. This tracks the user-supplied Halo Lobby / Jarvis / Sa
 | D Saturn Doorways | Complete; remote SHA `cb53c1f754e39688ac137a6f03c6e677d28ad8e3` verified | One shared registry drives stationary walk-through World doorways and Desktop ring, with truthful route states |
 | E Application Integration | Complete; remote SHA `26803e3137c506f730ad7d7fe356afccb058a1ba` verified | Available portals reach real registered Halo applications; unavailable entries remain visibly unavailable |
 | F Accessibility | Complete; remote SHA `15dc4c73263807f426b9dfc4e4adeffbd2839814` verified | Remappable persisted controls, presets, touch/gamepad paths, semantic destination alternative and applicable WCAG 2.2 AA checks |
-| G Visual System | Implemented; remote receipt pending | Nostalgic, warm, calm visual pass with saved token-based variants and measured performance |
-| H Validation and Delivery | Not started | Full regression, measured performance, desktop/mobile/accessibility evidence, reviewed branch and remote receipt |
+| G Visual System | Complete; remote SHA `60b223edc6719cfe18a6d688155a809d4c10bbb8` verified | Nostalgic, warm, calm visual pass with saved token-based variants and measured performance |
+| H Validation and Delivery | Automated checks and packaging complete; manual runtime/device checks pending | Full regression, measured performance, desktop/mobile/accessibility evidence, reviewed branch and remote receipt |
 
 ## A — verified audit and baseline
 
@@ -74,3 +74,10 @@ Milestone protocol: complete each row's work, run focused and ecosystem tests, r
 - World reads the same lighting/environment/motion choices at entry. Geometry and unchanged materials are reused; orb and portal preview materials remain isolated. Saved rendering quality caps pixel ratio between 0.5 and 1.5. Existing reduced effects and Desktop fallback remain available.
 - Tests: 58 Node tests, syntax/World checks, theme import/export/persistence/workspace-isolation journeys at 1440/390px, existing appearance tests, light/dark paper/night and expanded-dialog axe checks passed. Core/Jarvis desktop/mobile and World lifecycle regression passed in the delivery run. A 120-frame Windows Chrome SwiftShader sample averaged 47.9 ms (p95 97.2 ms); this is software rendering evidence, not a hardware FPS guarantee.
 - Theme controls select reviewed local styles; typography uses system fonts, environment presets change palettes, and portal outlines customize the Desktop ring. No downloaded executable themes or new application databases were introduced.
+
+## H — validation and delivery
+
+- Automated delivery validation completed on this Windows PC. All core/Jarvis, browser/integration/framework, World M1–M4, lobby/orb/portal/music continuity, touch/gamepad/click movement, accessibility, theme, chat/voice, reviewed capability/streaming, music library/DAW/project, reminders, creative-session and local-model/reference UI suites passed. Companion integration separately passed against actual Windows APIs. Voice/model/DAW UI regression uses controlled adapters; it is not a new physical microphone, live inference or DAW-window claim.
+- The final World sample measured 120 frames at 26.885 ms mean and 34.7 ms p95 using Windows Chrome SwiftShader, with 104 draw calls, 19 geometries and 5,912 triangles. Hardware FPS is unclaimed. Render quality and Desktop fallback remain user-accessible.
+- Local executable: `C:\Users\owner\_Code\halo-jarvis-foundation\dist\Halo-Lobby.exe` (2,693,120 bytes). All 44 embedded site files matched the source. Exact runtime startup remains unverified following the earlier automatic command-policy rejection of executable launching. The smallest manual check is to close an old Halo server and open this executable.
+- Physical gamepad/touchscreen and manual screen-reader review remain unverified. Planned portals remain visibly planned; master M7 Live Listen is a separate unfinished project phase. The source and automated Lobby work are delivered; these external/manual checks are not claimed complete.
