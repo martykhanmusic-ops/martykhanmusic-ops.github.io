@@ -2,6 +2,7 @@
 #include "public.sdk/source/main/pluginfactory_constexpr.h"
 #include "pluginterfaces/vst/ivstaudioprocessor.h"
 #include "capture-session.hpp"
+#include "relay-worker.hpp"
 #include "pluginterfaces/vst/ivstparameterchanges.h"
 #include <algorithm>
 
@@ -20,7 +21,7 @@ public:
         if (result != kResultOk) return result;
         addAudioInput (STR16 ("Stereo In"), SpeakerArr::kStereo);
         addAudioOutput (STR16 ("Stereo Out"), SpeakerArr::kStereo);
-        parameters.addParameter(STR16("Local capture (no stream)"), nullptr, 1, 0, 0, 100);
+        parameters.addParameter(STR16("Send to local relay"), nullptr, 1, 0, 0, 100);
         return kResultOk;
     }
 
@@ -29,12 +30,15 @@ public:
     }
 
     tresult PLUGIN_API setupProcessing(ProcessSetup& setup) override {
+        relay.stop();
         if (!captured.configure(setup.sampleRate)) return kInvalidArgument;
         return SingleComponentEffect::setupProcessing(setup);
     }
 
     tresult PLUGIN_API setProcessing(TBool state) override {
+        relay.stop();
         captured.enable(false); // A restart always requires explicit re-enabling.
+        if(state)relay.start();
         return kResultOk;
     }
 
@@ -64,6 +68,7 @@ public:
                 auto* output = data.outputs[0].channelBuffers32[channel];
                 if (input && output && input != output)
                     std::copy_n (input, samples, output);
+                else if (!input && output) std::fill_n(output, samples, 0.f);
             }
         } else if (data.symbolicSampleSize == kSample64) {
             if (!data.inputs[0].channelBuffers64 || !data.outputs[0].channelBuffers64)
@@ -76,6 +81,7 @@ public:
                 auto* output = data.outputs[0].channelBuffers64[channel];
                 if (input && output && input != output)
                     std::copy_n (input, samples, output);
+                else if (!input && output) std::fill_n(output, samples, 0.0);
             }
         } else return kInvalidArgument;
         data.outputs[0].silenceFlags = data.inputs[0].silenceFlags;
@@ -83,9 +89,8 @@ public:
     }
 
 private:
-    // 2 seconds at 48 kHz. This is a local bounded handoff only; no network
-    // transport, room identity, or consumer thread exists in this increment.
     CaptureSession<96000> captured;
+    RelayWorker<96000> relay {captured};
 };
 }
 

@@ -9,17 +9,21 @@ template <std::size_t Capacity>
 class CaptureSession final {
 public:
     bool configure(double rate) noexcept {
-        enabled = false;
+        enable(false);
         sampleRate = std::isfinite(rate) && rate > 0 ? rate : 0;
         return sampleRate > 0;
     }
-    void enable(bool value) noexcept { enabled = value && sampleRate > 0; }
-    bool isEnabled() const noexcept { return enabled; }
+    void enable(bool value) noexcept {
+        const bool next = value && sampleRate > 0;
+        if (next != enabled.load()) { generation.fetch_add(1); enabled.store(next); }
+    }
+    bool isEnabled() const noexcept { return enabled.load(); }
+    uint64_t currentGeneration() const noexcept { return generation.load(); }
     uint64_t droppedFrames() const noexcept { return dropped; }
     template <typename Sample>
     void capture(const Sample* left, const Sample* right, std::size_t count, int32_t channels) noexcept {
         if (!enabled || channels <= 0) return;
-        const auto accepted = ring.push(left, right, count, channels, sequence, sampleRate);
+        const auto accepted = ring.push(left, right, count, channels, sequence, sampleRate, generation.load());
         sequence += count;
         dropped += count - accepted;
     }
@@ -29,7 +33,9 @@ public:
     }
 private:
     StereoCaptureRing<Capacity> ring;
-    bool enabled {false};
+    static_assert(std::atomic<uint64_t>::is_always_lock_free, "generation must be lock-free");
+    std::atomic<bool> enabled {false};
+    std::atomic<uint64_t> generation {0};
     double sampleRate {0};
     uint64_t sequence {0};
     uint64_t dropped {0};

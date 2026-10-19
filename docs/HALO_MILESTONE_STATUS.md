@@ -1,5 +1,10 @@
 # Persistent milestone status
 
+Latest M7 relay follow-up: see [Live Listen status](HALO_LIVE_LISTEN_STATUS.md).
+Native capture, authenticated relay, local browser playback and 32/64-bit SDK
+validation pass. Physical Ableton-to-iPhone playback and latency remain open;
+M7 is not complete.
+
 Updated October 16, 2026. Branch feature/halo-jarvis-foundation. Starting remote verified: cbdd097ba127de3e9746ea7af0abdd95125e38d9. Earlier M3 increments 3753bfe and a54b8d9 were also observed on the remote. An unrelated untracked preview image is preserved and excluded. See roadmap for deliverables/dependencies/acceptance; test report for executed commands and blockers register for risks.
 
 | Milestone | Status | Completed / remaining | Test evidence | Delivery SHA / push |
@@ -11,7 +16,7 @@ Updated October 16, 2026. Branch feature/halo-jarvis-foundation. Starting remote
 | 4 Application framework | COMPLETE_AND_PUSHED | Registry, trusted catalog, sample application, grants, settings/themes/state, compatibility and desktop/mobile shell integration implemented | 43 Node tests, focused desktop/mobile framework tests, companion browser and all eight foundation/World suites pass | f5a93fbcc39511ca002c33493544e155caad6ccc; exact remote match observed |
 | 5 Design system | COMPLETE_AND_PUSHED | Orbital/Classic dark/light packages, preview/rollback, responsive shell and targeted accessibility review delivered; no data migration | 49 Node tests; axe A/AA and best-practice scans across routes/dialogs at 1440/390, keyboard/forced-colors/reduced-motion, visual-preview and full browser regression | d91c09dc716177c3bd22c54418ca8f75ff01a179; exact remote match observed |
 | 6 Music hub | COMPLETE_AND_PUSHED | Library, approved folder browser, metadata/tags/notes/tasks and file-bound DAW paths. Live Ableton launch with a user-selected `.als` template was observed; the user confirmed its content loaded. FL Studio association passed Windows and browser rejection tests | 52 Node tests; live Windows process/command-line/window evidence; desktop/mobile music, core/Jarvis and full ecosystem browser regression | Acceptance payload 14ff409677e30a7cdd805a5122a8e9f59f8dcd0c and status receipt 32ea5a975e9f2cdcd3e4bbcd4a77f060629ecd81 matched `git ls-remote` |
-| 7 Live Listen | IN_PROGRESS | Windows VST3 stereo pass-through foundation builds; capture, secure transport, rooms, mobile controls and latency measurements remain | Steinberg validator: 47 passed, 0 failed; Halo regression recorded in test report | Foundation increment pending push |
+| 7 Live Listen | IN_PROGRESS | VST3 capture, local authenticated relay, revocable rooms, QR links and browser playback implemented; physical DAW-to-iPhone playback and latency remain | Steinberg validator 47/47; native CTest; desktop/mobile native-producer browser journey; 60 Node tests and foundation regression | Relay increment pending push |
 | 8 Creative apps | NOT_STARTED | Functional apps absent | None | None |
 | 9 Games hub | NOT_STARTED | Functional games absent | None | None |
 | 10 Halo World | NOT_STARTED | Existing technical M1–M4 reusable; master sequence gate not reached | Historical World tests pass | Historical 5607979, not master completion |

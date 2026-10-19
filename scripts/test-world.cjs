@@ -7,6 +7,7 @@ const root=path.resolve(__dirname,'..');
 const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.webp':'image/webp','.png':'image/png'};
 const server=http.createServer(async(req,res)=>{
   if(req.url==='/favicon.ico'){res.writeHead(204).end();return;}
+  if(req.url==='/voicebox/health'){res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'}).end(JSON.stringify({bridge:false}));return;}
   try{
     let file=path.resolve(root,'.'+decodeURIComponent(new URL(req.url,'http://localhost').pathname));
     if(!file.startsWith(root+path.sep)){res.writeHead(403).end();return;}

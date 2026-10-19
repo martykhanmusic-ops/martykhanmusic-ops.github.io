@@ -42,3 +42,5 @@ Lobby directive F implementation and automated desktop/mobile acceptance passed:
 Lobby delivery: F and G are implemented; G payload 60b223edc6719cfe18a6d688155a809d4c10bbb8 is remotely verified. H runs full regression and records measured software-renderer budgets plus the source-matched Halo-Lobby.exe. Manual exact-EXE startup and physical assistive-device checks remain explicit delivery limits. Do not confuse Lobby A–H with master M7 Live Listen, whose separate changes are preserved.
 
 M7 next increment: capture control is default-off, host-enabled at block boundaries, disabled at processing restart/setup, and supplies sequence/rate/drop metadata. Windows validator and native tests pass. Consumer/relay, revocation, rooms and physical end-to-end playback remain unfinished.
+
+October 19 M7 relay increment: native WinHTTP consumer now sends accepted PCM with explicit producer identity; authenticated loopback relay, revocable rooms and browser playback pass generated-tone desktop/mobile integration. Physical Ableton-to-iPhone playback, certificate trust and latency/stability measurement remain open; M7 is not complete. See `docs/HALO_LIVE_LISTEN_STATUS.md`.

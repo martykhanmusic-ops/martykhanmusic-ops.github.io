@@ -48,5 +48,10 @@ int main() {
     session.enable(false); session.capture(left, right, 2, 2);
     require(session.pop(out, 4) == 0);
     require(session.configure(96000) && !session.isEnabled());
+    session.enable(true);session.capture(left,right,1,2);
+    const auto prior=session.currentGeneration();
+    session.enable(false);session.enable(true);
+    require(session.currentGeneration()!=prior);
+    require(session.pop(out,1)==1 && out[0].generation!=session.currentGeneration());
 }
 

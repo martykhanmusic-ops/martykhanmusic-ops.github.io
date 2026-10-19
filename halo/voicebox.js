@@ -42,7 +42,8 @@ export function createJarvisVoice({ fetcher = fetch, mediaDevices = navigator.me
       const response = await fetcher(`${API}/health`, { mode: 'cors', signal: AbortSignal.timeout(8000) });
       if (response.status === 404) { status('Voicebox bridge is unavailable here. Open Halo with its Windows launcher.'); return; }
       if (response.status === 503) { status('Voicebox backend is stopped. Run scripts/start-voicebox-for-halo.ps1 on this PC, then check again.'); return; }
-      await json(response);
+      const health = await json(response);
+      if (health?.bridge === false) { status('Voicebox bridge is unavailable here. Open Halo with its Windows launcher.'); return; }
       status('Voicebox is connected on this computer.');
     } catch { status('Voicebox did not respond. Start its local backend, then check again.'); }
   }
