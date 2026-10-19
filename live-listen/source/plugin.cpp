@@ -38,6 +38,9 @@ public:
                     std::copy_n (input, samples, output);
             }
         } else if (data.symbolicSampleSize == kSample64) {
+            const auto* inputLeft = data.inputs[0].channelBuffers64[0];
+            const auto* inputRight = channels > 1 ? data.inputs[0].channelBuffers64[1] : nullptr;
+            captured.push(inputLeft, inputRight, static_cast<std::size_t>(samples), channels);
             for (int32 channel = 0; channel < channels; ++channel) {
                 const auto* input = data.inputs[0].channelBuffers64[channel];
                 auto* output = data.outputs[0].channelBuffers64[channel];

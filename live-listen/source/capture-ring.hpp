@@ -20,7 +20,8 @@ public:
 
     static_assert(Capacity > 1, "capture ring needs room for at least two frames");
 
-    std::size_t push(const float* left, const float* right, std::size_t count, int32_t channels) noexcept {
+    template <typename Sample>
+    std::size_t push(const Sample* left, const Sample* right, std::size_t count, int32_t channels) noexcept {
         const auto write = writeIndex.load(std::memory_order_relaxed);
         const auto read = readIndex.load(std::memory_order_acquire);
         const auto available = Capacity - (write - read);
@@ -28,8 +29,8 @@ public:
 
         for (std::size_t i = 0; i < accepted; ++i) {
             auto& frame = frames[(write + i) % Capacity];
-            frame.left = left ? left[i] : 0.0f;
-            frame.right = channels > 1 && right ? right[i] : frame.left;
+            frame.left = left ? static_cast<float>(left[i]) : 0.0f;
+            frame.right = channels > 1 && right ? static_cast<float>(right[i]) : frame.left;
         }
         writeIndex.store(write + accepted, std::memory_order_release);
         return accepted;

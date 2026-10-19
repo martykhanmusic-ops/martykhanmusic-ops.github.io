@@ -1,6 +1,6 @@
 # Halo Live Listen VST3 foundation
 
-This Windows VST3 is a stereo pass-through processor with a bounded local capture handoff. The audio callback copies incoming samples into a fixed two-second, single-producer/single-consumer ring without allocation or locking, while preserving the direct pass-through output. A relay consumer, authenticated transport, room, mobile client, and telemetry are not implemented yet. M7 remains in progress.
+This Windows VST3 is a stereo pass-through processor with a bounded local capture handoff. The audio callback copies incoming 32-bit or 64-bit samples into a fixed two-second, single-producer/single-consumer float ring without allocation or locking, while preserving the direct pass-through output. A relay consumer, authenticated transport, room, mobile client, and telemetry are not implemented yet. M7 remains in progress.
 
 Build with Visual Studio 2022 Build Tools, CMake, and a local recursive checkout of the [Steinberg VST3 SDK](https://github.com/steinbergmedia/vst3sdk). The SDK is kept outside this repository; set `HALO_VST3_SDK` to its absolute path. CMake disables global VST3 plugin links, so builds do not install into Ableton automatically.
 
