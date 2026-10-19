@@ -1,6 +1,7 @@
 #include "public.sdk/source/vst/vstsinglecomponenteffect.h"
 #include "public.sdk/source/main/pluginfactory_constexpr.h"
 #include "pluginterfaces/vst/ivstaudioprocessor.h"
+#include "capture-ring.hpp"
 #include <algorithm>
 
 namespace Halo {
@@ -27,6 +28,9 @@ public:
         const auto channels = std::min (data.inputs[0].numChannels, data.outputs[0].numChannels);
         const auto samples = std::max (data.numSamples, 0);
         if (data.symbolicSampleSize == kSample32) {
+            const auto* inputLeft = data.inputs[0].channelBuffers32[0];
+            const auto* inputRight = channels > 1 ? data.inputs[0].channelBuffers32[1] : nullptr;
+            captured.push(inputLeft, inputRight, static_cast<std::size_t>(samples), channels);
             for (int32 channel = 0; channel < channels; ++channel) {
                 const auto* input = data.inputs[0].channelBuffers32[channel];
                 auto* output = data.outputs[0].channelBuffers32[channel];
@@ -44,6 +48,11 @@ public:
         data.outputs[0].silenceFlags = data.inputs[0].silenceFlags;
         return kResultOk;
     }
+
+private:
+    // 2 seconds at 48 kHz. This is a local bounded handoff only; no network
+    // transport, room identity, or consumer thread exists in this increment.
+    StereoCaptureRing<96000> captured;
 };
 }
 
