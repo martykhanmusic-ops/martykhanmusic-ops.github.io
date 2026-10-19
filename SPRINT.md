@@ -5,6 +5,14 @@ acceptance table is `docs/HALO_MASTER_ROADMAP.md`; detailed state is in
 `docs/HALO_MILESTONE_STATUS.md`. Earlier technical Halo World M0–M4 work is
 historical and separate from the master milestone numbering.
 
+## Current focus — Halo infrastructure and lobby, October 19, 2026
+
+The user tabled physical Live Listen/iPhone work. Its relay is stopped and M7
+remains incomplete. Resume it only on request. The current lobby increment
+connects Creative Sessions to the existing saved project session from the
+Desktop Saturn ring and World destination list. Planned Games and More remain
+unavailable. Lobby H's manual exact-EXE/device review remains open.
+
 ## M6 music hub closeout — October 18, 2026
 
 - Library links and metadata share the canonical workspace store.

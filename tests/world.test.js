@@ -63,5 +63,8 @@ test('performance fallback requires a sustained measured slow window',()=>{
 test('World resolves existing project routes by ID without inventing state',()=>{
   assert.deepEqual(destinationRoute(destinations[0],{activeProjectId:'real-id'}),{view:'project',projectId:'real-id'});
   assert.deepEqual(destinationRoute(destinations[0],{activeProjectId:null}),{view:'dashboard'});
+  const creative=destinations.find(destination=>destination.id==='creative');
+  assert.deepEqual(destinationRoute(creative,{activeProjectId:'real-id'}),{view:'project',projectId:'real-id',focus:'session'});
+  assert.deepEqual(destinationRoute(creative,{activeProjectId:null}),{view:'dashboard'});
   assert.throws(()=>destinationRoute({...destinations[0],availability:'planned'},{}));
 });

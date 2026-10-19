@@ -3,6 +3,10 @@
 For a future chat resuming this build, start with [the Codex recovery roadmap](docs/CODEX_MEMORY_ROADMAP.md).
 
 The original music landing page lives at `/`. Halo and Jarvis live at `/halo/`.
+The Saturn lobby's **Creative Sessions** destination opens the current saved
+project's working session from Desktop or World. It uses the existing project
+store and returns to the dashboard when no project is selected; it is not a
+separate creative app. Games and other unfinished portals remain marked planned.
 The browser application is static and has no build step or runtime npm
 dependency. An optional local Windows companion is described below. Visual
 styling follows Halo's orbital dark/light language. Its theme remains saved in

@@ -13,6 +13,14 @@ Updated October 18, 2026. This tracks the user-supplied Halo Lobby / Jarvis / Sa
 | G Visual System | Complete; remote SHA `60b223edc6719cfe18a6d688155a809d4c10bbb8` verified | Nostalgic, warm, calm visual pass with saved token-based variants and measured performance |
 | H Validation and Delivery | Automated checks and packaging complete; manual runtime/device checks pending | Full regression, measured performance, desktop/mobile/accessibility evidence, reviewed branch and remote receipt |
 
+Post-H lobby infrastructure work follows the user's October 19 direction to
+table Live Listen. The Creative slot now opens the canonical project's existing
+working session as **Creative Sessions** from Desktop and World. This adds no
+separate creative application or store; master M8 remains unopened. Games and
+other unimplemented portals stay planned. Focused desktop/mobile and full
+regression evidence is in `HALO_TEST_REPORT.md`; H manual device/exact-EXE
+checks remain outstanding.
+
 ## A — verified audit and baseline
 
 - Local source and global roadmap read. No `AGENTS.md` exists at the repository or checked ancestor locations; the user-provided local-source instructions apply. Git is on `feature/halo-jarvis-foundation` at `2faea3f5d21a1533fac0ff91f272a403d325b83b`, which matched `git ls-remote` at audit time. No tracked changes existed before this audit. The unrelated preview PNG remains untracked.

@@ -38,6 +38,11 @@ function navigate(view, projectId) {
   run(() => { store.navigate(view, projectId); dirty = false; search = ''; render(); $('#main').focus(); });
 }
 function focusRoute(route) {
+  if (route.focus === 'session' && store.get().view === 'project') {
+    const target = document.querySelector('#session-stage');
+    target?.scrollIntoView({ block: 'start' });
+    target?.querySelector('#session-form input, #session-form textarea')?.focus({ preventScroll: true });
+  }
   if (route.focus === 'music' && store.get().view === 'project') {
     try { applications.open('music', {view:'project',projectId:store.get().activeProjectId}); }
     catch (error) { notify(`Music Shelf registry: ${error.message}`, true); }
@@ -120,7 +125,7 @@ function sessionView(p) {
   const current = p.sessions?.find(item => item.endedAt === null);
   const recent = p.sessions?.find(item => item.endedAt !== null);
   const next = p.tasks.find(task => !task.done);
-  return `<section class="card session-stage" id="session-stage" aria-label="Music working session"><div class="section-heading"><div><p class="eyebrow">YOUR CREATIVE SESSION</p><h2>${current ? 'You are in session.' : 'Pick up the thread.'}</h2></div><span class="badge">${current ? 'SESSION ACTIVE' : 'READY WHEN YOU ARE'}</span></div><p class="muted">${current ? `Started ${date(current.startedAt)}${current.focus ? ` · ${escape(current.focus)}` : ''}` : recent ? `Last session ${date(recent.endedAt)}${recent.recap ? ` · ${escape(recent.recap)}` : ''}` : 'Give this project a focus and begin your first session.'}</p>${next ? `<p><strong>Next move:</strong> ${escape(next.title)}</p>` : ''}<form id="session-form">${current ? '<label>What did you make or decide?<textarea name="recap" maxlength="2000" rows="2" placeholder="A short note for next time"></textarea></label><button class="primary">Finish session</button>' : '<label>Focus for this session<input name="focus" maxlength="300" placeholder="Sketch the chorus, arrange drums…"></label><button class="primary">Start session</button>'}</form><div class="session-actions"><button type="button" data-view="jarvis">Talk with Jarvis about this project</button><button type="button" data-focus-music>Music files and DAW</button></div></section>`;
+  return `<section class="card session-stage" id="session-stage" aria-label="Creative working session"><div class="section-heading"><div><p class="eyebrow">YOUR CREATIVE SESSION</p><h2>${current ? 'You are in session.' : 'Pick up the thread.'}</h2></div><span class="badge">${current ? 'SESSION ACTIVE' : 'READY WHEN YOU ARE'}</span></div><p class="muted">${current ? `Started ${date(current.startedAt)}${current.focus ? ` · ${escape(current.focus)}` : ''}` : recent ? `Last session ${date(recent.endedAt)}${recent.recap ? ` · ${escape(recent.recap)}` : ''}` : 'Give this project a focus and begin your first session.'}</p>${next ? `<p><strong>Next move:</strong> ${escape(next.title)}</p>` : ''}<form id="session-form">${current ? '<label>What did you make or decide?<textarea name="recap" maxlength="2000" rows="2" placeholder="A short note for next time"></textarea></label><button class="primary">Finish session</button>' : '<label>Focus for this session<input name="focus" maxlength="300" placeholder="Sketch the chorus, arrange drums…"></label><button class="primary">Start session</button>'}</form><div class="session-actions"><button type="button" data-view="jarvis">Talk with Jarvis about this project</button><button type="button" data-focus-music>Music files and DAW</button></div></section>`;
 }
 function projectView(s) {
   const p = s.projects.find(p => p.id === s.activeProjectId);

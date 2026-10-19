@@ -1,6 +1,9 @@
 # Persistent milestone status
 
-Latest M7 relay follow-up: see [Live Listen status](HALO_LIVE_LISTEN_STATUS.md).
+The user tabled physical Live Listen/iPhone work on October 19, 2026 and
+returned to Halo infrastructure and lobby. M7 remains incomplete; see
+[Live Listen status](HALO_LIVE_LISTEN_STATUS.md). Its relay was stopped.
+Latest M7 relay follow-up:
 Native capture, authenticated relay, local browser playback and 32/64-bit SDK
 validation pass. Physical Ableton-to-iPhone playback and latency remain open;
 M7 is not complete.
