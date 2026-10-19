@@ -1,7 +1,9 @@
 import * as THREE from './vendor/three.module.js';
 import { followCamera } from './FollowCamera.js';
+import {readThemeLibrary,resolveTheme,applyVisualTheme} from '../visual-theme.js';
 export function createScene(container,entries,onJarvis=()=>{},controls={}){
   const renderer=new THREE.WebGLRenderer({antialias:false,powerPreference:'low-power',failIfMajorPerformanceCaveat:false});
+  applyVisualTheme(resolveTheme(readThemeLibrary(),'world'));
   const tokens=getComputedStyle(document.documentElement),background=tokens.getPropertyValue('--world-sky').trim()||tokens.getPropertyValue('--bg').trim()||'#181c2c',groundColor=tokens.getPropertyValue('--world-ground').trim()||'#303846',fogColor=tokens.getPropertyValue('--world-fog').trim()||background,sunColor=tokens.getPropertyValue('--world-sun').trim()||'#ffdbad';
   renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setClearColor(background);
   renderer.domElement.setAttribute('aria-label','Halo World third-person plaza');

@@ -28,3 +28,28 @@
 @media(max-width:600px){#visual-theme-options{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){:root{--motion:0ms!important}}
 :root[data-halo-background=night] .hero{--text:#f3efe4;--muted:#c4c9ce;color:var(--text)}
+/* Theme Studio layers: reviewed styles, never imported CSS. */
+:root[data-halo-typography=editorial]{font-family:Georgia,'Times New Roman',serif}
+:root[data-halo-palette=ocean]{--accent:#a8d6e5;--accent-strong:#c5e9f0;--surface-glow:#89bcd329}
+:root[data-theme=light][data-halo-palette=ocean]{--accent:#315b6c;--accent-strong:#234755}
+:root[data-halo-palette=rose]{--accent:#e3bacb;--accent-strong:#f0d0de;--surface-glow:#d69ab329}
+:root[data-theme=light][data-halo-palette=rose]{--accent:#724559;--accent-strong:#5b3346}
+:root[data-halo-components=frosted] .card{background:color-mix(in srgb,var(--panel) 94%,transparent);backdrop-filter:blur(16px);border:1px solid var(--muted)}
+:root[data-halo-components=chrome] .card{background:linear-gradient(135deg,var(--panel),var(--bg),var(--panel));border:2px solid var(--muted);box-shadow:inset 0 1px 0 var(--muted)}
+:root[data-halo-controls=square] button,:root[data-halo-controls=square] input,:root[data-halo-controls=square] select{border-radius:4px}
+:root[data-halo-controls=pill] button,:root[data-halo-controls=pill] input,:root[data-halo-controls=pill] select{border-radius:28px}
+:root[data-halo-navigation=dock] .saturn-desktop-ring,:root[data-halo-navigation=grid] .saturn-desktop-ring{display:grid;grid-template-columns:repeat(4,minmax(44px,1fr));gap:12px;height:auto;min-height:280px;width:min(100%,360px);align-items:center;padding:12px}
+:root[data-halo-navigation=dock] .saturn-desktop-ring .jarvis-orb,:root[data-halo-navigation=grid] .saturn-desktop-ring .jarvis-orb{position:relative;left:auto;top:auto;transform:none;grid-column:1/-1;justify-self:center}
+:root[data-halo-navigation=dock] .saturn-portal,:root[data-halo-navigation=grid] .saturn-portal{position:static;transform:none;min-width:44px;min-height:44px;justify-self:center}
+:root[data-halo-navigation=dock] .saturn-portal{border-radius:16px;box-shadow:0 6px 12px #0003}
+:root[data-halo-navigation=grid] .saturn-portal{width:100%;border-radius:8px}
+#visual-dialog{width:min(480px,calc(100vw - 24px));max-height:calc(100dvh - 24px);margin:12px 12px 12px auto;overflow:auto}
+#visual-dialog.studio-expanded{width:calc(100vw - 32px);height:calc(100dvh - 32px);max-width:1200px;margin:auto;padding:clamp(16px,3vw,36px)}
+#visual-dialog.studio-expanded #visual-theme-options{grid-template-columns:repeat(3,minmax(0,1fr))}
+#visual-dialog>label{display:block;margin:12px 0}
+#visual-dialog>label select{width:100%}
+#studio-summary{font-size:13px;color:var(--muted);min-height:2em}
+#visual-dialog .visual-dialog-actions{position:relative;gap:8px;flex-wrap:wrap}
+@media(max-width:600px){#visual-dialog.studio-expanded #visual-theme-options{grid-template-columns:1fr}#visual-dialog.studio-expanded{width:calc(100vw - 16px);padding:16px}.visual-import-label{flex-wrap:wrap}}
+.studio-demo{display:none;text-align:center;margin:20px 0;padding:24px}.studio-expanded .studio-demo{display:block}.studio-preview-orb{width:100px;height:100px;border:2px solid var(--accent);border-radius:50%;margin:12px auto;display:grid;place-items:center;font-size:36px;background:radial-gradient(circle at 30% 25%,var(--accent),#172c29 70%);color:#fff;box-shadow:0 0 30px var(--surface-glow)}.studio-demo button:disabled{opacity:1;color:var(--text);background:var(--panel);cursor:default}
+@media(min-width:900px){#visual-dialog.studio-expanded>.studio-demo{position:absolute;right:3%;top:170px;width:43%;margin:0;padding:28px}#visual-dialog.studio-expanded>label,#visual-dialog.studio-expanded>p,#visual-dialog.studio-expanded>fieldset,#visual-dialog.studio-expanded>#visual-theme-details,#visual-dialog.studio-expanded>.visual-dialog-actions{width:49%}#visual-dialog.studio-expanded #visual-theme-options{grid-template-columns:repeat(2,minmax(0,1fr))}}
