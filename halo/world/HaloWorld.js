@@ -18,7 +18,7 @@ export function mountWorld(root,{onFailure,position=SPAWN,onInteract=()=>{},onJa
     if(elapsed>0 && performance.sample(elapsed*1000)){onFailure('World is running slowly. Returned to Desktop to protect responsiveness.');return;}
     const keys=input.keys;
     if(moveTarget){if(['KeyW','KeyS','KeyA','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].some(code=>keys.has(code)))moveTarget=null;else{const dx=moveTarget.x-current.x,dz=moveTarget.z-current.z,h=current.heading;if(Math.hypot(dx,dz)<.5)moveTarget=null;else{const forward=dx*Math.sin(h)+dz*Math.cos(h),strafe=-dx*Math.cos(h)+dz*Math.sin(h);if(forward>.3)keys.add('KeyW');if(forward<-.3)keys.add('KeyS');if(strafe>.3)keys.add('KeyD');if(strafe<-.3)keys.add('KeyA');}}}
-    current=moveAvatar(current,keys,elapsed,scene.obstacles,12.5,{walkSpeed:controls?.speed,turnSpeed:controls?.turnSpeed,acceleration:controls?.acceleration});scene.render(current,Math.min(elapsed,.05),controls?.reducedMotion||matchMedia('(prefers-reduced-motion: reduce)').matches,orbit);
+    current=moveAvatar(current,keys,elapsed,scene.obstacles,12.5,{walkSpeed:controls?.speed,turnSpeed:controls?.turnSpeed,acceleration:controls?.acceleration});scene.render(current,Math.min(elapsed,.05),controls?.reducedMotion||document.documentElement.dataset.haloMotion==='still'||matchMedia('(prefers-reduced-motion: reduce)').matches,orbit);
     const closest=nearestDestination(current,destinations);
     const jarvisDistance=Math.hypot(current.x,current.z);
     const destination=jarvisDistance<=2.8&&(!closest||jarvisDistance<Math.hypot(current.x-closest.location.x,current.z-closest.location.z))?{id:'jarvis',label:'Jarvis'}:closest;

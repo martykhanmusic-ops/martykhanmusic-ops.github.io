@@ -1,4 +1,7 @@
 import { destinations } from '../world/DestinationRegistry.js';
+const classicIcons={projects:'P',music:'M',creative:'C','halo-world':'W',games:'G',research:'R',tidy:'T',more:'+'};
+const liveRings=new Set();
+document.documentElement.addEventListener('halo:visual-theme',()=>{for(const entry of liveRings){if(!entry.ring.isConnected){liveRings.delete(entry);continue;}entry.update();}});
 
 export function mountDesktopRing(stage, onOpen) {
   const orb = stage?.querySelector('.jarvis-orb');
@@ -16,7 +19,7 @@ export function mountDesktopRing(stage, onOpen) {
     button.className = 'saturn-portal';
     button.dataset.portal = portal.id;
     button.style.setProperty('--portal-angle', `${index * 360 / portals.length - 90}deg`);
-    button.textContent = portal.icon;
+    button.textContent = document.documentElement.dataset.haloIcons==='classic'?classicIcons[portal.id]:portal.icon;
     button.setAttribute('aria-label', portal.accessibilityLabel);
     button.title = `${portal.label}${portal.availability === 'planned' ? ' · Planned' : ''}`;
     ring.append(button);
@@ -27,6 +30,7 @@ export function mountDesktopRing(stage, onOpen) {
   caption.setAttribute('role','status');
   ring.after(caption);
   let selected = 0, startX = null, suppressClick = false, suppressTimer = null;
+  liveRings.add({ring,update:()=>buttons.forEach((button,index)=>{const portal=portals[index];button.textContent=document.documentElement.dataset.haloIcons==='classic'?classicIcons[portal.id]:portal.icon;})});
   function select(index) {
     selected = (index + portals.length) % portals.length;
     buttons.forEach((button,i) => { button.setAttribute('aria-pressed', String(i===selected)); button.tabIndex = i===selected ? 0 : -1; });

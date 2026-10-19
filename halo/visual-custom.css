@@ -1,0 +1,30 @@
+/* Data-only appearance choices. Imported JSON selects these reviewed tokens. */
+:root[data-halo-background=paper] body{background:var(--bg)}
+:root[data-halo-background=night] body{background:radial-gradient(circle at 70% 5%,#3e62833a,transparent 30rem),radial-gradient(circle at 12% 80%,#786c6040,transparent 32rem),var(--bg)}
+:root[data-halo-background=paper] .hero{background:linear-gradient(125deg,var(--panel),var(--bg));}
+:root[data-halo-background=night] .hero{background:linear-gradient(125deg,#101d2add,#20364ccc),url('./assets/halo-orbit-reference.png') center/cover}
+:root[data-halo-typography=humanist]{font-family:'Segoe UI',ui-sans-serif,system-ui,sans-serif}
+:root[data-halo-typography=geometric]{font-family:Arial,'Segoe UI',system-ui,sans-serif}
+:root[data-halo-typography=mono]{font-family:Consolas,'Cascadia Code',ui-monospace,monospace}
+:root[data-halo-components=solid] .card,:root[data-halo-components=solid] .world-info,:root[data-halo-components=solid] .world-actions{box-shadow:none;border-width:2px}
+:root[data-halo-components=soft] .card,:root[data-halo-components=soft] .world-info,:root[data-halo-components=soft] .world-actions{border-radius:28px;box-shadow:0 12px 40px #141d1733}
+:root[data-halo-portals=square] .saturn-portal{border-radius:10px}
+:root[data-halo-portals=arch] .saturn-portal{border-radius:50% 50% 10px 10px}
+:root[data-halo-lighting=cool]{--surface-glow:#97c8e027;--world-sky:#172d3a;--world-ground:#33414b;--world-sun:#d0ebff}
+:root[data-halo-lighting=soft]{--surface-glow:#dfcba119;--world-sky:#28302c;--world-ground:#42463d;--world-sun:#f2deb8}
+:root[data-halo-lighting=warm]{--world-sky:#29362e;--world-ground:#303846;--world-sun:#ffdbad}
+:root[data-halo-environment=garden]{--world-ground:#394a3b;--world-fog:#526651}
+:root[data-halo-environment=studio]{--world-ground:#464038;--world-fog:#5c5347}
+:root[data-halo-environment=plaza]{--world-fog:var(--bg)}
+:root[data-halo-motion=still]{--motion:0ms}
+:root[data-halo-motion=lively]{--motion:320ms}
+:root[data-halo-motion=still] .jarvis-orb,:root[data-halo-motion=still] .jarvis-orb-core,:root[data-halo-motion=still] .jarvis-orb-ring{animation:none!important}
+#visual-theme-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
+#visual-theme-options label{display:grid;gap:4px;font-size:13px;text-transform:capitalize}
+#visual-theme-options select,#visual-theme-details input,#visual-saved-combinations{max-width:100%;width:100%}
+#visual-theme-details summary{min-height:44px;display:flex;align-items:center}
+.visual-import-label{display:inline-flex;align-items:center;gap:8px;min-height:44px}
+.visual-import-label input{max-width:175px}
+@media(max-width:600px){#visual-theme-options{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){:root{--motion:0ms!important}}
+:root[data-halo-background=night] .hero{--text:#f3efe4;--muted:#c4c9ce;color:var(--text)}

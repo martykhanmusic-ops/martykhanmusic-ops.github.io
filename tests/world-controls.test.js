@@ -10,6 +10,8 @@ test('World controls presets validate, persist, and map physical keys without ch
   assert.equal(values.has(CONTROLS_KEY),true);
   assert.equal(loadControls(storage).bindings.interact,'KeyF');
   assert.equal(saved.speed,4.2);
+  assert.equal(validateControls({bindings:DEFAULT_BINDINGS,renderScale:.5}).renderScale,.5);
+  assert.throws(()=>validateControls({bindings:DEFAULT_BINDINGS,renderScale:Infinity}),/quality/);
   assert.equal(mappedKeys(new Set(['KeyF','KeyW']),saved.bindings).has('KeyW'),true);
   assert.throws(()=>validateControls({bindings:{...DEFAULT_BINDINGS,interact:'KeyW'}}),/conflict/);
   assert.throws(()=>validateControls({bindings:DEFAULT_BINDINGS,fieldOfView:120}),/range/);
