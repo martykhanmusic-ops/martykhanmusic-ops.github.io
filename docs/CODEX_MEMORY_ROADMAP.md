@@ -67,3 +67,12 @@ Latest Lobby access (October 18, 2026): canonical source remains C:\Users\owner\
 October 19 Theme Studio: modular reviewed layers, compact/expanded editor, global and app-scope inheritance, versioned JSON import/export and regression evidence are documented in HALO_THEME_STUDIO.md. Continue from that file for theme work; Live Listen remains a separate unfinished workstream.
 
 Voicebox integration recheck (October 19): fixed launcher proxy and Jarvis controls exist. Added clear bridge/backend connection states and POST origin/content-type checks. Automated regression passed. Live backend startup was rejected by automatic command-policy review; the smallest remaining user action is to run scripts/start-voicebox-for-halo.ps1 visibly and use Check Voicebox in the Windows launcher. See HALO_TEST_REPORT.md. Preserve unrelated uncommitted Live Listen work.
+
+October 19 lobby return: the user tabled Live Listen/iPhone work; its relay was
+stopped. M7 is incomplete and awaits an explicit resume. Creative Sessions now
+uses the existing project session from the Desktop Saturn ring and World
+semantic destination list, with no new store or master M8 application. The
+payload `9b96a44d0057f18c236935fe0cff723b941c6fb8` matched the feature
+branch remote. A committed-snapshot Windows build is at
+`dist/Halo-Lobby-Creative.exe`; exact runtime/manual device checks remain open.
+See `docs/HALO_LOBBY_DIRECTIVE_STATUS.md` and verify current Git state.

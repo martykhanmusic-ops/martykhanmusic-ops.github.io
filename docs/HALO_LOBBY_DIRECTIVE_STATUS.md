@@ -21,6 +21,15 @@ other unimplemented portals stay planned. Focused desktop/mobile and full
 regression evidence is in `HALO_TEST_REPORT.md`; H manual device/exact-EXE
 checks remain outstanding.
 
+Creative Sessions payload `9b96a44d0057f18c236935fe0cff723b941c6fb8`
+matched the remote feature branch. A source-matched committed-snapshot launcher
+was built at `dist/Halo-Lobby-Creative.exe` (2,698,240 bytes; SHA-256
+`2C77C291F91D9964C1AD0FBCBBD2FFD4220201A69DCF9D916B18375F84C35B61`).
+Its 52 embedded site entries include the Creative Sessions destination. This
+checks packaging, not startup of the exact executable; a prior automatic
+command-policy review blocked launching an executable, so the manual H gate
+remains open.
+
 ## A — verified audit and baseline
 
 - Local source and global roadmap read. No `AGENTS.md` exists at the repository or checked ancestor locations; the user-provided local-source instructions apply. Git is on `feature/halo-jarvis-foundation` at `2faea3f5d21a1533fac0ff91f272a403d325b83b`, which matched `git ls-remote` at audit time. No tracked changes existed before this audit. The unrelated preview PNG remains untracked.
