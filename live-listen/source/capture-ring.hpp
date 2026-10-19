@@ -16,12 +16,16 @@ public:
     struct Frame {
         float left {0.0f};
         float right {0.0f};
+        uint64_t sequence {0};
+        double sampleRate {0};
     };
 
     static_assert(Capacity > 1, "capture ring needs room for at least two frames");
+    static_assert(std::atomic<std::size_t>::is_always_lock_free, "audio indices must be lock-free");
 
     template <typename Sample>
-    std::size_t push(const Sample* left, const Sample* right, std::size_t count, int32_t channels) noexcept {
+    std::size_t push(const Sample* left, const Sample* right, std::size_t count, int32_t channels, uint64_t firstSequence = 0, double sampleRate = 0) noexcept {
+        if (channels <= 0) return 0;
         const auto write = writeIndex.load(std::memory_order_relaxed);
         const auto read = readIndex.load(std::memory_order_acquire);
         const auto available = Capacity - (write - read);
@@ -31,6 +35,8 @@ public:
             auto& frame = frames[(write + i) % Capacity];
             frame.left = left ? static_cast<float>(left[i]) : 0.0f;
             frame.right = channels > 1 && right ? static_cast<float>(right[i]) : frame.left;
+            frame.sequence = firstSequence + i;
+            frame.sampleRate = sampleRate;
         }
         writeIndex.store(write + accepted, std::memory_order_release);
         return accepted;

@@ -19,3 +19,9 @@ smtg_add_vst3plugin(HaloLiveListen
 target_compile_features(HaloLiveListen PRIVATE cxx_std_17)
 target_include_directories(HaloLiveListen PRIVATE "${HALO_VST3_SDK}")
 target_link_libraries(HaloLiveListen PRIVATE sdk)
+
+enable_testing()
+add_executable(HaloCaptureTests tests/capture-ring.cpp)
+target_compile_features(HaloCaptureTests PRIVATE cxx_std_17)
+target_include_directories(HaloCaptureTests PRIVATE source)
+add_test(NAME HaloCaptureRing COMMAND HaloCaptureTests)
