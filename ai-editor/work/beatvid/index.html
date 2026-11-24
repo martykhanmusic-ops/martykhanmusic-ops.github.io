@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="assets/gsap.min.js"></script>
+    <script src="assets/spectrum.js"></script>
+    <style>
+      @font-face { font-family: "Anton"; src: url("assets/anton-latin-400-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Inter"; font-weight: 700; src: url("assets/inter-latin-700-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Inter"; font-weight: 900; src: url("assets/inter-latin-900-normal.woff2") format("woff2"); }
+      /* Midnight Ember */
+      :root {
+        --ink: #05051c; --navy: #052454; --cobalt: #064985; --sky: #127bbc;
+        --ember: #fb7f05; --burn: #f35506; --bone: #f3e9da;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+      #root { position: relative; width: 1080px; height: 1920px; background: #000; overflow: hidden; }
+      .clip { position: absolute; inset: 0; }
+
+      /* 4:3 window inside the vertical frame */
+      #win { position: absolute; left: 0; top: 555px; width: 1080px; height: 810px; overflow: hidden; transform-origin: 50% 50%; }
+      #cv { position: absolute; inset: 0; width: 1080px; height: 810px; }
+      .bigtype { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+        font-family: "Anton"; color: var(--bone); font-size: 300px; line-height: 1;
+        letter-spacing: 0.01em; background: radial-gradient(120% 90% at 80% 100%, rgba(251,127,5,.35), transparent 60%), linear-gradient(var(--ink), var(--navy)); }
+      .bigtype em { font-style: normal; color: var(--ember); }
+      .bigtype span { display: inline-flex; transform: skewX(-12deg); }
+      .bigtype small { font-size: 120px; margin-left: 24px; align-self: flex-end; margin-bottom: 250px; color: var(--sky); }
+      .serifcard { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+        background: radial-gradient(90% 70% at 50% 60%, rgba(251,127,5,.18), transparent 70%), var(--ink); }
+      .serifcard .prod { font-family: "Inter"; font-weight: 700; font-size: 40px; letter-spacing: .4em; color: var(--sky); text-transform: uppercase; }
+      .serifcard img { width: 620px; mix-blend-mode: screen; }
+
+      /* subtitles: centred at 62% of frame height */
+      .sub { position: absolute; left: 60px; right: 60px; top: 1190px; transform: translateY(-50%); text-align: center;
+        font-family: "Inter"; font-weight: 700; font-size: 64px; line-height: 1.1; color: var(--bone);
+        -webkit-text-stroke: 3px #000; paint-order: stroke fill; text-shadow: 0 4px 12px rgba(0,0,0,.4); }
+      .sub b { color: var(--ember); font-weight: 700; }
+
+      /* end card */
+      #end { background: #000; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 700px; }
+      #endlogo { width: 900px; mix-blend-mode: screen; transform: rotate(-4deg); }
+      #cta { margin-top: 70px; font-family: "Inter"; font-weight: 700; font-size: 48px; color: var(--bone); position: relative; }
+      #cta i { position: absolute; left: 0; right: 0; bottom: -14px; height: 6px; background: var(--ember); transform-origin: 0 50%; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="27.43" data-width="1080" data-height="1920">
+      <audio id="music" src="assets/DADDY_YANKEE.mp3" data-start="0" data-duration="27.43" data-media-start="0.065" data-fade-out="0.03" data-volume="1"></audio>
+
+      <div id="scene" class="clip" data-start="0" data-duration="24.0" data-track-index="0">
+        <div id="win">
+          <canvas id="cv" width="1080" height="810"></canvas>
+          <div id="t140" class="bigtype"><span>140<small>BPM</small></span></div>
+          <div id="t808" class="bigtype"><span><em>808</em></span></div>
+          <div id="tdaddy" class="bigtype"><span>DADDY</span></div>
+          <div id="tyankee" class="bigtype" style="font-size:210px"><span><em>YANKEE</em></span></div>
+          <div id="tprod" class="serifcard"><div class="prod">prod. by</div><img src="assets/logo-serif-stacked.png" /></div>
+        </div>
+        <div id="subs"></div>
+      </div>
+
+      <div id="end" class="clip" data-start="24.0" data-duration="3.43" data-track-index="1">
+        <img id="endlogo" src="assets/wordmark-distressed.png" />
+        <div id="cta">full beat · link in bio<i></i></div>
+      </div>
+    </div>
+
+    <script>
+      const B = 60 / 140, FPS = 30;
+      const C = { ink: "#05051C", navy: "#052454", cobalt: "#064985", sky: "#127BBC", ember: "#FB7F05", burn: "#F35506", bone: "#F3E9DA" };
+
+      // [startBeat, beats, type]. Cut every 2 beats; double-cut + 4-beat hold every 4 bars.
+      const SHOTS = [
+        [0,2,"spec"],[2,2,"seq"],[4,2,"wave"],[6,2,"roll"],[8,2,"t140"],[10,2,"meter"],[12,2,"spec"],
+        [14,1,"seq"],[15,1,"wave"],[16,4,"roll"],[20,2,"t808"],[22,2,"seq"],[24,2,"spec"],[26,2,"meter"],[28,2,"wave"],
+        [30,1,"roll"],[31,1,"spec"],[32,4,"seq"],[36,2,"tdaddy"],[38,2,"tyankee"],[40,2,"spec"],[42,2,"wave"],
+        [44,2,"tprod"],[46,1,"meter"],[47,1,"seq"],[48,4,"spec"],[52,2,"roll"],[54,2,"wave"]
+      ];
+      // subtitles: [startBeat, endBeat, html]
+      const SUBS = [
+        [2,5,"new <b>beat</b>"],[5,8,"<b>DADDY YANKEE</b>"],[10,13,"<b>140</b> BPM"],[16,19,"<b>808s</b>"],
+        [22,25,"hats <b>rolling</b>"],[28,31,"turn it <b>up</b>"],[48,52,"<b>full</b> beat"],[52,56,"link in <b>bio</b>"]
+      ];
+
+      const hash = (i, k) => { const x = Math.sin(i * 127.1 + k * 311.7) * 43758.5453; return x - Math.floor(x); };
+
+      // ---- canvas visuals --------------------------------------------------
+      const cv = document.getElementById("cv"), g = cv.getContext("2d");
+      const W = 1080, H = 810;
+      const SEQ = [ // kick, snare/clap, hat, 808
+        [1,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0],
+        [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1],
+        [1,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0]
+      ];
+      const NOTES = Array.from({ length: 48 }, (_, i) => ({ s: i * 0.5 + (hash(i, 1) > .6 ? .25 : 0), l: .25 + Math.floor(hash(i, 2) * 3) * .25, p: Math.floor(hash(i, 3) * 9) }));
+
+      function bg(glow) {
+        const lg = g.createLinearGradient(0, 0, 0, H); lg.addColorStop(0, C.ink); lg.addColorStop(1, C.navy);
+        g.fillStyle = lg; g.fillRect(0, 0, W, H);
+        const rg = g.createRadialGradient(W * .82, H * 1.05, 10, W * .82, H * 1.05, W * .9);
+        rg.addColorStop(0, `rgba(251,127,5,${.18 + .3 * glow})`); rg.addColorStop(1, "rgba(251,127,5,0)");
+        g.fillStyle = rg; g.fillRect(0, 0, W, H);
+        g.strokeStyle = "rgba(18,123,188,.12)"; g.lineWidth = 1;
+        for (let x = 0; x <= W; x += 67.5) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, H); g.stroke(); }
+        for (let y = 0; y <= H; y += 67.5) { g.beginPath(); g.moveTo(0, y); g.lineTo(W, y); g.stroke(); }
+      }
+      function spec(fi) {
+        const s = SPEC[fi] || SPEC[SPEC.length - 1], n = s.length, bw = W / n;
+        for (let i = 0; i < n; i++) {
+          const h = Math.pow(s[i], 1.6) * (H * .72), x = i * bw + 6, w = bw - 12;
+          const lg = g.createLinearGradient(0, H * .82, 0, H * .82 - H * .72);
+          lg.addColorStop(0, C.cobalt); lg.addColorStop(.55, C.sky); lg.addColorStop(.85, C.ember); lg.addColorStop(1, C.burn);
+          g.fillStyle = lg; g.fillRect(x, H * .82 - h, w, h);
+          g.fillStyle = "rgba(18,123,188,.18)"; g.fillRect(x, H * .82 + 6, w, h * .25);
+        }
+      }
+      function seq(t) {
+        const step = Math.floor(t / (B / 4)) % 16, cw = 56, gap = 6, x0 = (W - 16 * (cw + gap)) / 2, y0 = 170;
+        for (let r = 0; r < 4; r++) for (let c = 0; c < 16; c++) {
+          const x = x0 + c * (cw + gap), y = y0 + r * 120, on = SEQ[r][c], hit = on && c === step;
+          g.fillStyle = hit ? C.ember : on ? (c === step ? C.bone : C.cobalt) : "rgba(6,73,133,.25)";
+          if (c === step && !on) g.fillStyle = "rgba(18,123,188,.55)";
+          g.fillRect(x, y, cw, 96);
+          if (hit) { g.shadowColor = C.ember; g.shadowBlur = 40; g.fillRect(x, y, cw, 96); g.shadowBlur = 0; }
+        }
+        g.fillStyle = C.sky; g.font = "700 26px Inter";
+        ["KICK", "CLAP", "HATS", "808"].forEach((l, r) => g.fillText(l, x0, y0 - 14 + r * 120 + (r ? 0 : 0) - 0));
+      }
+      function wave(fi) {
+        const N = 120, mid = H / 2;
+        g.lineWidth = 6; g.strokeStyle = C.ember; g.shadowColor = C.ember; g.shadowBlur = 30;
+        g.beginPath();
+        for (let k = 0; k < N; k++) {
+          const i = Math.max(0, fi - N + k), v = (LVL[i] || 0), x = k / (N - 1) * W;
+          const y = mid - v * 300 * Math.sin(k * 0.22 + fi * 0.18);
+          k ? g.lineTo(x, y) : g.moveTo(x, y);
+        }
+        g.stroke(); g.shadowBlur = 0;
+        g.fillStyle = "rgba(243,233,218,.9)"; g.fillRect(W - 8, mid - 4, 8, 8);
+      }
+      function roll(t) {
+        const pps = 520, play = W * .3;
+        g.fillStyle = C.bone; g.fillRect(play, 0, 3, H);
+        NOTES.forEach(n => {
+          const ns = n.s * B * 2, x = play + (ns - t) * pps, w = n.l * B * 2 * pps - 6, y = 110 + n.p * 66;
+          if (x + w < 0 || x > W) return;
+          const active = t >= ns && t < ns + n.l * B * 2;
+          g.fillStyle = active ? C.ember : C.cobalt;
+          if (active) { g.shadowColor = C.ember; g.shadowBlur = 30; }
+          g.fillRect(x, y, w, 52); g.shadowBlur = 0;
+        });
+      }
+      function meter(fi) {
+        const v = LVL[fi] || 0, cx = W / 2, cy = H / 2 + 20, r = 290;
+        g.lineWidth = 34; g.strokeStyle = "rgba(6,73,133,.5)";
+        g.beginPath(); g.arc(cx, cy, r, Math.PI * .75, Math.PI * 2.25); g.stroke();
+        g.strokeStyle = C.ember; g.shadowColor = C.ember; g.shadowBlur = 40;
+        g.beginPath(); g.arc(cx, cy, r, Math.PI * .75, Math.PI * (.75 + 1.5 * v)); g.stroke(); g.shadowBlur = 0;
+        for (let i = 0; i <= 30; i++) { const a = Math.PI * (.75 + 1.5 * i / 30); g.lineWidth = 3; g.strokeStyle = C.sky;
+          g.beginPath(); g.moveTo(cx + Math.cos(a) * (r - 60), cy + Math.sin(a) * (r - 60)); g.lineTo(cx + Math.cos(a) * (r - 80), cy + Math.sin(a) * (r - 80)); g.stroke(); }
+        g.fillStyle = C.bone; g.font = "400 150px Anton"; g.textAlign = "center"; g.fillText("808", cx, cy + 55); g.textAlign = "left";
+      }
+
+      const BIG = ["t140", "t808", "tdaddy", "tyankee", "tprod"];
+      function draw(t) {
+        const beat = t / B, fi = Math.min(Math.round(t * FPS), SPEC.length - 1);
+        let idx = SHOTS.findIndex(s => beat >= s[0] && beat < s[0] + s[1]); if (idx < 0) idx = SHOTS.length - 1;
+        const [sb, , type] = SHOTS[idx];
+        // handheld drift per shot, plus a small bump on every beat
+        const local = (beat - sb), bump = Math.max(0, 1 - (beat % 1) * 4) * 0.012;
+        const sc = 1 + 0.05 + hash(idx, 4) * 0.03 + local * 0.004 + bump;
+        const dx = (hash(idx, 5) - .5) * 50, dy = (hash(idx, 6) - .5) * 40;
+        document.getElementById("win").style.transform = `translate(${dx}px,${dy}px) scale(${sc})`;
+        BIG.forEach(id => document.getElementById(id).style.visibility = id === type ? "visible" : "hidden");
+        if (BIG.includes(type)) return;
+        bg(LVL[fi] || 0);
+        if (type === "spec") spec(fi); else if (type === "seq") seq(t); else if (type === "wave") wave(fi);
+        else if (type === "roll") roll(t); else meter(fi);
+      }
+
+      // ---- timeline --------------------------------------------------------
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const clock = { t: 0 };
+      tl.to(clock, { t: 24, duration: 24, ease: "none", onUpdate: () => draw(clock.t) }, 0);
+
+      // big-type slams: ease-out from 0.95, 180 ms; one overshoot only on the title (DADDY)
+      SHOTS.forEach(([sb, , type]) => {
+        if (!BIG.includes(type)) return;
+        const at = sb * B, sel = "#" + type;
+        if (type === "tdaddy") tl.fromTo(sel, { scale: .95, opacity: 0 }, { scale: 1, opacity: 1, duration: .25, ease: "back.out(2.2)" }, at);
+        else if (type === "tprod") tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: .25, ease: "power2.out" }, at);
+        else tl.fromTo(sel, { scale: .95, opacity: 0 }, { scale: 1, opacity: 1, duration: .18, ease: "power3.out" }, at);
+      });
+
+      // subtitles: pop in 120 ms from 0.95, no exit (next card replaces it)
+      const subs = document.getElementById("subs");
+      SUBS.forEach(([a, b, html], i) => {
+        const el = document.createElement("div"); el.className = "sub"; el.id = "s" + i; el.innerHTML = html; el.style.opacity = 0;
+        subs.appendChild(el);
+        tl.fromTo(el, { opacity: 0, scale: .95 }, { opacity: 1, scale: 1, duration: .12, ease: "power2.out", immediateRender: false }, a * B);
+        tl.set(el, { opacity: 0 }, b * B);
+      });
+
+      // end card: mask-wipe the wordmark on the downbeat, one overshoot, CTA underline pulse
+      tl.fromTo("#endlogo", { clipPath: "inset(0 100% 0 0)", scale: .95 }, { clipPath: "inset(0 0% 0 0)", scale: 1, duration: .3, ease: "back.out(1.8)" }, 24.0);
+      tl.fromTo("#cta", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: .2, ease: "power3.out" }, 24.0 + B * 2);
+      tl.fromTo("#cta i", { scaleX: 0 }, { scaleX: 1, duration: .2, ease: "power3.out" }, 24.0 + B * 3);
+      tl.to("#cta", { scale: 1.04, duration: .12, ease: "power2.out", yoyo: true, repeat: 1 }, 24.0 + B * 4);
+      tl.set({}, {}, 27.43);
+
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

@@ -7,3 +7,6 @@ done/*
 !done/.gitkeep
 *.wav
 .venv/
+work/**/renders/
+work/**/.hyperframes/
+work/**/*.mp3
