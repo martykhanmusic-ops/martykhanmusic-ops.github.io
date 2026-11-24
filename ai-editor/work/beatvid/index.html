@@ -31,7 +31,8 @@
       .serifcard { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
         background: radial-gradient(90% 70% at 50% 60%, rgba(251,127,5,.18), transparent 70%), var(--ink); }
       .serifcard .prod { font-family: "Inter"; font-weight: 700; font-size: 40px; letter-spacing: .4em; color: var(--sky); text-transform: uppercase; }
-      .serifcard img { width: 620px; mix-blend-mode: screen; }
+      .serifcard .name { font-family: "Anton"; font-size: 170px; color: var(--bone); transform: skewX(-12deg); line-height: 1; }
+      .fv { object-fit: cover; width: 1080px; height: 810px; }
 
       /* subtitles: centred at 62% of frame height */
       .sub { position: absolute; left: 60px; right: 60px; top: 1190px; transform: translateY(-50%); text-align: center;
@@ -40,9 +41,10 @@
       .sub b { color: var(--ember); font-weight: 700; }
 
       /* end card */
-      #end { background: #000; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 700px; }
-      #endlogo { width: 900px; mix-blend-mode: screen; transform: rotate(-4deg); }
-      #cta { margin-top: 70px; font-family: "Inter"; font-weight: 700; font-size: 48px; color: var(--bone); position: relative; }
+      #end { background: #000; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 520px; }
+      #endlogo { width: 820px; mix-blend-mode: screen; transform: rotate(-4deg); }
+      #artist { margin-top: 60px; font-family: "Inter"; font-weight: 700; font-size: 30px; letter-spacing: .18em; color: var(--sky); }
+      #cta { margin-top: 40px; font-family: "Inter"; font-weight: 700; font-size: 48px; color: var(--bone); position: relative; }
       #cta i { position: absolute; left: 0; right: 0; bottom: -14px; height: 6px; background: var(--ember); transform-origin: 0 50%; }
     </style>
   </head>
@@ -50,20 +52,41 @@
     <div id="root" data-composition-id="main" data-start="0" data-duration="27.43" data-width="1080" data-height="1920">
       <audio id="music" src="assets/DADDY_YANKEE.mp3" data-start="0" data-duration="27.43" data-media-start="0.065" data-fade-out="0.03" data-volume="1"></audio>
 
-      <div id="scene" class="clip" data-start="0" data-duration="24.0" data-track-index="0">
+      <div id="scene" style="position:absolute;inset:0">
         <div id="win">
           <canvas id="cv" width="1080" height="810"></canvas>
+          <video id="v0" class="clip fv" src="assets/C041.mp4" data-start="0.0000" data-duration="0.8571" data-media-start="4.6" muted playsinline></video>
+          <video id="v1" class="clip fv" src="assets/C038.mp4" data-start="0.8571" data-duration="0.8571" data-media-start="0.0" muted playsinline></video>
+          <video id="v2" class="clip fv" src="assets/C032.mp4" data-start="1.7143" data-duration="0.8571" data-media-start="0.5" muted playsinline></video>
+          <video id="v3" class="clip fv" src="assets/C041.mp4" data-start="2.5714" data-duration="0.8571" data-media-start="8.4" muted playsinline></video>
+          <video id="v5" class="clip fv" src="assets/C038.mp4" data-start="4.2857" data-duration="0.8571" data-media-start="9.5" muted playsinline></video>
+          <video id="v7" class="clip fv" src="assets/C032.mp4" data-start="6.0000" data-duration="0.4286" data-media-start="9.0" muted playsinline></video>
+          <video id="v8" class="clip fv" src="assets/C041.mp4" data-start="6.4286" data-duration="0.4286" data-media-start="1.0" muted playsinline></video>
+          <video id="v9" class="clip fv" src="assets/C038.mp4" data-start="6.8571" data-duration="1.7143" data-media-start="13.6" muted playsinline></video>
+          <video id="v11" class="clip fv" src="assets/C041.mp4" data-start="9.4286" data-duration="0.8571" data-media-start="6.0" muted playsinline></video>
+          <video id="v12" class="clip fv" src="assets/C032.mp4" data-start="10.2857" data-duration="0.8571" data-media-start="3.0" muted playsinline></video>
+          <video id="v14" class="clip fv" src="assets/C041.mp4" data-start="12.0000" data-duration="0.8571" data-media-start="11.0" muted playsinline></video>
+          <video id="v15" class="clip fv" src="assets/C038.mp4" data-start="12.8571" data-duration="0.4286" data-media-start="3.0" muted playsinline></video>
+          <video id="v16" class="clip fv" src="assets/C032.mp4" data-start="13.2857" data-duration="0.4286" data-media-start="12.0" muted playsinline></video>
+          <video id="v17" class="clip fv" src="assets/C041.mp4" data-start="13.7143" data-duration="1.7143" data-media-start="13.0" muted playsinline></video>
+          <video id="v20" class="clip fv" src="assets/C038.mp4" data-start="17.1429" data-duration="0.8571" data-media-start="20.0" muted playsinline></video>
+          <video id="v21" class="clip fv" src="assets/C032.mp4" data-start="18.0000" data-duration="0.8571" data-media-start="15.0" muted playsinline></video>
+          <video id="v23" class="clip fv" src="assets/C041.mp4" data-start="19.7143" data-duration="0.4286" data-media-start="2.4" muted playsinline></video>
+          <video id="v25" class="clip fv" src="assets/C038.mp4" data-start="20.5714" data-duration="1.7143" data-media-start="24.0" muted playsinline></video>
+          <video id="v26" class="clip fv" src="assets/C032.mp4" data-start="22.2857" data-duration="0.8571" data-media-start="6.0" muted playsinline></video>
+          <video id="v27" class="clip fv" src="assets/C041.mp4" data-start="23.1429" data-duration="0.8571" data-media-start="16.0" muted playsinline></video>
           <div id="t140" class="bigtype"><span>140<small>BPM</small></span></div>
           <div id="t808" class="bigtype"><span><em>808</em></span></div>
           <div id="tdaddy" class="bigtype"><span>DADDY</span></div>
-          <div id="tyankee" class="bigtype" style="font-size:210px"><span><em>YANKEE</em></span></div>
-          <div id="tprod" class="serifcard"><div class="prod">prod. by</div><img src="assets/logo-serif-stacked.png" /></div>
+          <div id="tyankee" class="bigtype" style="font-size:165px"><span><em>YANKEE</em></span></div>
+          <div id="tprod" class="serifcard"><div class="prod">prod. by</div><div class="name">MARTY <em style="font-style:normal;color:var(--ember)">KHAN</em></div></div>
         </div>
         <div id="subs"></div>
       </div>
 
       <div id="end" class="clip" data-start="24.0" data-duration="3.43" data-track-index="1">
         <img id="endlogo" src="assets/wordmark-distressed.png" />
+        <div id="artist">MARTY KHAN · DADDY YANKEE</div>
         <div id="cta">full beat · link in bio<i></i></div>
       </div>
     </div>
@@ -73,16 +96,11 @@
       const C = { ink: "#05051C", navy: "#052454", cobalt: "#064985", sky: "#127BBC", ember: "#FB7F05", burn: "#F35506", bone: "#F3E9DA" };
 
       // [startBeat, beats, type]. Cut every 2 beats; double-cut + 4-beat hold every 4 bars.
-      const SHOTS = [
-        [0,2,"spec"],[2,2,"seq"],[4,2,"wave"],[6,2,"roll"],[8,2,"t140"],[10,2,"meter"],[12,2,"spec"],
-        [14,1,"seq"],[15,1,"wave"],[16,4,"roll"],[20,2,"t808"],[22,2,"seq"],[24,2,"spec"],[26,2,"meter"],[28,2,"wave"],
-        [30,1,"roll"],[31,1,"spec"],[32,4,"seq"],[36,2,"tdaddy"],[38,2,"tyankee"],[40,2,"spec"],[42,2,"wave"],
-        [44,2,"tprod"],[46,1,"meter"],[47,1,"seq"],[48,4,"spec"],[52,2,"roll"],[54,2,"wave"]
-      ];
+      const SHOTS = [[0,2,"vid"],[2,2,"vid"],[4,2,"vid"],[6,2,"vid"],[8,2,"t140"],[10,2,"vid"],[12,2,"spec"],[14,1,"vid"],[15,1,"vid"],[16,4,"vid"],[20,2,"t808"],[22,2,"vid"],[24,2,"vid"],[26,2,"seq"],[28,2,"vid"],[30,1,"vid"],[31,1,"vid"],[32,4,"vid"],[36,2,"tdaddy"],[38,2,"tyankee"],[40,2,"vid"],[42,2,"vid"],[44,2,"tprod"],[46,1,"vid"],[47,1,"wave"],[48,4,"vid"],[52,2,"vid"],[54,2,"vid"]];
       // subtitles: [startBeat, endBeat, html]
       const SUBS = [
         [2,5,"new <b>beat</b>"],[5,8,"<b>DADDY YANKEE</b>"],[10,13,"<b>140</b> BPM"],[16,19,"<b>808s</b>"],
-        [22,25,"hats <b>rolling</b>"],[28,31,"turn it <b>up</b>"],[48,52,"<b>full</b> beat"],[52,56,"link in <b>bio</b>"]
+        [28,31,"turn it <b>up</b>"],[48,52,"<b>Marty</b> Khan"],[52,56,"link in <b>bio</b>"]
       ];
 
       const hash = (i, k) => { const x = Math.sin(i * 127.1 + k * 311.7) * 43758.5453; return x - Math.floor(x); };
@@ -176,7 +194,8 @@
         const dx = (hash(idx, 5) - .5) * 50, dy = (hash(idx, 6) - .5) * 40;
         document.getElementById("win").style.transform = `translate(${dx}px,${dy}px) scale(${sc})`;
         BIG.forEach(id => document.getElementById(id).style.visibility = id === type ? "visible" : "hidden");
-        if (BIG.includes(type)) return;
+        document.getElementById("cv").style.visibility = type === "vid" ? "hidden" : "visible";
+        if (BIG.includes(type) || type === "vid") return;
         bg(LVL[fi] || 0);
         if (type === "spec") spec(fi); else if (type === "seq") seq(t); else if (type === "wave") wave(fi);
         else if (type === "roll") roll(t); else meter(fi);
@@ -208,6 +227,7 @@
 
       // end card: mask-wipe the wordmark on the downbeat, one overshoot, CTA underline pulse
       tl.fromTo("#endlogo", { clipPath: "inset(0 100% 0 0)", scale: .95 }, { clipPath: "inset(0 0% 0 0)", scale: 1, duration: .3, ease: "back.out(1.8)" }, 24.0);
+      tl.fromTo("#artist", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: .2, ease: "power3.out" }, 24.0 + B);
       tl.fromTo("#cta", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: .2, ease: "power3.out" }, 24.0 + B * 2);
       tl.fromTo("#cta i", { scaleX: 0 }, { scaleX: 1, duration: .2, ease: "power3.out" }, 24.0 + B * 3);
       tl.to("#cta", { scale: 1.04, duration: .12, ease: "power2.out", yoyo: true, repeat: 1 }, 24.0 + B * 4);
