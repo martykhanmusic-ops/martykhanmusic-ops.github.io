@@ -10,8 +10,8 @@ You are my video editor. Work only inside this folder.
 
 ## Tools
 - **FFmpeg** (with libass): cuts, audio ducking, subtitle burn-in, export
-- **faster-whisper**: transcription with word timestamps (`.venv/bin/python`)
-- **yt-dlp**: download references (`.venv/bin/yt-dlp`)
+- **faster-whisper**: transcription with word timestamps (`.venv/bin/python`; on Windows `.venv\Scripts\python.exe`)
+- **yt-dlp**: download references (`.venv/bin/yt-dlp`; on Windows `.venv\Scripts\yt-dlp.exe`)
 - **Remotion**: code-built video and motion graphics (`npx remotion`)
 - **HyperFrames**: HTML-based graphics and compositions (`npx hyperframes`)
 
