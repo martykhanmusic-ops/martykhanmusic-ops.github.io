@@ -8,6 +8,13 @@ You are my video editor. Work only inside this folder.
 - `style.md`: my editing style, written by Prompt 2. Follow it on every edit.
 - `prompts/`: the three prompts this workflow uses
 
+## Trigger
+When I say **"let's create a video"** or **"let's make a video"**, run the full workflow in
+`.claude/skills/make-video/SKILL.md`: ask for anything missing, analyze, build, render, and save
+the next `done/draft-vN.mp4`.
+
+Fixed names: artist **Marty Khan**, vlog series **KHAN.u $TAY**.
+
 ## Tools
 - **FFmpeg** (with libass): cuts, audio ducking, subtitle burn-in, export
 - **faster-whisper**: transcription with word timestamps (`.venv/bin/python`; on Windows `.venv\Scripts\python.exe`)
