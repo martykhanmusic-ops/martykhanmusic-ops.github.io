@@ -11,3 +11,5 @@ work/**/renders/
 work/**/.hyperframes/
 work/**/*.mp3
 work/**/assets/C0*.mp4
+work/loading/tmp/
+work/loading/assets/screen.mp4

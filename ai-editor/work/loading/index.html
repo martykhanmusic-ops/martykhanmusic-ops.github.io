@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="assets/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "VT323"; src: url("assets/vt323-latin-400-normal.woff2") format("woff2"); }
+      @font-face { font-family: "DotGothic16"; src: url("assets/dotgothic16-latin-400-normal.woff2") format("woff2"); }
+      @font-face { font-family: "DotGothic16"; src: url("assets/dotgothic16-japanese-400-normal.woff2") format("woff2"); }
+      :root { --pink: #ff71ce; --cyan: #01cdfe; --violet: #b967ff; --white: #f4f1ff; }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #000;
+        font-family: "VT323", monospace; color: var(--white); }
+
+      /* vaporwave horizon grid */
+      #gridwrap { position: absolute; left: 0; right: 0; top: 1240px; height: 680px; overflow: hidden; perspective: 500px; perspective-origin: 50% 0; opacity: .4; }
+      #grid { position: absolute; left: -100%; width: 300%; top: 0; height: 300%; transform: rotateX(70deg); transform-origin: 50% 0; background-image: linear-gradient(var(--pink) 2px, transparent 2px), linear-gradient(90deg, var(--violet) 2px, transparent 2px); background-size: 80px 80px; }
+      #horizon { position: absolute; left: 0; right: 0; top: 1236px; height: 4px; background: linear-gradient(90deg, transparent, var(--pink), var(--cyan), transparent); opacity: .7; }
+
+      /* VHS OSD */
+      .osd { position: absolute; top: 290px; font-size: 52px; letter-spacing: 2px; text-shadow: 3px 0 var(--pink), -3px 0 var(--cyan); }
+      #play { left: 150px; } #tc { right: 205px; text-align: right; }
+      #jp { position: absolute; top: 296px; left: 0; right: 0; text-align: center; font-family: "DotGothic16"; font-size: 36px; color: var(--pink); letter-spacing: 4px; }
+
+      /* CRT */
+      #crt { position: absolute; left: 140px; top: 565px; width: 800px; height: 600px; border-radius: 42px; overflow: hidden; box-shadow: 0 0 0 10px #111, 0 0 0 13px #2a2340, 0 0 60px 10px rgba(185,103,255,.45), 0 0 140px 30px rgba(1,205,254,.18); }
+      #screen { position: absolute; inset: 0; width: 800px; height: 600px; object-fit: cover; }
+      #glass { position: absolute; inset: 0; border-radius: 46px; pointer-events: none;
+        background: radial-gradient(130% 110% at 50% 50%, transparent 55%, rgba(0,0,0,.65) 100%),
+                    linear-gradient(160deg, rgba(255,255,255,.09) 0%, transparent 28%); }
+
+      #bump { position: absolute; top: 1185px; left: 150px; right: 170px; text-align: center; font-size: 50px; color: var(--white); min-height: 54px; }
+      #bump i { font-style: normal; opacity: 1; color: var(--cyan); }
+
+      #loading { position: absolute; top: 352px; left: 0; right: 0; text-align: center; font-size: 100px; line-height: 1; color: var(--cyan); text-shadow: 5px 0 var(--pink), -5px 0 rgba(1,205,254,.6); letter-spacing: 4px; }
+      #loading span { display: inline-block; width: 90px; text-align: left; }
+
+      #bar { position: absolute; top: 470px; left: 150px; width: 600px; height: 50px; border: 4px solid var(--white); padding: 6px; display: flex; gap: 5px; }
+      .seg { flex: 1; background: rgba(185,103,255,.15); }
+      .seg.on { background: linear-gradient(180deg, var(--pink), var(--violet)); box-shadow: 0 0 14px var(--pink); }
+      .seg.on.hi { background: linear-gradient(180deg, var(--cyan), var(--violet)); box-shadow: 0 0 14px var(--cyan); }
+      #pct { position: absolute; top: 462px; left: 760px; width: 110px; font-size: 60px; text-align: right; color: var(--white); }
+
+      #logo { position: absolute; top: 1320px; left: 50%; width: 300px; margin-left: -150px; mix-blend-mode: screen; opacity: .92; transform: rotate(-4deg); }
+
+      #scan { position: absolute; inset: 0; pointer-events: none;
+        background: repeating-linear-gradient(0deg, rgba(0,0,0,.22) 0 2px, transparent 2px 4px); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="24" data-width="1080" data-height="1920">
+      <div id="gridwrap"><div id="grid"></div></div>
+      <div id="horizon"></div>
+
+      <div id="play" class="osd">▶ PLAY</div>
+      <div id="tc" class="osd">SP 00:00:00</div>
+      <div id="jp">ロード中</div>
+
+      <div id="crt">
+        <video id="screen" class="clip" src="assets/screen.mp4" data-start="0" data-duration="24" data-media-start="0" muted playsinline></video>
+        <div id="glass"></div>
+      </div>
+
+      <div id="bump"></div>
+      <div id="loading">NOW LOADING<span></span></div>
+      <div id="bar"></div>
+      <div id="pct">0%</div>
+      <img id="logo" src="assets/wordmark-distressed.png" />
+      <div id="scan"></div>
+    </div>
+
+    <script>
+      const DUR = 24, SEG = 4, TR = 0.8;
+      const LINES = [
+        "please stand by.",
+        "we see you.",
+        "this is not a test.",
+        "the water remembers.",
+        "don't cry. it's loading.",
+        "almost there. probably."
+      ];
+      const bar = document.getElementById("bar");
+      for (let i = 0; i < 20; i++) { const s = document.createElement("div"); s.className = "seg"; bar.appendChild(s); }
+      const segs = [...bar.children];
+      const $ = id => document.getElementById(id);
+      const hash = k => { const x = Math.sin(k * 91.7) * 43758.5453; return x - Math.floor(x); };
+      const pad = n => String(n).padStart(2, "0");
+
+      function draw(t) {
+        // which image is on screen (screen.mp4 timing: image k holds k*4 .. k*4+3.2, transition after)
+        const k = Math.min(5, Math.floor(t / SEG)), local = t - k * SEG;
+        const inTrans = local > SEG - TR;
+
+        // bump text: types on over 1 s, cursor blinks, clears during the transition
+        const line = LINES[k], n = Math.min(line.length, Math.floor(local / 1.0 * line.length));
+        const cursor = Math.floor(t * 2.5) % 2 ? "█" : "&nbsp;";
+        $("bump").innerHTML = inTrans ? "" : line.slice(0, n) + `<i>${cursor}</i>`;
+
+        // loading dots, progress, percentage
+        $("loading").querySelector("span").textContent = ".".repeat(Math.floor(t * 2.5) % 4);
+        const done = t >= 23.2;
+        const p = done ? 100 : Math.floor((t / 23.2) * 100);
+        $("pct").textContent = p + "%";
+        const on = Math.floor(p / 5);
+        segs.forEach((s, i) => { s.className = "seg" + (i < on ? " on" + (i % 4 === 3 ? " hi" : "") : ""); });
+        $("loading").style.color = done && Math.floor(t * 8) % 2 ? "var(--pink)" : "var(--cyan)";
+
+        // VHS OSD
+        const s = Math.floor(t), f = Math.floor((t % 1) * 30);
+        $("tc").textContent = `00:${pad(s)}:${pad(f)}`;
+        $("play").style.opacity = Math.floor(t * 1.5) % 2 ? 1 : .35;
+
+        // horizon grid scroll (18 cells over 24 s, loops cleanly)
+        $("grid").style.backgroundPosition = `0 ${(t * 60) % 80}px`;
+
+        // tracking jitter during transitions
+        const j = inTrans ? (hash(Math.floor(t * 30)) - .5) * 22 : 0;
+        $("crt").style.transform = `translateX(${j}px)`;
+        $("loading").style.transform = `translateX(${-j * .6}px)`;
+        $("jp").style.opacity = inTrans ? (hash(Math.floor(t * 30) + 7) > .5 ? 1 : .2) : 1;
+      }
+
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const clock = { t: 0 };
+      tl.to(clock, { t: DUR, duration: DUR, ease: "none", onUpdate: () => draw(clock.t) }, 0);
+      window.__timelines["main"] = tl;
+      draw(0);
+      tl.seek(0);
+    </script>
+  </body>
+</html>
