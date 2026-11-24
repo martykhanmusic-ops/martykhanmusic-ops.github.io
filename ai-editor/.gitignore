@@ -1,0 +1,9 @@
+node_modules/
+raw/*
+references/*
+done/*
+!raw/.gitkeep
+!references/.gitkeep
+!done/.gitkeep
+*.wav
+.venv/
