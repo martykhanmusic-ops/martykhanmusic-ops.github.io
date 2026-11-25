@@ -20,6 +20,12 @@ Every finished video edit is delivered in widescreen (16:9, 1920x1080) and verti
   or previous clip. Make neighbouring clips flow by reworking the clip itself
   (colour-matching, zoom in/out on the cut), never by overlapping two clips.
 - Lyrics/captions: white text, no background box or colour block.
+- Lyrics appear only while they are sung: time every line from word-level timestamps
+  (first sung word -> last sung word), never from coarse segment times. Nothing on
+  screen during intros, instrumentals or gaps. Verify line starts against word times.
+- Cuts land on the drums: detect kick and snare hits on the percussive part of the
+  track and cut on real hits, not on an assumed BPM grid (verify the tempo; detectors
+  misread it). Hold title/text clips long enough to read (>= ~1.3 s).
 
 The skill lives in `.claude/skills/ffmpeg-skill` (upstream: https://github.com/kajisho5/ffmpeg-skill, v4.7.1, MIT).
 It needs FFmpeg 6.1+ and Python 3.10+.
