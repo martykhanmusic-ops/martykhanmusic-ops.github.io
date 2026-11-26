@@ -20,6 +20,13 @@ Every finished video edit is delivered in widescreen (16:9, 1920x1080) and verti
   or previous clip. Make neighbouring clips flow by reworking the clip itself
   (colour-matching, zoom in/out on the cut), never by overlapping two clips.
 - Lyrics/captions: white text, no background box or colour block.
+- Lyric style (TikTok lyric-snippet look): lowercase white narrow sans (Liberation
+  Sans at ~80% width), each word pops on exactly when it is sung, lines build up
+  word by word in short 2-3 word rows with uneven gaps, placed over the upper-left
+  of the picture (position varies a little per phrase), soft shadow only.
+- Widescreen must fill the whole 16:9 frame: rebuild each clip at 16:9 from its
+  source (zoom in, cropping at most ~12% of the height), then fill any remaining
+  width with mirrored copies of the clip. No black bars, no blurred side panels.
 - Lyrics appear only while they are sung: time every line from word-level timestamps
   (first sung word -> last sung word), never from coarse segment times. Nothing on
   screen during intros, instrumentals or gaps. Verify line starts against word times.
