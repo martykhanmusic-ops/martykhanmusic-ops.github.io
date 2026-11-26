@@ -19,7 +19,13 @@ Every finished video edit is delivered in widescreen (16:9, 1920x1080) and verti
 - Cuts are instantaneous: no crossfades, dissolves or see-through overlays of the next
   or previous clip. Make neighbouring clips flow by reworking the clip itself
   (colour-matching, zoom in/out on the cut), never by overlapping two clips.
-- Lyrics/captions: white text, no background box or colour block.
+- Lyrics/captions: no background box or colour block. They must always be easy to
+  read: bold, large (about 11% of frame height), bright white with a thick solid
+  black outline and drop shadow (measured best contrast against this footage; neon
+  yellow/cyan/lime blend into the yellow and blue clips).
+- Never show lyrics and on-image words at the same time: while a logo or text card
+  is on screen it stands in for that part of the lyrics (lyrics pause), and B-roll
+  that carries its own words is kept out of the rotation.
 - Lyric style (TikTok lyric-snippet look): lowercase white narrow sans (Liberation
   Sans at ~80% width), each word pops on exactly when it is sung, lines build up
   word by word in short 2-3 word rows with uneven gaps, placed over the upper-left
