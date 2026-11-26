@@ -24,6 +24,10 @@ Every finished video edit is delivered in widescreen (16:9, 1920x1080) and verti
   Sans at ~80% width), each word pops on exactly when it is sung, lines build up
   word by word in short 2-3 word rows with uneven gaps, placed over the upper-left
   of the picture (position varies a little per phrase), soft shadow only.
+- Logos: no Marty Khan logos/signatures at all (many GIFs flash them for part of
+  their loop: check every clip frame by frame and keep only clean stretches, or crop
+  the logo out). Use B-roll instead. At most 1-2 KHAN.u$TAY logos per video, each
+  shown once.
 - Widescreen must fill the whole 16:9 frame: rebuild each clip at 16:9 from its
   source (zoom in, cropping at most ~12% of the height), then fill any remaining
   width with mirrored copies of the clip. No black bars, no blurred side panels.
