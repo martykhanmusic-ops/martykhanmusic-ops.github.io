@@ -20,3 +20,6 @@ Ten-second seamless loops, 30 fps, VP9 WebM with transparency.
    card (they fill the screen).
 
 The `preview/` folder has MP4 previews (overlay over footage, and the three cards).
+`overlay_key.png` is a one-page key: every part of the main overlay numbered and explained,
+plus the four scenes with suggested hotkeys F1 Starting soon, F2 Live, F3 Be right back,
+F4 Stream ending (set them in OBS: Settings > Hotkeys > each scene > Switch to scene).
